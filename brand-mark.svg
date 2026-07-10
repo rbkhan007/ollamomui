@@ -1,0 +1,51 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Brand Gradients -->
+    <linearGradient id="brandCyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00f0ff" />
+      <stop offset="100%" stop-color="#00bcd4" />
+    </linearGradient>
+    <linearGradient id="brandPurple" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    <linearGradient id="wordmarkGrad" x1="0" y1="0" x2="64" y2="0">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="55%" stop-color="#ffffff" />
+      <stop offset="55.1%" stop-color="#8b5cf6" />
+      <stop offset="75%" stop-color="#00f0ff" />
+      <stop offset="100%" stop-color="#00f0ff" />
+    </linearGradient>
+    
+    <!-- Glow Filters -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Brand Mark -->
+  <g transform="translate(32, 32)">
+    <!-- Outer Hexagon -->
+    <polygon points="0,-24 21,-12 21,12 0,24 -21,12 -21,-12" fill="rgba(12, 12, 26, 0.9)" stroke="url(#brandCyan)" stroke-width="2" filter="url(#glow)" />
+    <!-- Inner Hexagon Outline -->
+    <polygon points="0,-18 16,-9 16,9 0,18 -16,9 -16,-9" fill="none" stroke="url(#brandPurple)" stroke-width="1" opacity="0.6" />
+    
+    <!-- The Lightning Bolt (Core) -->
+    <path d="M -6,-10 L 6,-10 L 3,-2 L 8,-2 L -6,12 L -3,3 L -9,3 Z" fill="url(#wordmarkGrad)" filter="url(#glow)" />
+    
+    <!-- Network Nodes (Corners) -->
+    <circle cx="0" cy="-24" r="2" fill="url(#brandCyan)" filter="url(#glow)" />
+    <circle cx="21" cy="-12" r="2" fill="url(#brandPurple)" filter="url(#glow)" />
+    <circle cx="21" cy="12" r="2" fill="url(#brandCyan)" filter="url(#glow)" />
+    <circle cx="0" cy="24" r="2" fill="url(#brandPurple)" filter="url(#glow)" />
+    <circle cx="-21" cy="12" r="2" fill="url(#brandCyan)" filter="url(#glow)" />
+    <circle cx="-21" cy="-12" r="2" fill="url(#brandPurple)" filter="url(#glow)" />
+    
+    <!-- Central core glow -->
+    <circle cx="0" cy="0" r="3" fill="url(#brandCyan)" opacity="0.8" filter="url(#glow)" />
+  </g>
+</svg>

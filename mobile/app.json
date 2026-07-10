@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "OllamaEmu",
+    "slug": "ollama-emu-mobile",
+    "version": "0.6.0",
+    "orientation": "portrait",
+    "scheme": "ollamaemu",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#0d0d1a"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ollamaemu.app"
+    },
+    "android": {
+      "package": "com.ollamaemu.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0d0d1a"
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}

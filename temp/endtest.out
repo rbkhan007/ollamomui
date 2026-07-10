@@ -1,0 +1,11 @@
+2026-07-11 04:48:49,768 [INFO] Startup active provider: openrouter (has_key=False)
+2026-07-11 04:48:49,787 [INFO] RAG engine initialized. 0 documents, 0 chunks indexed.
+2026-07-11 04:48:49,801 [INFO] Memory system initialized. Auto-flush every 0.2s.
+2026-07-11 04:48:49,844 [INFO] [device] id=80420655 user=Rakibul Hasan tz=Bangladesh Standard Time
+2026-07-11 04:48:49,844 [WARNING] [init] No OLLAMA_EMU_API_KEY env var. Active provider 'openrouter' has key=False
+INFO:     127.0.0.1:58443 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58443 - "GET /api/version HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58443 - "GET /api/usage/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58443 - "POST /api/providers/add HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:58443 - "POST /api/chat HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:58443 - "GET /api/providers/list HTTP/1.1" 200 OK

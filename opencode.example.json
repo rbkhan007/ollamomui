@@ -1,0 +1,25 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "emu": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama Emulator Desktop ($0 Unlimited)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1",
+        "apiKey": "sk-local"
+      },
+      "models": {
+        "openrouter/auto": { "name": "OpenRouter Auto (best free route) - $0" },
+        "google/gemini-2.0-flash-exp:free": { "name": "Gemini 2.0 Flash Free - $0" },
+        "google/gemini-2.5-pro-exp-03-25:free": { "name": "Gemini 2.5 Pro Exp Free - $0" },
+        "deepseek/deepseek-chat:free": { "name": "DeepSeek V3 Free - $0" },
+        "meta-llama/llama-3.3-70b-instruct:free": { "name": "Llama 3.3 70B Free - $0" },
+        "qwen/qwen3-coder:free": { "name": "Qwen3 Coder Free - $0" },
+        "mistralai/mistral-small-24b-instruct-2501:free": { "name": "Mistral Small 24B Free - $0" },
+        "microsoft/phi-4:free": { "name": "Phi-4 Free - $0" },
+        "cohere/command-r7-12-2024:free": { "name": "Command R7 Free - $0" },
+        "nousresearch/deephermes-3-llama-3-8b-preview:free": { "name": "DeepHermes 3 8B Free - $0" }
+      }
+    }
+  }
+}

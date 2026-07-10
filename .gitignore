@@ -1,0 +1,76 @@
+# Ollama Emulator Desktop Ultimate .gitignore
+# Security: Never commit API keys, tokens, passwords, or database files.
+
+# =====================
+# Python
+# =====================
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+build/
+*.spec
+*.db
+*.sqlite
+*.sqlite3
+_rag_tmp/
+
+# =====================
+# Node / Frontend
+# =====================
+node_modules/
+frontend/out/
+frontend/.next/
+frontend/next-env.d.ts
+frontend/next.log
+frontend/*.tsbuildinfo
+.expo/
+.expo-shared/
+npm-debug.*
+mobile/.expo/
+mobile/node_modules/
+
+# =====================
+# Environment & Secrets
+# =====================
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+device.json
+
+# =====================
+# IDE / Editor
+# =====================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.iml
+
+# =====================
+# OS Files
+# =====================
+Thumbs.db
+.DS_Store
+Desktop.ini
+ehthumbs.db
+
+# =====================
+# Build Artifacts
+# =====================
+*.pyc
+__pycache__
+*.pyo
+*.manifest
+*.log
+*.tmp
+*.temp
+
+# =====================
+# Notebook checkpoints
+# =====================
+.ipynb_checkpoints/
