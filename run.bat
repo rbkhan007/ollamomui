@@ -1,50 +1,89 @@
 @echo off
-title Ollama Emulator Desktop Ultimate
+title OllamaEmu — Desktop Ultimate
 chcp 65001 >nul
 cd /d "%~dp0"
 
-echo [95m============================================[0m
-echo [95m  Ollama Emulator Desktop Ultimate v1.0.0[0m
-echo [95m  Auto-start: Backend + Frontend + Database[0m
-echo [95m  Copyright (c) 2024-2026 Rhasan@dev[0m
-echo [95m============================================[0m
+echo.
+echo  ============================================
+echo   OllamaEmu Desktop Ultimate v1.0.2
+echo   Backend + Frontend + Database — all in one
+echo   Copyright (c) 2024-2026 Rhasan@dev
+echo  ============================================
 echo.
 
-:: Auto-install Python dependencies
-echo [^>] Installing Python dependencies...
+:: ── Python dependencies ──────────────────────────────
+echo  [1/4] Installing Python dependencies...
 pip install -r requirements.txt -q 2>nul
-echo [^>] Dependencies ready.
+if %errorlevel% neq 0 (
+    echo  [!] pip install failed. Make sure Python 3.11+ is on PATH.
+    pause
+    exit /b 1
+)
+echo        Done.
+echo.
 
-:: Auto-start SQLite databases (they are created on first access)
-echo [^>] Database engine ready.
-
-:: Build frontend if Node.js is available and build is missing
+:: ── Build frontend (only if missing or stale) ────────
 where npm >nul 2>&1
 if %errorlevel% equ 0 (
+    echo  [2/4] Checking frontend build...
     if not exist "frontend\out\index.html" (
-        echo [^>] Building frontend...
+        echo        Building frontend (first run)...
         pushd frontend
+        set "NEXT_PUBLIC_BASE_PATH="
+        set "NEXT_PUBLIC_SITE_URL="
+        set "NEXT_PUBLIC_FREETIER_DOMAIN="
         call npm install --silent 2>nul
         call npm run build 2>&1
         popd
         if exist "frontend\out\index.html" (
-            echo [^>] Frontend built successfully.
+            echo        Frontend built successfully.
         ) else (
-            echo [!] Frontend build may have failed. Check errors above.
+            echo  [!] Frontend build failed. The server will run without the GUI.
         )
     ) else (
-        echo [^>] Frontend already built.
+        :: Force rebuild if built with wrong basePath
+        findstr /C:"Ollama-Emulator-Desktop-Ultimate" "frontend\out\index.html" >nul 2>&1
+        if %errorlevel% equ 0 (
+            echo        Rebuilding frontend (wrong basePath detected)...
+            rmdir /s /q "frontend\out" 2>nul
+            pushd frontend
+            set "NEXT_PUBLIC_BASE_PATH="
+            set "NEXT_PUBLIC_SITE_URL="
+            set "NEXT_PUBLIC_FREETIER_DOMAIN="
+            call npm install --silent 2>nul
+            call npm run build 2>&1
+            popd
+            echo        Frontend rebuilt for local use.
+        ) else (
+            echo        Frontend already built correctly.
+        )
     )
 ) else (
-    echo [!] Node.js not found. Install Node.js to build the dashboard frontend.
-    echo [!] The server will still run but without the GUI.
+    echo  [2/4] Node.js not found — skipping frontend build.
+    echo         Install Node.js 18+ to build the dashboard.
+    echo         The server will still run but without the GUI.
 )
-
-:: Start backend server
 echo.
-echo [92m  Starting server on http://localhost:11434[0m
-echo [92m  Press Ctrl+C to stop[0m
+
+:: ── Start server ─────────────────────────────────────
+echo  [3/4] Database engine ready (SQLite, auto-created).
+echo.
+echo  [4/4] Starting server...
+echo.
+echo  ┌──────────────────────────────────────────┐
+echo  │  Open in browser:                         │
+echo  │  http://localhost:11434                    │
+echo  │                                            │
+echo  │  API endpoint:                            │
+echo  │  http://localhost:11434/v1/chat/completions│
+echo  │                                            │
+echo  │  Press Ctrl+C to stop                      │
+echo  └──────────────────────────────────────────┘
 echo.
 
 python ollama_emu_desktop.py
-pause
+if %errorlevel% neq 0 (
+    echo.
+    echo  [!] Server exited with an error.
+    pause
+)

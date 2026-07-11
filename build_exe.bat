@@ -1,17 +1,20 @@
 @echo off
-title Ollama Emulator Desktop - Build EXE
+title OllamaEmu — Build EXE
 chcp 65001 >nul
 cd /d "%~dp0"
 
 echo ============================================
-echo  Building Ollama Emulator Desktop EXE
-echo  v1.0.0 - Copyright (c) 2024-2026 Rhasan@dev
+echo  Building OllamaEmu Desktop EXE
+echo  v1.0.2 - Copyright (c) 2024-2026 Rhasan@dev
 echo ============================================
 echo.
 
-:: Ensure frontend is built
-echo [1/5] Building frontend...
+:: Ensure frontend is built (without GitHub Pages basePath)
+echo [1/5] Building frontend for local use...
 pushd frontend
+set "NEXT_PUBLIC_BASE_PATH="
+set "NEXT_PUBLIC_SITE_URL="
+set "NEXT_PUBLIC_FREETIER_DOMAIN="
 call npm install --silent 2>nul
 call npm run build 2>&1
 if %errorlevel% neq 0 (
@@ -21,6 +24,20 @@ if %errorlevel% neq 0 (
 )
 popd
 echo [OK] Frontend built.
+
+:: Verify no basePath prefix in build
+findstr /C:"Ollama-Emulator-Desktop-Ultimate" "frontend\out\index.html" >nul 2>&1
+if %errorlevel% equ 0 (
+    echo [WARN] basePath detected in build! Rebuilding...
+    rmdir /s /q "frontend\out" 2>nul
+    pushd frontend
+    set "NEXT_PUBLIC_BASE_PATH="
+    set "NEXT_PUBLIC_SITE_URL="
+    set "NEXT_PUBLIC_FREETIER_DOMAIN="
+    call npm run build 2>&1
+    popd
+    echo [OK] Frontend rebuilt correctly.
+)
 
 :: Install Python build deps
 echo [2/5] Installing build dependencies...
@@ -77,6 +94,6 @@ echo ============================================
 echo.
 echo  To run: dist\OllamaEmu.exe
 echo  Then open http://localhost:11434
-echo  Configure your API key in Settings ^> Login
+echo  Configure your API key in Settings
 echo.
 pause

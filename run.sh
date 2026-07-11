@@ -1,44 +1,66 @@
 #!/bin/bash
-# Ollama Emulator Desktop Ultimate - One-click launcher
-# Auto-starts: Backend + Frontend + Database
+# OllamaEmu Desktop Ultimate - One-click launcher
+# Starts: Backend + Frontend + Database (all in one)
 set -e
 
-echo "============================================"
-echo "  Ollama Emulator Desktop Ultimate v1.0.0"
-echo "  Auto-start: Backend + Frontend + Database"
-echo "  Copyright (c) 2024-2026 Rhasan@dev"
-echo "============================================"
-echo
+echo ""
+echo "  ============================================"
+echo "   OllamaEmu Desktop Ultimate v1.0.2"
+echo "   Backend + Frontend + Database — all in one"
+echo "   Copyright (c) 2024-2026 Rhasan@dev"
+echo "  ============================================"
+echo ""
 
-# Auto-install Python dependencies
-echo "[>] Installing Python dependencies..."
+# ── Python dependencies ──────────────────────────────
+echo "  [1/4] Installing Python dependencies..."
 pip3 install -r requirements.txt -q 2>/dev/null
-echo "[>] Dependencies ready."
+echo "        Done."
+echo ""
 
-# Build frontend if Node.js is available and build is missing
+# ── Build frontend (only if missing or stale) ────────
 if command -v npm &> /dev/null; then
+    echo "  [2/4] Checking frontend build..."
     if [ ! -f "frontend/out/index.html" ]; then
-        echo "[>] Building frontend..."
+        echo "        Building frontend (first run)..."
         cd frontend
-        npm install --silent 2>/dev/null
-        npm run build 2>&1
+        NEXT_PUBLIC_BASE_PATH="" NEXT_PUBLIC_SITE_URL="" NEXT_PUBLIC_FREETIER_DOMAIN="" npm run build 2>&1
         cd ..
         if [ -f "frontend/out/index.html" ]; then
-            echo "[>] Frontend built successfully."
+            echo "        Frontend built successfully."
         else
-            echo "[!] Frontend build may have failed."
+            echo "  [!] Frontend build failed. The server will run without the GUI."
         fi
+    elif grep -q "Ollama-Emulator-Desktop-Ultimate" frontend/out/index.html 2>/dev/null; then
+        echo "        Rebuilding frontend (wrong basePath detected)..."
+        rm -rf frontend/out
+        cd frontend
+        NEXT_PUBLIC_BASE_PATH="" NEXT_PUBLIC_SITE_URL="" NEXT_PUBLIC_FREETIER_DOMAIN="" npm run build 2>&1
+        cd ..
+        echo "        Frontend rebuilt for local use."
     else
-        echo "[>] Frontend already built."
+        echo "        Frontend already built correctly."
     fi
 else
-    echo "[!] Node.js not found. Install Node.js to build the dashboard."
+    echo "  [2/4] Node.js not found — skipping frontend build."
+    echo "         Install Node.js 18+ to build the dashboard."
+    echo "         The server will still run but without the GUI."
 fi
+echo ""
 
-# Start backend server
-echo
-echo -e "\033[92m  Starting server on http://localhost:11434\033[0m"
-echo -e "\033[92m  Press Ctrl+C to stop\033[0m"
-echo
+# ── Start server ─────────────────────────────────────
+echo "  [3/4] Database engine ready (SQLite, auto-created)."
+echo ""
+echo "  [4/4] Starting server..."
+echo ""
+echo "  ┌──────────────────────────────────────────┐"
+echo "  │  Open in browser:                         │"
+echo "  │  http://localhost:11434                    │"
+echo "  │                                            │"
+echo "  │  API endpoint:                            │"
+echo "  │  http://localhost:11434/v1/chat/completions│"
+echo "  │                                            │"
+echo "  │  Press Ctrl+C to stop                      │"
+echo "  └──────────────────────────────────────────┘"
+echo ""
 
 python3 ollama_emu_desktop.py

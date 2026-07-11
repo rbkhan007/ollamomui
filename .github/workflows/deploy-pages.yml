@@ -19,9 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAGES: "true"
-      NEXT_PUBLIC_BASE_PATH: ""
-      NEXT_PUBLIC_SITE_URL: "https://ollama-emulator-desktop-ultimate.io"
-      NEXT_PUBLIC_FREETIER_DOMAIN: "ollama-emulator-desktop-ultimate.io"
+      NEXT_PUBLIC_BASE_PATH: "/Ollama-Emulator-Desktop-Ultimate"
+      NEXT_PUBLIC_SITE_URL: "https://rbkhan007.github.io/Ollama-Emulator-Desktop-Ultimate"
+      NEXT_PUBLIC_FREETIER_DOMAIN: "rbkhan007.github.io/Ollama-Emulator-Desktop-Ultimate"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
