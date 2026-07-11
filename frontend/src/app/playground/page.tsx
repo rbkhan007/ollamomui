@@ -220,6 +220,7 @@ export default function PlaygroundPage() {
       {/* Input */}
       <div className="stagger-3" style={{ display: "flex", gap: 8 }}>
         <textarea
+          aria-label="Message"
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}

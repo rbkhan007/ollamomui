@@ -54,6 +54,7 @@ export default function MobileSetup() {
           Enter the address of the desktop server running Ollama Emulator (same Wi-Fi network).
         </p>
         <input
+          aria-label="Server URL"
           value={url}
           onChange={(e) => {
             setUrl(e.target.value);

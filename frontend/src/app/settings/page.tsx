@@ -122,6 +122,7 @@ export default function SettingsPage() {
             <label style={{ fontSize: 13, color: "var(--text-muted)", display: "block", marginBottom: 4 }}>API Key</label>
             <input
               type="password"
+              aria-label="API Key"
               placeholder={providers.find(p => p.name === activeProvider)?.api_key_set ? "Change API key..." : "Enter API key..."}
               value={apiKey}
               onChange={e => setApiKey(e.target.value)}
@@ -185,11 +186,11 @@ export default function SettingsPage() {
         <div className="grid-2">
           <div>
             <label style={{ fontSize: 13, color: "var(--text-muted)", display: "block", marginBottom: 4 }}>Name</label>
-            <input placeholder="my-provider" value={newName} onChange={e => setNewName(e.target.value)} />
+            <input aria-label="Provider name" placeholder="my-provider" value={newName} onChange={e => setNewName(e.target.value)} />
           </div>
           <div>
             <label style={{ fontSize: 13, color: "var(--text-muted)", display: "block", marginBottom: 4 }}>API URL</label>
-            <input placeholder="https://api.example.com/v1/chat/completions" value={newUrl} onChange={e => setNewUrl(e.target.value)} />
+            <input aria-label="API URL" placeholder="https://api.example.com/v1/chat/completions" value={newUrl} onChange={e => setNewUrl(e.target.value)} />
           </div>
           <div>
             <label style={{ fontSize: 13, color: "var(--text-muted)", display: "block", marginBottom: 4 }}>Type</label>
@@ -201,11 +202,11 @@ export default function SettingsPage() {
           </div>
           <div>
             <label style={{ fontSize: 13, color: "var(--text-muted)", display: "block", marginBottom: 4 }}>Default Model</label>
-            <input placeholder="gpt-4o" value={newDefault} onChange={e => setNewDefault(e.target.value)} />
+            <input aria-label="Default model" placeholder="gpt-4o" value={newDefault} onChange={e => setNewDefault(e.target.value)} />
           </div>
           <div style={{ gridColumn: "1 / -1" }}>
             <label style={{ fontSize: 13, color: "var(--text-muted)", display: "block", marginBottom: 4 }}>API Key</label>
-            <input type="password" placeholder="sk-..." value={newKey} onChange={e => setNewKey(e.target.value)} />
+            <input type="password" aria-label="API Key" placeholder="sk-..." value={newKey} onChange={e => setNewKey(e.target.value)} />
           </div>
         </div>
         <button className="btn btn-primary" style={{ marginTop: 16 }} onClick={addProvider}>

@@ -73,6 +73,7 @@ export default function RegisterPage() {
           </label>
           <input
             type="email"
+            aria-label="Email Address"
             placeholder="you@gmail.com"
             value={email}
             onChange={e => setEmail(e.target.value)}
@@ -90,6 +91,7 @@ export default function RegisterPage() {
           <div style={{ position: "relative" }}>
             <input
               type={showPassword ? "text" : "password"}
+              aria-label="Password"
               placeholder="At least 6 characters"
               value={password}
               onChange={e => setPassword(e.target.value)}
@@ -130,10 +132,11 @@ export default function RegisterPage() {
           <label style={{ fontSize: 13, color: "var(--text-muted)", display: "block", marginBottom: 6, fontWeight: 500 }}>
             Confirm Password
           </label>
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Re-enter your password"
-            value={confirmPassword}
+            <input
+              type={showPassword ? "text" : "password"}
+              aria-label="Confirm Password"
+              placeholder="Re-enter your password"
+              value={confirmPassword}
             onChange={e => setConfirmPassword(e.target.value)}
             required
             minLength={6}

@@ -68,6 +68,7 @@ export default function LoginPage() {
           </label>
           <input
             type="email"
+            aria-label="Email Address"
             placeholder="you@gmail.com"
             value={email}
             onChange={e => setEmail(e.target.value)}
@@ -85,6 +86,7 @@ export default function LoginPage() {
           <div style={{ position: "relative" }}>
             <input
               type={showPassword ? "text" : "password"}
+              aria-label="Password"
               placeholder="Enter your password"
               value={password}
               onChange={e => setPassword(e.target.value)}

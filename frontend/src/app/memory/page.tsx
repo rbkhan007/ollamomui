@@ -153,7 +153,7 @@ export default function MemoryPage() {
       {/* Search */}
       <div className="card stagger-2" style={{ marginBottom: 16 }}>
         <div style={{ display: "flex", gap: 8 }}>
-          <input placeholder="Search memory..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onKeyDown={e => { if (e.key === "Enter") searchMemory(); }} />
+          <input aria-label="Search memory" placeholder="Search memory..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onKeyDown={e => { if (e.key === "Enter") searchMemory(); }} />
           <button className="btn btn-primary" onClick={searchMemory}>Search</button>
         </div>
         {searchResults.length > 0 && (
@@ -203,8 +203,8 @@ export default function MemoryPage() {
           <div className="card stagger-3" style={{ marginBottom: 16 }}>
             <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 12 }}>Add Fact</h2>
             <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-              <input placeholder="Fact to remember..." value={factText} onChange={e => setFactText(e.target.value)} style={{ flex: 2 }} />
-              <input placeholder="Source (optional)" value={factSource} onChange={e => setFactSource(e.target.value)} style={{ flex: 1 }} />
+              <input aria-label="Fact to remember" placeholder="Fact to remember..." value={factText} onChange={e => setFactText(e.target.value)} style={{ flex: 2 }} />
+              <input aria-label="Source" placeholder="Source (optional)" value={factSource} onChange={e => setFactSource(e.target.value)} style={{ flex: 1 }} />
               <button className="btn btn-primary" onClick={addFact}>Add</button>
             </div>
           </div>

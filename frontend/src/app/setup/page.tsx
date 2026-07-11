@@ -90,6 +90,7 @@ export default function SetupPage() {
           </label>
           <input
             type="password"
+            aria-label="API Key"
             placeholder="sk-..."
             value={apiKey}
             onChange={e => setApiKey(e.target.value)}

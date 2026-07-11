@@ -169,7 +169,7 @@ export default function RagPage() {
             <PageIcon type="upload" color="var(--accent)" />
             <h2 style={{ fontSize: 16, fontWeight: 600 }}>Upload File</h2>
           </div>
-          <input type="file" ref={fileRef} style={{ marginBottom: 12 }} />
+          <input type="file" aria-label="Upload file" ref={fileRef} style={{ marginBottom: 12 }} />
           <button className="btn btn-primary" onClick={uploadFile} disabled={uploading} style={{ fontSize: 13 }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -185,8 +185,8 @@ export default function RagPage() {
             <PageIcon type="doc" color="var(--accent-2)" />
             <h2 style={{ fontSize: 16, fontWeight: 600 }}>Paste Text</h2>
           </div>
-          <input placeholder="Document name (optional)" value={textName} onChange={e => setTextName(e.target.value)} style={{ marginBottom: 8 }} />
-           <textarea placeholder="Paste your text content here..." value={textInput} onChange={e => setTextInput(e.target.value)} rows={4} style={{ marginBottom: 8, fontFamily: "var(--font-jetbrains), monospace", fontSize: 13 }} />
+          <input aria-label="Document name" placeholder="Document name (optional)" value={textName} onChange={e => setTextName(e.target.value)} style={{ marginBottom: 8 }} />
+           <textarea aria-label="Text content" placeholder="Paste your text content here..." value={textInput} onChange={e => setTextInput(e.target.value)} rows={4} style={{ marginBottom: 8, fontFamily: "var(--font-jetbrains), monospace", fontSize: 13 }} />
           <button className="btn btn-primary" onClick={addText}>Add Text</button>
         </div>
       </div>
@@ -198,7 +198,7 @@ export default function RagPage() {
           <h2 style={{ fontSize: 16, fontWeight: 600 }}>Search Knowledge Base</h2>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
-          <input placeholder="Search query..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onKeyDown={e => { if (e.key === "Enter") search(); }} />
+          <input aria-label="Search query" placeholder="Search query..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onKeyDown={e => { if (e.key === "Enter") search(); }} />
           <button className="btn btn-primary" onClick={search}>Search</button>
         </div>
         {searchResults.length > 0 && (
