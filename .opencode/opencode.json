@@ -1,17 +1,17 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "provider": {
-    "emu": {
+    "freetier": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "Ollama Emulator Desktop ($0 Unlimited)",
+      "name": "OllamaEmu Free Tier ($0 Unlimited)",
       "options": {
         "baseURL": "http://localhost:11434/v1",
         "apiKey": "sk-local"
       },
       "models": {
-        "openrouter/auto": { "name": "OpenRouter Auto (best free route) - $0" },
         "gemma-4-31b-it": { "name": "Gemma 4 31B (free) - $0" },
         "google/gemma-4-27b-it:free": { "name": "Gemma 4 27B Free - $0" },
+        "openrouter/auto": { "name": "OpenRouter Auto (best free route) - $0" },
         "google/gemini-2.0-flash-exp:free": { "name": "Gemini 2.0 Flash Free - $0" },
         "google/gemini-2.5-pro-exp-03-25:free": { "name": "Gemini 2.5 Pro Exp Free - $0" },
         "deepseek/deepseek-chat:free": { "name": "DeepSeek V3 Free - $0" },
