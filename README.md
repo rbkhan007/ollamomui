@@ -1,7 +1,7 @@
 # Ollama Emulator Desktop Ultimate v1.0.0
 
 <p align="center">
-  <img src="logo.svg" alt="Ollama Emulator Desktop Ultimate" width="320" />
+  <img src="https://raw.githubusercontent.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate/main/logo.svg" alt="Ollama Emulator Desktop Ultimate" width="320" />
 </p>
 
 **Run a fake Ollama server locally that routes to real free LLM models** via OpenRouter, OpenAI, Anthropic, Groq, DeepSeek, Gemini, and more. Built-in RAG knowledge base, persistent memory, usage analytics, and a polished Next.js dashboard.
@@ -9,7 +9,7 @@
 Works with **Claude Code**, **OpenCode**, **Cursor**, **Continue.dev**, and any Ollama-compatible AI coding tool — all on a single port (`localhost:11434`).
 
 <p align="center">
-  <img src="Rhasan@dev.png" alt="Developed by Rhasan@dev" width="220" />
+  <img src="https://raw.githubusercontent.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate/main/Rhasan%40dev.png" alt="Developed by Rhasan@dev" width="220" />
 </p>
 
 ## Architecture

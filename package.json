@@ -1,6 +1,6 @@
 {
   "name": "@rbkhan007/ollama-emulator-desktop-ultimate",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Run a fake Ollama server locally that routes to real free LLM models (OpenRouter, OpenAI, Anthropic, Groq, DeepSeek, Gemini) with RAG, memory, and a Next.js dashboard.",
   "license": "UNLICENSED",
   "author": "Rhasan@dev",
