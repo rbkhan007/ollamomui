@@ -36,7 +36,7 @@ graph TD
 
     MOB["React Native (Expo) Mobile App<br/>mobile/ — Chat, Providers, Usage"]
     MOB -->|HTTP, same Wi-Fi| SRV
-    ```
+```
 
 ---
 
