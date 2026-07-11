@@ -172,118 +172,34 @@ ACTIVE_PROVIDER: str = "openrouter"
 MODEL_CACHE: List[Dict] = []
 
 # ============================================================
-# SQLITE PERSISTENCE (providers + API keys)
+# POSTGRESQL PERSISTENCE (providers, auth, RAG, memory)
 # ============================================================
-import sqlite3
+import db as _db
 
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "providers.db")
 FRONTEND_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "frontend", "out")
 
 
-def _coerce_free(v):
-    if v == "api":
-        return "api"
-    return str(v).lower() == "true"
-
-
 def init_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.execute("""CREATE TABLE IF NOT EXISTS providers (
-        name TEXT PRIMARY KEY,
-        url TEXT,
-        models_url TEXT,
-        auth_type TEXT,
-        default_model TEXT,
-        free_heuristic TEXT,
-        type TEXT,
-        api_key TEXT
-    )""")
-    cur = conn.execute("SELECT COUNT(*) FROM providers")
-    if cur.fetchone()[0] == 0:
-        for name, cfg in DEFAULT_PROVIDERS.items():
-            conn.execute(
-                "INSERT OR IGNORE INTO providers (name, url, models_url, auth_type, default_model, free_heuristic, type, api_key) VALUES (?,?,?,?,?,?,?,?)",
-                (name, cfg["url"], cfg.get("models_url"), cfg["auth_type"], cfg["default_model"],
-                 str(cfg["free_heuristic"]), cfg["type"], ""),
-            )
-    conn.commit()
-    conn.close()
+    _db.init_pool(minconn=1, maxconn=10)
+    _db.migrate_schema()
+    _db.seed_default_providers(DEFAULT_PROVIDERS)
+    _db.seed_demo_user()
 
 
 def load_providers_from_db():
-    conn = sqlite3.connect(DB_PATH)
-    rows = conn.execute(
-        "SELECT name, url, models_url, auth_type, default_model, free_heuristic, type, api_key FROM providers"
-    ).fetchall()
-    conn.close()
-    pc, keys = {}, {}
-    for name, url, models_url, auth_type, default_model, free_heuristic, ptype, api_key in rows:
-        pc[name] = {
-            "url": url, "models_url": models_url, "auth_type": auth_type,
-            "default_model": default_model, "free_heuristic": _coerce_free(free_heuristic), "type": ptype,
-        }
-        if api_key:
-            keys[name] = api_key
-    return pc, keys
+    return _db.load_providers()
 
 
 def save_provider_db(name, cfg, api_key=""):
     with state_lock:
-        conn = sqlite3.connect(DB_PATH)
-        conn.execute(
-            """INSERT INTO providers (name, url, models_url, auth_type, default_model, free_heuristic, type, api_key)
-               VALUES (?,?,?,?,?,?,?,?)
-               ON CONFLICT(name) DO UPDATE SET
-                 url=excluded.url, models_url=excluded.models_url, auth_type=excluded.auth_type,
-                 default_model=excluded.default_model, free_heuristic=excluded.free_heuristic,
-                 type=excluded.type, api_key=excluded.api_key""",
-            (name, cfg["url"], cfg.get("models_url"), cfg["auth_type"], cfg["default_model"],
-             str(cfg["free_heuristic"]), cfg["type"], api_key),
-        )
-        conn.commit()
-        conn.close()
+        _db.save_provider(name, cfg, api_key)
 
 
 def delete_provider_db(name):
-    conn = sqlite3.connect(DB_PATH)
-    conn.execute("DELETE FROM providers WHERE name=?", (name,))
-    conn.commit()
-    conn.close()
+    _db.delete_provider(name)
 
-
-# ============================================================
-# AUTH SYSTEM (SQLite sessions)
-# ============================================================
-AUTH_DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "auth.db")
-
-def init_auth_db():
-    conn = sqlite3.connect(AUTH_DB_PATH)
-    conn.execute("""CREATE TABLE IF NOT EXISTS users (
-        email TEXT PRIMARY KEY,
-        password_hash TEXT NOT NULL,
-        created_at TEXT NOT NULL
-    )""")
-    conn.execute("""CREATE TABLE IF NOT EXISTS sessions (
-        token TEXT PRIMARY KEY,
-        email TEXT NOT NULL,
-        created_at TEXT NOT NULL,
-        FOREIGN KEY (email) REFERENCES users(email)
-    )""")
-    # Seed a demo account so the app is usable out of the box.
-    # INSERT OR REPLACE keeps the demo credentials correct even if an older,
-    # differently-hashed row was left behind by a previous version.
-    DEMO_EMAIL = "example@gmail.com"
-    DEMO_PASSWORD = "12345678"
-    conn.execute(
-        "INSERT OR REPLACE INTO users (email, password_hash, created_at) VALUES (?, ?, ?)",
-        (DEMO_EMAIL, hash_password(DEMO_EMAIL, DEMO_PASSWORD),
-         datetime.datetime.now(datetime.UTC).isoformat()),
-    )
-    conn.commit()
-    conn.close()
 
 def hash_password(email: str, password: str) -> str:
-    # PBKDF2-HMAC-SHA256 with a per-user random salt and a real work factor.
     salt = secrets.token_hex(16)
     dk = hashlib.pbkdf2_hmac(
         "sha256", f"{password}::ollamaemu".encode(), bytes.fromhex(salt), 200_000
@@ -292,9 +208,6 @@ def hash_password(email: str, password: str) -> str:
 
 
 def verify_password(password: str, stored_hash: str) -> bool:
-    # Re-derive the hash using the salt embedded in the stored hash and
-    # compare in constant time. (hash_password() mints a fresh salt each call,
-    # so it must never be used to check a password.)
     try:
         algo, salt, dk = stored_hash.split("$")
         if algo != "pbkdf2":
@@ -306,40 +219,32 @@ def verify_password(password: str, stored_hash: str) -> bool:
     except Exception:
         return False
 
+
 def create_session(email: str) -> str:
     token = secrets.token_hex(32)
-    conn = sqlite3.connect(AUTH_DB_PATH)
-    conn.execute("INSERT INTO sessions (token, email, created_at) VALUES (?, ?, ?)",
-                 (token, email, datetime.datetime.now(datetime.UTC).isoformat()))
-    conn.commit()
-    conn.close()
+    _db.create_session(email, token)
     return token
 
+
 def verify_session(token: str) -> Optional[str]:
-    conn = sqlite3.connect(AUTH_DB_PATH)
-    cur = conn.execute("SELECT email, created_at FROM sessions WHERE token=?", (token,))
-    row = cur.fetchone()
-    conn.close()
+    row = _db.get_session(token)
     if not row:
         return None
-    # Expire sessions after 30 days.
     try:
-        created = datetime.datetime.fromisoformat(row[1])
+        created = datetime.datetime.fromisoformat(str(row["created_at"]))
         if (datetime.datetime.now(datetime.UTC) - created).days > 30:
+            _db.delete_session(token)
             return None
     except Exception:
         return None
-    return row[0]
+    return row["email"]
+
 
 def delete_session(token: str):
-    conn = sqlite3.connect(AUTH_DB_PATH)
-    conn.execute("DELETE FROM sessions WHERE token=?", (token,))
-    conn.commit()
-    conn.close()
+    _db.delete_session(token)
 
 
 init_db()
-init_auth_db()
 PROVIDER_CONFIGS, API_KEYS = load_providers_from_db()
 
 if ACTIVE_PROVIDER not in PROVIDER_CONFIGS and PROVIDER_CONFIGS:
@@ -422,30 +327,17 @@ async def auth_register(req: AuthRequest):
         raise HTTPException(status_code=400, detail="Invalid email address")
     if len(req.password) < 6:
         raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
-    conn = sqlite3.connect(AUTH_DB_PATH)
-    try:
-        cur = conn.execute("SELECT email FROM users WHERE email=?", (email,))
-        if cur.fetchone():
-            raise HTTPException(status_code=409, detail="Email already registered")
-        pw_hash = hash_password(email, req.password)
-        conn.execute("INSERT INTO users (email, password_hash, created_at) VALUES (?, ?, ?)",
-                     (email, pw_hash, datetime.datetime.now(datetime.UTC).isoformat()))
-        conn.commit()
-    finally:
-        conn.close()
+    pw_hash = hash_password(email, req.password)
+    if not _db.create_user(email, pw_hash):
+        raise HTTPException(status_code=409, detail="Email already registered")
     token = create_session(email)
     return {"success": True, "token": token, "email": email}
 
 @app.post("/api/auth/login")
 async def auth_login(req: AuthRequest):
     email = req.email.strip().lower()
-    conn = sqlite3.connect(AUTH_DB_PATH)
-    try:
-        cur = conn.execute("SELECT password_hash FROM users WHERE email=?", (email,))
-        row = cur.fetchone()
-    finally:
-        conn.close()
-    if not row or not verify_password(req.password, row[0]):
+    user = _db.get_user(email)
+    if not user or not verify_password(req.password, user["password_hash"]):
         raise HTTPException(status_code=401, detail="Invalid email or password")
     token = create_session(email)
     return {"success": True, "token": token, "email": email}
@@ -1869,5 +1761,12 @@ if __name__ == "__main__":
             threading.Thread(target=webbrowser.open, args=(f"http://{BIND_HOST}:{BIND_PORT}",), daemon=True).start()
         except Exception:
             pass
-    uvicorn.run(app, host=BIND_HOST, port=BIND_PORT)
+
+    log.info("[db] PostgreSQL connected via %s", _db.get_dsn().split("@")[-1] if "@" in _db.get_dsn() else "default")
+
+    try:
+        uvicorn.run(app, host=BIND_HOST, port=BIND_PORT)
+    finally:
+        MEMORY.shutdown()
+        _db.close_pool()
 

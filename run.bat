@@ -22,6 +22,14 @@ if %errorlevel% neq 0 (
 echo        Done.
 echo.
 
+:: ── Load .env if present ─────────────────────────────
+if exist ".env" (
+    echo  [>] Loading .env...
+    for /f "usebackq tokens=1,* delims==" %%a in (".env") do (
+        set "%%a=%%b"
+    )
+)
+
 :: ── Build frontend (only if missing or stale) ────────
 where npm >nul 2>&1
 if %errorlevel% equ 0 (

@@ -17,6 +17,14 @@ pip3 install -r requirements.txt -q 2>/dev/null
 echo "        Done."
 echo ""
 
+# ── Load .env if present ─────────────────────────────
+if [ -f ".env" ]; then
+    echo "  [>] Loading .env..."
+    set -a
+    source .env
+    set +a
+fi
+
 # ── Build frontend (only if missing or stale) ────────
 if command -v npm &> /dev/null; then
     echo "  [2/4] Checking frontend build..."
