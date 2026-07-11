@@ -16,3 +16,9 @@ export const NPM_URL =
 export const FREETIER_DOMAIN =
   process.env.NEXT_PUBLIC_FREETIER_DOMAIN || "ollamaemu.pages.dev";
 export const FREETIER_URL = `https://${FREETIER_DOMAIN}`;
+
+// Public base URL of the deployed marketing site (used for SEO: sitemap, robots, canonical, OG).
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || FREETIER_URL;
+
+// Direct download of the latest Windows build (GitHub release latest asset).
+export const EXE_URL = `${REPO_URL}/releases/latest/download/software.exe`;

@@ -273,6 +273,21 @@ npm run dev    # http://localhost:3000
 ```
 The dev frontend proxies to the backend on port 11434.
 
+### Deploy the public landing site (free)
+
+Show all marketing pages publicly on a **free Cloudflare Pages** domain (e.g. `ollamaemu.pages.dev`) — no backend required for the static pages. The dynamic app pages (`/playground`, `/settings`, `/rag`, `/memory`, `/usage`) call the local API and need the EXE running, but the landing/home/about pages are pure static and fully crawlable.
+
+1. Push the repo to GitHub (already done: `rbkhan007/Ollama-Emulator-Desktop-Ultimate`).
+2. In Cloudflare Pages → **Create a project** → connect the repo.
+3. Build settings:
+   - **Build command:** `cd frontend && npm install && npm run build`
+   - **Build output directory:** `frontend/out`
+   - **Node version:** 18+ (set `NODE_VERSION=18` in environment)
+4. Deploy. Your site goes live at `https://<project>.pages.dev`.
+5. (Optional) add a custom domain in the Cloudflare dashboard; then set `NEXT_PUBLIC_FREETIER_DOMAIN` and `NEXT_PUBLIC_SITE_URL` to it at build time so all links/SEO point at your domain.
+
+SEO is built in: `sitemap.xml`, `robots.txt`, canonical URL, OpenGraph + Twitter cards, and JSON-LD (`SoftwareApplication`) are generated automatically into `frontend/out`. Submit the sitemap (`https://<your-domain>/sitemap.xml`) in Google Search Console and Bing Webmaster Tools to get indexed and surface on trending/AI-overview results.
+
 ---
 
 ## 📁 Project Structure

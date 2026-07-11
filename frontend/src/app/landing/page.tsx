@@ -3,7 +3,9 @@ import {
   REPO_URL,
   RELEASES_URL,
   DOWNLOAD_URL,
+  EXE_URL,
   FREETIER_URL,
+  SITE_URL,
 } from "@/lib/config";
 
 const features = [
@@ -23,6 +25,14 @@ const steps = [
   { n: "3", title: "Point your tools", desc: "Set ANTHROPIC_BASE_URL=http://localhost:11434 (or /v1 for OpenAI) and start coding with free LLMs." },
 ];
 
+const compares = [
+  { name: "Ollama", free: "Partial", note: "Great local models, but no free hosted API and no built-in RAG/memory dashboard." },
+  { name: "LM Studio", free: "Partial", note: "Local model runner; no Ollama-compatible cloud proxy or multi-provider routing." },
+  { name: "Jan", free: "Partial", note: "Local-first chat; lacks a public API gateway for coding tools and free cloud models." },
+  { name: "GPT4All", free: "Partial", note: "Local models only; no routing to free cloud providers or RAG UI." },
+  { name: "OllamaEmu", free: "Yes", note: "Routes to 100% free cloud LLMs, emulates Ollama/OpenAI/Anthropic APIs, ships RAG + memory + dashboard in one file." },
+];
+
 function FeatureGlyph({ type, color }: { type: string; color: string }) {
   const s = 22;
   const common = { width: s, height: s, viewBox: "0 0 24 24", fill: "none", stroke: color, strokeWidth: 2, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
@@ -38,8 +48,20 @@ function FeatureGlyph({ type, color }: { type: string; color: string }) {
 }
 
 export default function Landing() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "OllamaEmu",
+    operatingSystem: "Windows, macOS, Linux, Android",
+    applicationCategory: "DeveloperApplication",
+    author: { "@type": "Person", name: "Rhasan@dev" },
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    url: SITE_URL,
+    downloadUrl: EXE_URL,
+  };
   return (
     <div style={{ position: "relative", overflow: "hidden" }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* Hero */}
       <section style={{
         padding: "88px 24px 64px", textAlign: "center",
@@ -192,6 +214,35 @@ export default function Landing() {
               <p style={{ margin: 0, color: "var(--text-muted)", fontSize: 14, lineHeight: 1.6 }}>{s.desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Comparison — go viral */}
+      <section style={{ padding: "0 24px 56px", maxWidth: 1000, margin: "0 auto" }}>
+        <h2 style={{ textAlign: "center", fontSize: "2rem", fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 8 }}>
+          Why OllamaEmu wins
+        </h2>
+        <p style={{ textAlign: "center", color: "var(--text-muted)", marginBottom: 28, fontSize: "1.05rem" }}>
+          The only option that is <b style={{ color: "var(--green)" }}>100% free</b> <i>and</i> gives you a coding-tool-ready API gateway.
+        </p>
+        <div style={{ display: "grid", gap: 12 }}>
+          {compares.map((c) => {
+            const isUs = c.name === "OllamaEmu";
+            return (
+              <div key={c.name} className={isUs ? "spidey-panel" : ""} style={{
+                padding: "16px 22px", borderRadius: 14,
+                display: "grid", gridTemplateColumns: "160px 90px 1fr", gap: 16, alignItems: "center",
+                background: isUs ? "linear-gradient(135deg, rgba(108,92,231,0.12), rgba(0,206,201,0.10))" : "var(--surface)",
+                border: isUs ? "1px solid rgba(108,92,231,0.35)" : "1px solid var(--glass-border)",
+              }}>
+                <div style={{ fontWeight: 700, fontSize: 15 }}>{c.name}</div>
+                <div>
+                  <span className={`badge ${c.free === "Yes" ? "badge-green" : "badge-amber"}`}>{c.free === "Yes" ? "Free" : "Partial"}</span>
+                </div>
+                <div style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.5 }}>{c.note}</div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
