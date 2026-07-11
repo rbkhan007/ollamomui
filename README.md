@@ -9,7 +9,7 @@
 Works with **Claude Code**, **OpenCode**, **Cursor**, **Continue.dev**, and any Ollama-compatible AI coding tool — all on a single port (`localhost:11434`).
 
 <p align="center">
-  <img src="Rhasan@dev.png" alt="Ollama Emulator Desktop Ultimate — developed by Rhasan@dev" width="220" height="229" />
+  <img src="Rhasan@dev.png" alt="Developed by Rhasan@dev" width="220" />
 </p>
 
 ## Architecture
