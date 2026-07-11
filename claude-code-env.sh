@@ -1,11 +1,11 @@
 #!/bin/bash
 # === Ollama Emulator + Claude Code turnkey launcher ===
-# v1.0.0 - Copyright (c) 2024-2026 Rhasan@dev
+# v1.0.2 - Copyright (c) 2024-2026 Rhasan@dev
 set -e
 
 echo "============================================"
 echo " Ollama Emulator + Claude Code Launcher"
-echo " v1.0.0 - Copyright (c) 2024-2026 Rhasan@dev"
+echo " v1.0.2 - Copyright (c) 2024-2026 Rhasan@dev"
 echo "============================================"
 echo
 echo " Features: \$0 free models, RAG knowledge base,"

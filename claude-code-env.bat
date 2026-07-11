@@ -5,7 +5,7 @@ cd /d "%~dp0"
 
 echo ============================================
 echo  Ollama Emulator + Claude Code Launcher
-echo  v1.0.0 - Copyright (c) 2024-2026 Rhasan@dev
+echo  v1.0.2 - Copyright (c) 2024-2026 Rhasan@dev
 echo ============================================
 echo.
 echo  Features: Free models, RAG knowledge base,
