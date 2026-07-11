@@ -3,8 +3,30 @@ from PIL import Image, ImageDraw
 
 CYAN = (0, 240, 255, 255)
 PURPLE = (139, 92, 246, 255)
-DARK = (12, 12, 26, 255)
-WHITE = (255, 255, 255, 255)
+
+# NOTE: intentionally NO dark background fill — icons are transparent so they
+# blend with both light and dark UI surfaces (matches brand-mark.svg / favicon.svg).
+
+
+def gradient_layer(size, c1, c2):
+    base = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    px = base.load()
+    for y in range(size):
+        t = y / max(1, size - 1)
+        r = int(c1[0] + (c2[0] - c1[0]) * t)
+        g = int(c1[1] + (c2[1] - c1[1]) * t)
+        b = int(c1[2] + (c2[2] - c1[2]) * t)
+        for x in range(size):
+            px[x, y] = (r, g, b, 255)
+    return base
+
+
+def hex_points(cx, cy, r):
+    pts = []
+    for i in range(6):
+        a = math.radians(-90 + i * 60)
+        pts.append((cx + r * math.cos(a), cy + r * math.sin(a)))
+    return pts
 
 
 def draw_brand_mark(size):
@@ -17,26 +39,29 @@ def draw_brand_mark(size):
     def P(pts):
         return [(cx + x * s, cy + y * s) for x, y in pts]
 
-    # outer hexagon (dark fill + cyan stroke)
+    # outer hexagon (transparent fill + cyan stroke)
     outer = [(0, -24), (21, -12), (21, 12), (0, 24), (-21, 12), (-21, -12)]
-    d.polygon(P(outer), fill=DARK, outline=CYAN)
+    d.polygon(P(outer), outline=CYAN, width=max(2, int(2 * s)))
     # inner hexagon outline (purple, thin)
     inner = [(0, -18), (16, -9), (16, 9), (0, 18), (-16, 9), (-16, -9)]
     d.line(P(inner) + [P(inner)[0]], fill=PURPLE, width=max(1, int(1 * s)))
-    # lightning bolt (cyan)
+    # lightning bolt (cyan -> purple gradient)
     bolt = [(-6, -10), (6, -10), (3, -2), (8, -2), (-6, 12), (-3, 3), (-9, 3)]
-    d.polygon(P(bolt), fill=CYAN)
+    grad = gradient_layer(img.width, CYAN, PURPLE)
+    mask = Image.new("L", (img.width, img.height), 0)
+    ImageDraw.Draw(mask).polygon(P(bolt), fill=255)
+    bolt_img = Image.new("RGBA", (img.width, img.height), (0, 0, 0, 0))
+    bolt_img.paste(grad, (0, 0), mask)
+    img = Image.alpha_composite(img, bolt_img)
+    d = ImageDraw.Draw(img)
     # network nodes
-    nodes = [(0, -24), (21, -12), (21, 12), (0, 24), (-21, 12), (-21, -12)]
-    for i, (nx, ny) in enumerate(nodes):
+    for i, pt in enumerate(hex_points(cx, cy, 24 * s)):
         col = CYAN if i % 2 == 0 else PURPLE
-        d.ellipse([cx + nx * s - 2 * s, cy + ny * s - 2 * s,
-                   cx + nx * s + 2 * s, cy + ny * s + 2 * s], fill=col)
+        d.ellipse([pt[0] - 2 * s, pt[1] - 2 * s, pt[0] + 2 * s, pt[1] + 2 * s], fill=col)
     # central core
     d.ellipse([cx - 3 * s, cy - 3 * s, cx + 3 * s, cy + 3 * s], fill=CYAN)
 
-    out = img.resize((size, size), Image.LANCZOS)
-    return out
+    return img.resize((size, size), Image.LANCZOS)
 
 
 def draw_favicon(size):
@@ -46,9 +71,7 @@ def draw_favicon(size):
     d = ImageDraw.Draw(img)
     cx, cy = 16 * s, 16 * s
 
-    # background circle
-    d.ellipse([cx - 14 * s, cy - 14 * s, cx + 14 * s, cy + 14 * s], fill=DARK)
-    # hexagon outline
+    # hexagon outline (transparent background)
     hexpts = [(0, -12), (11, -6), (11, 6), (0, 12), (-11, 6), (-11, -6)]
     hp = [(cx + x * s, cy + y * s) for x, y in hexpts]
     d.line(hp + [hp[0]], fill=CYAN, width=max(1, int(1.5 * s)))

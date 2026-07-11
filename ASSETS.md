@@ -9,7 +9,7 @@ This directory contains the SVG source files for the Ollama Emulator Desktop Ult
 3. `favicon.svg` - Simplified version for browser favicon (32x32px viewBox)
 4. `brand-mark.ico` - Multi-resolution Windows application icon (16/24/32/48/64/128/256px), generated from `brand-mark.svg`
 5. `favicon.ico` - Multi-resolution favicon (16/24/32/48/64/128/256px), generated from `favicon.svg`
-6. `rhasan-dev-badge.svg` - 220x229px transparent dev badge with the README heading and "by Rhasan@dev" credit
+6. `Rhasan@dev.png` - 220x229px transparent dev credit badge ("Developed by Rhasan@dev")
 
 ## Generated Icons
 
@@ -75,11 +75,15 @@ iconutil -c icns icon.iconset
 
 ## Color Specifications
 
-The logo uses the following brand colors:
+The brand assets are **fully transparent** (no background fill) so they blend with
+both light and dark UI surfaces. The SVGs also adapt text color to the OS theme via
+`prefers-color-scheme` (dark text on light backgrounds, gradient/light on dark).
+
+Brand colors:
 - **Cyan Gradient**: #00f0ff → #00bcd4
 - **Purple Gradient**: #8b5cf6 → #6366f1
-- **Background**: rgba(12, 12, 26, 0.9) (dark navy)
-- **Text/Accents**: White with gradients
+- **Background**: none (transparent)
+- **Wordmark**: theme-aware — `#0b1220` in light mode, cyan→purple gradient in dark mode
 
 ## Implementation in the Application
 
