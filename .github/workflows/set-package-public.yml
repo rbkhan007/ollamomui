@@ -1,0 +1,16 @@
+name: Set package public
+
+on:
+  workflow_dispatch:
+
+permissions:
+  packages: write
+
+jobs:
+  public:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make npm package public
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh api --method PATCH "/user/packages/npm/ollama-emulator-desktop-ultimate/visibility" -f visibility=public

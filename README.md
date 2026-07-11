@@ -54,6 +54,25 @@ Opens `http://localhost:11434` automatically. Configure your API key in **Settin
 
 ---
 
+## Install from GitHub Packages
+
+The project is also published as an npm package to GitHub Packages:
+
+```bash
+# 1. Point the @rbkhan007 scope at GitHub Packages (project .npmrc already does this)
+@rbkhan007:registry=https://npm.pkg.github.com
+
+# 2. Authenticate with a GitHub token that has read:packages
+npm login --scope=@rbkhan007 --auth-type=legacy --registry=https://npm.pkg.github.com
+
+# 3. Install
+npm install @rbkhan007/ollama-emulator-desktop-ultimate
+```
+
+> Requires a GitHub personal access token (classic) with the `read:packages` scope.
+
+---
+
 ## Features
 
 | Feature | Description |
