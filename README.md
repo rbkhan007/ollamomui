@@ -5,8 +5,7 @@
 </p>
 
 <p align="center">
-  <b>Turn any free API key into a local Ollama / OpenAI / Anthropic-compatible server.</b><br/>
-  RAG, memory, usage analytics, and a polished dashboard — all on one port.
+  <b>Stop paying $20/mo for Claude & ChatGPT. Get 26 free models on one port.</b>
 </p>
 
 <p align="center">
@@ -28,7 +27,7 @@
 | Claude Pro | $20 | $240 | Claude 3.5 Sonnet only |
 | Cursor Pro | $20 | $240 | Limited GPT-4 requests |
 | GitHub Copilot | $10-19 | $120-228 | Limited to VS Code |
-| **OllamaEmu** | **$0** | **$0** | **10+ free models** |
+| **OllamaEmu** | **$0** | **$0** | **26 free models** |
 
 ## Cost Comparison
 
@@ -44,22 +43,23 @@ xychart-beta
 
 ---
 
-## Free Models You Get (No API Key Required for OpenRouter Free Tier)
+## Free Models You Get (26 Free Models via OpenRouter)
 
-| Model | Provider | Quality | Best For |
-|-------|----------|---------|----------|
-| Gemini 2.0 Flash | Google | High | General chat, code |
-| DeepSeek R1 | DeepSeek | High | Reasoning, math |
-| DeepSeek V3 | DeepSeek | High | Code generation |
-| Llama 3.1 70B | Meta | High | General purpose |
-| Llama 3.1 8B | Meta | Medium | Fast responses |
-| Qwen 2.5 72B | Alibaba | High | Multilingual |
-| Phi-4 | Microsoft | Medium | Code, reasoning |
-| Mistral 7B | Mistral | Medium | Fast, efficient |
-| Gemma 2 9B | Google | Medium | General chat |
-| Nous Hermes 2 | Nous | Medium | Roleplay, creative |
+| Rank | Model | Provider | Size | Best For |
+|------|-------|----------|------|----------|
+| 1 | **Qwen3 Coder** | Alibaba | 480B A35B | Code generation, complex tasks |
+| 2 | **OpenAI GPT-OSS** | OpenAI | 120B | General purpose, reasoning |
+| 3 | **NVIDIA Nemotron 3 Ultra** | NVIDIA | 550B A55B | High-quality reasoning |
+| 4 | **NVIDIA Nemotron 3 Super** | NVIDIA | 120B A12B | Fast, capable |
+| 5 | **Nous Hermes 3** | Nous Research | 405B | Creative, roleplay |
+| 6 | **Meta Llama 3.3** | Meta | 70B | General purpose |
+| 7 | **Qwen3 Next 80B** | Alibaba | 80B A3B | Fast inference |
+| 8 | **Google Gemma 4** | Google | 31B | General chat, code |
+| 9 | **Tencent Hy3** | Tencent | - | Multilingual |
+| 10 | **Venice Uncensored** | CognitiveComputations | 24B | Uncensored chat |
 
 **All 100% free through OpenRouter's free tier.** No credit card. No limits. No catches.
+Live model list: [openrouter.ai/models?supported_parameters=tools](https://openrouter.ai/models?supported_parameters=tools)
 
 ---
 
@@ -81,12 +81,17 @@ flowchart LR
         USAGE["Usage Analytics"]
     end
 
-    subgraph FreeCloud["Free Cloud LLMs"]
-        OR["OpenRouter"]
-        OAI["OpenAI Free"]
-        ANTH["Anthropic"]
-        GEM["Google Gemini"]
-        DS["DeepSeek"]
+    subgraph FreeCloud["Free Cloud LLMs (26 Models)"]
+        OR["OpenRouter Free Tier"]
+    end
+
+    subgraph TopModels["Top Free Models"]
+        QW["Qwen3 Coder 480B"]
+        OA["GPT-OSS 120B"]
+        NN["Nemotron Ultra 550B"]
+        NH["Hermes 3 405B"]
+        LL["Llama 3.3 70B"]
+        GM["Gemma 4 31B"]
     end
 
     CC --> OE
@@ -97,14 +102,12 @@ flowchart LR
     OE --> MEM
     OE --> USAGE
     OE --> OR
-    OE --> OAI
-    OE --> ANTH
-    OE --> GEM
-    OE --> DS
-    OR --> GF["Gemini Flash"]
-    OR --> DR["DeepSeek R1"]
-    OR --> LL["Llama 3.1"]
-    OR --> QW["Qwen 2.5"]
+    OR --> QW
+    OR --> OA
+    OR --> NN
+    OR --> NH
+    OR --> LL
+    OR --> GM
 ```
 
 **OllamaEmu** pretends to be Ollama (`localhost:11434`) but routes your prompts to **free cloud LLMs**. Your coding tools (Claude Code, Cursor, OpenCode) don't know the difference — they think they're talking to a local model, but you're getting cloud-quality responses for free.
@@ -163,7 +166,7 @@ Opens `http://localhost:11434` automatically. Add your API key in **Settings** a
 | **Ollama API** | `/api/tags`, `/api/chat`, `/api/generate` — drop-in replacement |
 | **OpenAI API** | `/v1/models`, `/v1/chat/completions` — works with any OpenAI client |
 | **Anthropic API** | `/v1/messages` — works with Claude Code via `ANTHROPIC_BASE_URL` |
-| **10+ Free Models** | Gemini Flash, DeepSeek R1/V3, Llama 3.1, Qwen 2.5, Phi-4, Mistral |
+| **26 Free Models** | Qwen3 Coder 480B, GPT-OSS 120B, Nemotron Ultra 550B, Llama 3.3, Gemma 4 |
 | **Multi-Provider** | OpenRouter, OpenAI, Anthropic, Gemini, Groq, DeepSeek, Mistral, Together |
 | **RAG Knowledge Base** | Upload docs, paste text, FTS5 + TF-IDF search |
 | **Persistent Memory** | Auto-saves conversations, facts, sessions to SQLite |
@@ -214,12 +217,13 @@ flowchart LR
         OE["localhost:11434"]
     end
 
-    subgraph Providers["Free Cloud LLMs"]
-        OR["OpenRouter"]
-        GEM["Gemini Flash"]
-        DS["DeepSeek R1"]
-        LL["Llama 3.1"]
-        QW["Qwen 2.5"]
+    subgraph Providers["Free Cloud LLMs (26 Models)"]
+        OR["OpenRouter Free Tier"]
+        QW["Qwen3 Coder 480B"]
+        OA["GPT-OSS 120B"]
+        NN["Nemotron Ultra 550B"]
+        LL["Llama 3.3 70B"]
+        GM["Gemma 4 31B"]
     end
 
     CC --> OE
@@ -227,10 +231,11 @@ flowchart LR
     OC --> OE
     CD --> OE
     OE --> OR
-    OR --> GEM
-    OR --> DS
-    OR --> LL
     OR --> QW
+    OR --> OA
+    OR --> NN
+    OR --> LL
+    OR --> GM
 
     style Emu fill:#d1fae5,stroke:#059669
     style Providers fill:#dbeafe,stroke:#2563eb
@@ -368,7 +373,7 @@ flowchart TB
     end
 
     subgraph Providers["Cloud Providers"]
-        OR["OpenRouter"]
+        OR["OpenRouter<br/>(26 free models)"]
         OAI["OpenAI"]
         ANTH["Anthropic"]
         GEM["Google Gemini"]
@@ -582,9 +587,9 @@ graph TB
 
 If this saves you a subscription, **share it**:
 
-- **Twitter/X**: [Tweet about OllamaEmu](https://twitter.com/intent/tweet?text=Stop%20paying%20%2420%2Fmo%20for%20Claude%20%26%20ChatGPT.%20OllamaEmu%20gives%20you%2010%2B%20free%20LLMs%20on%20one%20port.%20%23OllamaEmu%20%23FreeLLM%20%23AI)
+- **Twitter/X**: [Tweet about OllamaEmu](https://twitter.com/intent/tweet?text=Stop%20paying%20%2420%2Fmo%20for%20Claude%20%26%20ChatGPT.%20OllamaEmu%20gives%20you%2026%20free%20LLMs%20on%20one%20port.%20%23OllamaEmu%20%23FreeLLM%20%23AI)
 - **Reddit**: Share in r/LocalLLaMA, r/selfhosted, r/ChatGPT, r/opensource
-- **Hacker News**: [Submit to HN](https://news.ycombinator.com/submitlink?u=https://github.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate&t=OllamaEmu%20%E2%80%94%20Stop%20paying%20%2420%2Fmo%20for%20Claude%20%26%20ChatGPT)
+- **Hacker News**: [Submit to HN](https://news.ycombinator.com/submitlink?u=https://github.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate&t=OllamaEmu%20%E2%80%94%2026%20free%20LLMs%20on%20one%20port)
 - **GitHub**: Star the repo, fork it, open issues
 
 **The only price is virality.** Star the repo and tell a friend.
