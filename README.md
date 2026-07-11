@@ -62,7 +62,7 @@ Opens `http://localhost:11434` automatically. Add your API key in **Settings** a
 | **From source** | `run.bat` / `run.sh` | clone + run (see below) |
 | **npm (GitHub Packages)** | `@rbkhan007/ollama-emulator-desktop-ultimate` | see [Install from GitHub Packages](#-install-from-github-packages) |
 
-> 🌐 **Free Tier gateway** — the hosted zero-setup experience lives at **`https://ollamaemu.pages.dev`** (a free Cloudflare Pages domain — deploy the landing pages there, or change `FREETIER_DOMAIN` in [`frontend/src/lib/config.ts`](frontend/src/lib/config.ts) to your own).
+> 🌐 **Free Tier gateway** — the hosted zero-setup experience lives at **`https://ollamaemu.pages.dev`** (a free Cloudflare Pages domain — deploy the landing pages there, or change `FREETIER_DOMAIN` in [`frontend/src/lib/config.ts`](https://github.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate/blob/main/frontend/src/lib/config.ts) to your own).
 >
 > 💡 Running the app? Visit the in-app **landing page** at **`http://localhost:11434/landing`** — it surfaces the repo, the download, and the Free Tier link.
 
@@ -107,48 +107,17 @@ npm install @rbkhan007/ollama-emulator-desktop-ultimate
 
 ## 🏗️ Architecture
 
-```mermaid
-graph TD
-    FE["Next.js Static Export (frontend/out/)<br/>/ /login /playground /usage /settings /rag /memory /_not-found"]
-    FE -->|served on same port| SRV
-
-    subgraph SRV["FastAPI Server (ollama_emu_desktop.py) — Port 11434, single-process"]
-        direction TB
-        API["/api/* → Provider proxy + RAG/Memory"]
-        V1["/v1/* → OpenAI/Anthropic compatible"]
-        SPA["/{page} → SPA fallback (static HTML)"]
-        API --> DB
-        API --> RAG
-        API --> MEM
-        DB[("Providers DB<br/>(SQLite)")]
-        RAG["RAG Engine<br/>(FTS5 + NumPy)"]
-        MEM["Memory System<br/>(SQLite + autoflush)"]
-    end
-
-    FE -.->|static assets| SRV
-
-    MOB["React Native (Expo) Mobile App<br/>mobile/ — Chat, Providers, Usage"]
-    MOB -->|HTTP, same Wi-Fi| SRV
-```
+<p align="center">
+  <img src="https://raw.githubusercontent.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate/main/architecture.svg" alt="OllamaEmu architecture" width="780" />
+</p>
 
 ---
 
 ## 🖧 Server Layout
 
-```mermaid
-flowchart LR
-    subgraph S["FastAPI Server — ollama_emu_desktop.py"]
-        direction TB
-        R1["/api/* — Provider proxy + RAG/Memory"]
-        R2["/v1/* — OpenAI / Anthropic compatible"]
-        R3["/{page} — SPA fallback (static HTML)"]
-        R1 --> DB[("Providers DB<br/>SQLite")]
-        R1 --> RE["RAG Engine<br/>FTS5 + NumPy"]
-        R1 --> MS["Memory System<br/>SQLite + autoflush"]
-    end
-    FE["Next.js Static Export<br/>frontend/out/"] -->|same port 11434| S
-    M["React Native (Expo) App<br/>mobile/"] -->|HTTP, same Wi-Fi| S
-```
+<p align="center">
+  <img src="https://raw.githubusercontent.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate/main/server-layout.svg" alt="OllamaEmu server layout" width="780" />
+</p>
 
 ---
 
@@ -348,7 +317,7 @@ npm install
 npx expo start        # scan the QR with the Expo Go app on your phone
 ```
 
-Full instructions, the API contract, and EAS build steps: see **[MOBILE.md](MOBILE.md)**.
+Full instructions, the API contract, and EAS build steps: see **[MOBILE.md](https://github.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate/blob/main/MOBILE.md)**.
 
 ---
 
