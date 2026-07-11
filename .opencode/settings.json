@@ -1,0 +1,13 @@
+{
+  "security": {
+    "auth": {
+      "selectedType": "gemini-api-key"
+    }
+  },
+  "model": {
+    "name": "gemma-4-31b-it"
+  },
+  "general": {
+    "defaultApprovalMode": "default"
+  }
+}
