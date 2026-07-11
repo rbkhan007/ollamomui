@@ -82,3 +82,9 @@ temp/
 *.err
 *.out
 
+# =====================
+# Release binaries (distributed via GitHub Releases)
+# =====================
+software.exe
+OllamaEmu.exe
+
