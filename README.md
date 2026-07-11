@@ -30,7 +30,17 @@
 | GitHub Copilot | $10-19 | $120-228 | Limited to VS Code |
 | **OllamaEmu** | **$0** | **$0** | **10+ free models** |
 
-**OllamaEmu runs on your machine. Your data never leaves. No subscription. No limits.**
+## Cost Comparison
+
+```mermaid
+xychart-beta
+    title "Annual Cost: Paid Subscriptions vs OllamaEmu"
+    x-axis ["ChatGPT Plus", "Claude Pro", "Cursor Pro", "Copilot", "OllamaEmu"]
+    y-axis "Cost (USD)" 0 --> 280
+    bar [240, 240, 240, 228, 0]
+```
+
+**OllamaEmu: $0/year.** Same quality. Full privacy. No limits.
 
 ---
 
@@ -55,15 +65,46 @@
 
 ## How It Works
 
-```
-Your PC (OllamaEmu)          Cloud (Free LLMs)
-┌─────────────────┐          ┌─────────────────┐
-│  localhost:11434 │  ─────>  │  OpenRouter      │
-│  (fake Ollama)   │          │  Gemini Flash    │
-│                  │  ─────>  │  DeepSeek R1     │
-│  RAG + Memory    │          │  Llama 3.1       │
-│  Usage Analytics │          │  Qwen 2.5        │
-└─────────────────┘          └─────────────────┘
+```mermaid
+flowchart LR
+    subgraph Tools["Your AI Coding Tools"]
+        CC[Claude Code]
+        CU[Cursor]
+        OC[OpenCode]
+        CD[Continue.dev]
+    end
+
+    subgraph YourPC["Your PC"]
+        OE["OllamaEmu<br/>localhost:11434"]
+        RAG["RAG Engine"]
+        MEM["Memory System"]
+        USAGE["Usage Analytics"]
+    end
+
+    subgraph FreeCloud["Free Cloud LLMs"]
+        OR["OpenRouter"]
+        OAI["OpenAI Free"]
+        ANTH["Anthropic"]
+        GEM["Google Gemini"]
+        DS["DeepSeek"]
+    end
+
+    CC --> OE
+    CU --> OE
+    OC --> OE
+    CD --> OE
+    OE --> RAG
+    OE --> MEM
+    OE --> USAGE
+    OE --> OR
+    OE --> OAI
+    OE --> ANTH
+    OE --> GEM
+    OE --> DS
+    OR --> GF["Gemini Flash"]
+    OR --> DR["DeepSeek R1"]
+    OR --> LL["Llama 3.1"]
+    OR --> QW["Qwen 2.5"]
 ```
 
 **OllamaEmu** pretends to be Ollama (`localhost:11434`) but routes your prompts to **free cloud LLMs**. Your coding tools (Claude Code, Cursor, OpenCode) don't know the difference — they think they're talking to a local model, but you're getting cloud-quality responses for free.
@@ -138,21 +179,61 @@ Opens `http://localhost:11434` automatically. Add your API key in **Settings** a
 
 ### The Problem
 Every AI coding tool needs a subscription:
-- **Claude Code** wants Anthropic ($20/mo)
-- **Cursor** wants Pro ($20/mo) for GPT-4
-- **OpenCode** needs an API key
-- **Continue.dev** needs a provider
+
+```mermaid
+flowchart TD
+    subgraph Paid["You Pay $60+/Month"]
+        CC1["Claude Code"] -->|$20/mo| A1["Anthropic"]
+        CU1["Cursor Pro"] -->|$20/mo| A2["OpenAI GPT-4"]
+        OC1["OpenCode"] -->|$20/mo| A3["Any Provider"]
+        CD1["Continue.dev"] -->|$20/mo| A4["Various"]
+    end
+    A1 --> $$$["$$$ Wasted"]
+    A2 --> $$$
+    A3 --> $$$
+    A4 --> $$$
+    style Paid fill:#fee2e2,stroke:#dc2626
+    style $$$ fill:#fef2f2,stroke:#dc2626
+```
 
 That's **$60+/month** just to use different tools.
 
 ### The Solution
 **OllamaEmu** sits in the middle. One server. One port. All tools work.
 
-```
-Claude Code  ──┐
-Cursor       ──┼──> OllamaEmu (localhost:11434) ──> Free Cloud LLMs
-OpenCode     ──┤
-Continue.dev ──┘
+```mermaid
+flowchart LR
+    subgraph Tools["Your Tools (FREE)"]
+        CC["Claude Code"]
+        CU["Cursor"]
+        OC["OpenCode"]
+        CD["Continue.dev"]
+    end
+
+    subgraph Emu["OllamaEmu ($0)"]
+        OE["localhost:11434"]
+    end
+
+    subgraph Providers["Free Cloud LLMs"]
+        OR["OpenRouter"]
+        GEM["Gemini Flash"]
+        DS["DeepSeek R1"]
+        LL["Llama 3.1"]
+        QW["Qwen 2.5"]
+    end
+
+    CC --> OE
+    CU --> OE
+    OC --> OE
+    CD --> OE
+    OE --> OR
+    OR --> GEM
+    OR --> DS
+    OR --> LL
+    OR --> QW
+
+    style Emu fill:#d1fae5,stroke:#059669
+    style Providers fill:#dbeafe,stroke:#2563eb
 ```
 
 **You save $240+/year.** The same quality. Zero cost. Full privacy.
@@ -203,6 +284,26 @@ OLLAMA_HOST=http://localhost:11434 ollama list
 ---
 
 ## API Endpoints
+
+### Request Lifecycle
+
+```mermaid
+sequenceDiagram
+    participant Tool as AI Coding Tool
+    participant Emu as OllamaEmu
+    participant Router as Provider Router
+    participant Cloud as Free Cloud LLM
+    participant DB as Local SQLite
+
+    Tool->>Emu: POST /api/chat (model, messages)
+    Emu->>DB: Track usage (tokens, latency)
+    Emu->>Router: Route to active provider
+    Router->>Cloud: POST /v1/chat/completions
+    Cloud-->>Router: Stream response (ndjson)
+    Router-->>Emu: Forward stream
+    Emu->>DB: Save to memory (auto-flush)
+    Emu-->>Tool: Stream response (Ollama ndjson)
+```
 
 ### Ollama-Compatible
 | Route | Method | Description |
@@ -255,9 +356,74 @@ OLLAMA_HOST=http://localhost:11434 ollama list
 
 ## Architecture
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate/main/architecture.svg" alt="OllamaEmu architecture" width="780" />
-</p>
+```mermaid
+flowchart TB
+    subgraph Desktop["Desktop (EXE / Source)"]
+        API["FastAPI Server<br/>:11434"]
+        RAG["RAG Engine<br/>FTS5 + TF-IDF"]
+        MEM["Memory System<br/>SQLite + Auto-flush"]
+        AUTH["Auth System<br/>PBKDF2 + Salt"]
+        ROUTER["Provider Router"]
+        DB[("providers.db<br/>rag.db<br/>memory.db<br/>auth.db")]
+    end
+
+    subgraph Providers["Cloud Providers"]
+        OR["OpenRouter"]
+        OAI["OpenAI"]
+        ANTH["Anthropic"]
+        GEM["Google Gemini"]
+        DS["DeepSeek"]
+        GRQ["Groq"]
+        MST["Mistral"]
+        TGH["Together"]
+    end
+
+    subgraph Frontend["Web Dashboard"]
+        NEXT["Next.js<br/>Static Export"]
+        PAGES["~15 Pages<br/>Playground, RAG, Memory<br/>Usage, Settings, About"]
+    end
+
+    subgraph Mobile["Mobile App"]
+        RN["React Native<br/>Expo"]
+        MSCREENS["8 Screens<br/>Full Parity"]
+    end
+
+    subgraph Clients["AI Coding Tools"]
+        CC["Claude Code"]
+        CU["Cursor"]
+        OC["OpenCode"]
+        CD["Continue.dev"]
+    end
+
+    CC --> API
+    CU --> API
+    OC --> API
+    CD --> API
+    NEXT --> API
+    RN --> API
+    API --> RAG
+    API --> MEM
+    API --> AUTH
+    API --> ROUTER
+    RAG --> DB
+    MEM --> DB
+    AUTH --> DB
+    ROUTER --> DB
+    ROUTER --> OR
+    ROUTER --> OAI
+    ROUTER --> ANTH
+    ROUTER --> GEM
+    ROUTER --> DS
+    ROUTER --> GRQ
+    ROUTER --> MST
+    ROUTER --> TGH
+
+    style Desktop fill:#f0fdf4,stroke:#16a34a
+    style Providers fill:#eff6ff,stroke:#2563eb
+    style Frontend fill:#fefce8,stroke:#ca8a04
+    style Mobile fill:#fdf2f8,stroke:#db2777
+    style Clients fill:#f5f3ff,stroke:#7c3aed
+```
 
 ---
 
@@ -320,6 +486,40 @@ npm run dev    # http://localhost:3000
 
 A **React Native (Expo)** app with 8 screens:
 
+```mermaid
+flowchart LR
+    subgraph Screens["8 Screens"]
+        CONNECT["Connect<br/>Server URL"]
+        CHAT["Chat<br/>Streaming"]
+        KNOW["Knowledge<br/>RAG"]
+        MEM["Memory<br/>Facts"]
+        PROV["Providers<br/>Manage"]
+        USE["Usage<br/>Analytics"]
+        SET["Settings<br/>Account"]
+        ABOUT["About<br/>Info"]
+    end
+
+    subgraph Features["Built-in Features"]
+        MODEL["Model Picker"]
+        SEARCH["Doc Search"]
+        FACTS["Stored Facts"]
+        KEY["API Key Manager"]
+        STATS["Token Stats"]
+        THEME["Dark/Light Theme"]
+    end
+
+    CONNECT --> CHAT
+    CHAT --> MODEL
+    KNOW --> SEARCH
+    MEM --> FACTS
+    PROV --> KEY
+    USE --> STATS
+    SET --> THEME
+
+    style Screens fill:#fdf2f8,stroke:#db2777
+    style Features fill:#f0fdf4,stroke:#16a34a
+```
+
 | Screen | What It Does |
 |--------|-------------|
 | **Connect** | Enter server URL, test connection |
@@ -343,24 +543,37 @@ Full details: **[MOBILE.md](MOBILE.md)**
 
 ## Project Structure
 
-```
-├── ollama_emu_desktop.py    # Main server (FastAPI, 1400+ lines)
-├── rag.py                   # RAG engine (FTS5 + TF-IDF)
-├── memory.py                # Memory system (SQLite + auto-flush)
-├── providers.db             # Provider configurations
-├── rag.db / memory.db       # RAG & memory databases
-├── requirements.txt         # Python dependencies
-├── run.bat / run.sh         # One-click launchers
-├── build_exe.bat            # PyInstaller build script
-├── frontend/                # Next.js dashboard (static export)
-│   ├── src/app/             # ~15 pages
-│   ├── src/components/      # Navbar, Icons, Background
-│   └── src/lib/             # API, Auth, Theme
-├── mobile/                  # React Native (Expo) app
-│   ├── app/                 # 8 screens
-│   ├── components/          # UI, BottomNav, MessageBubble
-│   └── lib/                 # API client, AppContext
-└── README.md
+```mermaid
+graph TB
+    ROOT["OllamaEmu"] --> PY["Python Backend"]
+    ROOT --> FE["Next.js Frontend"]
+    ROOT --> MOB["React Native Mobile"]
+    ROOT --> CI["GitHub Actions"]
+
+    PY --> SERVER["ollama_emu_desktop.py<br/>FastAPI Server"]
+    PY --> RAG["rag.py<br/>RAG Engine"]
+    PY --> MEM["memory.py<br/>Memory System"]
+    PY --> REQ["requirements.txt"]
+
+    FE --> APP["src/app/<br/>~15 Pages"]
+    FE --> COMP["src/components/<br/>Navbar, Icons"]
+    FE --> LIB["src/lib/<br/>API, Auth, Theme"]
+    FE --> NC["next.config.js<br/>Static Export"]
+
+    MOB --> MAPP["app/<br/>8 Screens"]
+    MOB --> MCOMP["components/<br/>UI, BottomNav"]
+    MOB --> MLIB["lib/<br/>API Client"]
+    MOB --> MJ["app.json<br/>Expo Config"]
+
+    CI --> DEPLOY["deploy-pages.yml<br/>GitHub Pages"]
+    CI --> RELEASE["release.yml<br/>EXE + APK"]
+    CI --> LIGHTHOUSE["lighthouse.yml<br/>Audit"]
+
+    style ROOT fill:#f0fdf4,stroke:#16a34a
+    style PY fill:#dbeafe,stroke:#2563eb
+    style FE fill:#fefce8,stroke:#ca8a04
+    style MOB fill:#fdf2f8,stroke:#db2777
+    style CI fill:#f5f3ff,stroke:#7c3aed
 ```
 
 ---
