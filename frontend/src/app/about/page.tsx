@@ -1,8 +1,7 @@
 import Link from "next/link";
 
 const pages = [
-  { href: "/", title: "Home", desc: "Hero, features, quick start, and the live neural-proxy diagram." },
-  { href: "/landing", title: "Landing", desc: "Public marketing page — download the EXE, try the free tier, share the repo." },
+  { href: "/", title: "Home", desc: "Hero, features, quick start, comparison, and the live neural-proxy diagram." },
   { href: "/playground", title: "Playground", desc: "Stream any model in the browser with markdown rendering and live responses." },
   { href: "/usage", title: "Usage", desc: "Requests, tokens, per-model stats, and recent activity analytics." },
   { href: "/settings", title: "Settings", desc: "Pick a provider, paste a free API key, configure the gateway." },
@@ -93,12 +92,12 @@ export default function About() {
 
       {/* CTA */}
       <section style={{ padding: "0 24px 72px", textAlign: "center" }}>
-        <Link href="/landing" className="spidey-panel" style={{
+        <Link href="/" className="spidey-panel" style={{
           display: "inline-flex", alignItems: "center", gap: 10, padding: "14px 26px",
           borderRadius: 14, textDecoration: "none", fontWeight: 700, fontSize: 15,
           background: "var(--gradient-1)", color: "white",
         }}>
-          Go to the Landing Page →
+          Go to the Homepage →
         </Link>
       </section>
     </div>

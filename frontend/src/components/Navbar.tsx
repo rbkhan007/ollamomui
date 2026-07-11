@@ -14,7 +14,6 @@ const links = [
   { href: "/settings", label: "Settings", icon: "settings" },
   { href: "/rag", label: "Knowledge", icon: "book" },
   { href: "/memory", label: "Memory", icon: "brain" },
-  { href: "/landing", label: "Landing", icon: "star" },
   { href: "/about", label: "About", icon: "info" },
 ];
 

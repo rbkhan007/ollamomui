@@ -5,7 +5,6 @@ export const dynamic = "force-static";
 
 const routes = [
   "",
-  "/landing",
   "/about",
   "/playground",
   "/usage",
@@ -20,7 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return routes.map((r) => ({
     url: `${SITE_URL}${r}`,
     lastModified: new Date(),
-    changeFrequency: r === "" || r === "/landing" || r === "/about" ? "weekly" : "monthly",
-    priority: r === "" ? 1 : r === "/landing" || r === "/about" ? 0.9 : 0.7,
+    changeFrequency: r === "" || r === "/about" ? "weekly" : "monthly",
+    priority: r === "" ? 1 : r === "/about" ? 0.9 : 0.7,
   }));
 }
