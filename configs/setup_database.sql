@@ -1,5 +1,5 @@
 -- ================================================================
--- OllamaEmu — PostgreSQL + pgvector Database Setup
+-- OllamoMUI — PostgreSQL + pgvector Database Setup
 -- ================================================================
 -- Copyright (c) 2024-2026 Rhasan@dev. All rights reserved.
 --

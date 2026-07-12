@@ -27,6 +27,7 @@ export default function RootLayout() {
             <Stack.Screen name="usage" options={{ title: "Usage" }} />
             <Stack.Screen name="settings" options={{ title: "Settings" }} />
             <Stack.Screen name="about" options={{ title: "About" }} />
+            <Stack.Screen name="license" options={{ title: "License" }} />
           </Stack>
         </View>
       </SafeAreaView>

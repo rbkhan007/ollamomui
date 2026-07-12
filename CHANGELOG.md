@@ -77,7 +77,7 @@ All notable changes to the OllamoMUI project are documented here.
 ## [1.0.0] — 2026-07-08
 
 ### Added
-- Initial release of Ollama Emulator Desktop Ultimate
+- Initial release of OllamoMUI
 - FastAPI backend with PostgreSQL + pgvector
 - Multi-provider support: OpenAI, Anthropic, Gemini, OpenRouter, Groq, DeepSeek, Mistral, Together
 - RAG engine (TF-IDF, sentence-transformers, OpenAI embedding backends)

@@ -1,5 +1,5 @@
 """
-PostgreSQL + pgvector Database Layer for OllamaEmu
+PostgreSQL + pgvector Database Layer for OllamoMUI
 Copyright (c) 2024-2026 Rhasan@dev. All rights reserved.
 
 Provides a connection pool and schema migration for all subsystems:

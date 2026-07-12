@@ -1,5 +1,5 @@
 """
-Ollama Emulator Desktop Ultimate — Full System Test
+OllamoMUI — Full System Test
 
 Copyright (c) 2024-2026 Rhasan@dev. All rights reserved.
 Licensed under the MIT License.
@@ -193,7 +193,7 @@ def test_auth():
 
     # Seeded user login
     demo_email = os.environ.get("OLLAMA_EMU_ADMIN_EMAIL", "admin@localhost")
-    demo_password = os.environ.get("OLLAMA_EMU_DEMO_PASSWORD", "Changeme123")
+    demo_password = os.environ.get("OLLAMA_EMU_DEMO_PASSWORD", "changeme123")
     r = request("POST", "/api/auth/login", {"email": demo_email, "password": demo_password}, expect=200)
     if r.get("success"):
         ok(f"Seeded user login: {demo_email}")
@@ -588,7 +588,7 @@ def main():
     args = parser.parse_args()
 
     print("=" * 55)
-    print("  Ollama Emulator Desktop Ultimate — System Test")
+    print("  OllamoMUI — System Test")
     print("  Copyright (c) 2024-2026 Rhasan@dev")
     print("=" * 55)
 

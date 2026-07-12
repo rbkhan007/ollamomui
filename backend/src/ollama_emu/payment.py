@@ -295,3 +295,22 @@ def get_user_licenses(user_id: str):
         )
         rows = cur.fetchall()
     return {"licenses": [dict(r) for r in rows]}
+
+
+@router.get("/license/current")
+async def get_current_license(request: Request):
+    """Get the current user's active license from the auth token."""
+    from ollama_emu.acl import get_auth_context
+    ctx = get_auth_context(request)
+    email = (ctx or {}).get("email")
+    if not email:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    with db.get_cursor(commit=False) as cur:
+        cur.execute(
+            "SELECT plan, expiry_date, activated, activated_at, device_id FROM licenses WHERE user_id = %s AND activated = true ORDER BY created_at DESC LIMIT 1",
+            (email,),
+        )
+        row = cur.fetchone()
+    if not row:
+        raise HTTPException(status_code=404, detail="No active license found")
+    return {"plan": row["plan"], "expires_at": str(row["expiry_date"]), "activated": row["activated"]}

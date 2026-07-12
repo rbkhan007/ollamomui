@@ -78,7 +78,7 @@
 
   <!-- ===== RIGHT: WORDMARK & TAGLINE ===== -->
   <g transform="translate(150, 0)">
-    <!-- Brand Name: OllamaEmu (theme-aware) -->
+    <!-- Brand Name: OllamoMUI (theme-aware) -->
     <text class="wm" x="0" y="62" font-family="'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif" font-size="34" font-weight="800" letter-spacing="-0.5">
       Ollama<tspan fill="url(#brandCyan)">Emu</tspan>
     </text>

@@ -1,6 +1,6 @@
-# Ollama Emulator Desktop Ultimate - Brand Assets
+# OllamoMUI - Brand Assets
 
-This directory contains the SVG source files for the Ollama Emulator Desktop Ultimate branding. These can be used to generate various icon formats needed for the application.
+This directory contains the SVG source files for the OllamoMUI branding. These can be used to generate various icon formats needed for the application.
 
 ## Files Included
 

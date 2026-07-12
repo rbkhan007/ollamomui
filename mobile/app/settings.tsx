@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, Link } from "expo-router";
 import { useApp } from "../lib/AppContext";
 import * as api from "../lib/api";
 import { COLORS, FONT_SIZE } from "../theme";
@@ -140,6 +140,16 @@ export default function Settings() {
           ) : (
             <Text style={styles.muted}>Device info unavailable.</Text>
           )}
+        </Card>
+
+        <SectionTitle>License</SectionTitle>
+        <Card>
+          <Link href="/license" asChild>
+            <Pressable style={styles.rowBetween}>
+              <Text style={styles.name}>Manage License</Text>
+              <Text style={styles.toggle}>Activate →</Text>
+            </Pressable>
+          </Link>
         </Card>
 
         <SectionTitle>Export / Import</SectionTitle>

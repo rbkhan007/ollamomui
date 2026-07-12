@@ -76,6 +76,7 @@ ApplicationWindow {
                 MemoryPage         { id: memoryPage }
                 RAGPage            { id: ragPage }
                 SettingsPage       { id: settingsPage }
+                LicensePage        { id: licensePage }
                 TerminalPage       { id: terminalPage }
             }
         }

@@ -106,11 +106,9 @@ echo.
 echo ============================================
 echo  Build complete!
 if /i "%1"=="--desktop" (
-    echo  Executable: dist\OllamaEmuDesktop.exe
-    echo  Includes: QML GUI + Backend + Frontend
+    echo  Executable: dist\OllamoMUI.exe
 ) else (
-    echo  Executable: dist\OllamaEmu.exe
-    echo  Includes: Backend Server + Frontend
+    echo  Executable: dist\OllamoMUI.exe
 )
 echo ============================================
 echo.

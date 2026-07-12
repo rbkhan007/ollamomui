@@ -15,6 +15,7 @@ Rectangle {
         { label: "Memory",     icon: "\u2749", section: "main" },
         { label: "RAG",        icon: "\u2601", section: "main" },
         { label: "Settings",   icon: "\u2692", section: "main" },
+        { label: "License",    icon: "\u2606", section: "main" },
         { label: "Terminal",   icon: "\u23CE", section: "main" },
     ]
 
