@@ -55,6 +55,17 @@ def get_dsn() -> str:
     return dsn
 
 
+def _sanitize_dsn(url: str) -> str:
+    """Strip connection options that psycopg2's bundled libpq / Neon's
+    pooler (transaction mode) may reject. `sslmode=require` is sufficient
+    for TLS; `channel_binding` is only needed for direct SCRAM binding."""
+    if "channel_binding" in url:
+        import re
+        url = re.sub(r"&?channel_binding=[^&]*", "", url)
+        url = re.sub(r"\?&", "?", url).rstrip("?&")
+    return url
+
+
 def is_connected() -> bool:
     return _connected and _pool is not None
 
@@ -66,7 +77,9 @@ def init_pool(minconn: int = 1, maxconn: int = 10) -> bool:
     url = os.environ.get("OLLAMA_EMU_DATABASE_URL", "").strip()
     try:
         if url:
-            _pool = psycopg2.pool.ThreadedConnectionPool(minconn, maxconn, url)
+            _pool = psycopg2.pool.ThreadedConnectionPool(
+                minconn, maxconn, _sanitize_dsn(url), connect_timeout=10,
+            )
         else:
             host = os.environ.get("PGHOST", "127.0.0.1")
             port = os.environ.get("PGPORT", "5432")
@@ -104,7 +117,11 @@ def get_conn():
     """Yield a connection from the pool. Auto-commits on success, rolls back on error."""
     if not _pool:
         raise RuntimeError("PostgreSQL pool not initialized")
-    conn = _pool.getconn()
+    try:
+        conn = _pool.getconn()
+    except Exception as e:
+        log.error("PostgreSQL getconn failed: %s", e)
+        raise
     try:
         yield conn
         conn.commit()
