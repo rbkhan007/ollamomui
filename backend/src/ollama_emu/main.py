@@ -19,6 +19,8 @@ import logging
 from fastapi import FastAPI, Request, HTTPException, UploadFile, File, Form
 from fastapi.responses import StreamingResponse, JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel, Field, field_validator
 from typing import Dict, Optional, List, Any
@@ -40,6 +42,11 @@ MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
 # Resolve these once at startup from env / CLI; used for binding + CORS policy.
 BIND_HOST = "127.0.0.1"
 BIND_PORT = 11434
+
+# SSL / Security
+SSL_KEYFILE = os.environ.get("SSL_KEYFILE", "")
+SSL_CERTFILE = os.environ.get("SSL_CERTFILE", "")
+COOKIE_SECURE = os.environ.get("COOKIE_SECURE", "true").lower() in ("1", "true", "yes")
 
 
 def validate_url(url: str, name: str = "URL") -> str:
@@ -351,6 +358,12 @@ def configure_cors(application):
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    if SSL_KEYFILE and SSL_CERTFILE:
+        application.add_middleware(HTTPSRedirectMiddleware)
+    application.add_middleware(
+        TrustedHostMiddleware,
+        allowed_hosts=["*"],
+    )
     application.middleware("http")(_acl.create_acl_middleware(application))
 
 app.include_router(payment_router)
@@ -424,7 +437,9 @@ async def auth_register(request: Request, req: AuthRequest):
     token = _acl.session_manager.create(email, role=role)
     _db.create_session(email, token)
     _acl.audit_log("register_success", email=email, ip=ip)
-    return {"success": True, "token": token, "email": email, "role": role}
+    resp = JSONResponse({"success": True, "token": token, "email": email, "role": role})
+    resp.set_cookie(key="session_token", value=token, httponly=True, secure=COOKIE_SECURE, samesite="Lax")
+    return resp
 
 @app.post("/api/auth/login")
 async def auth_login(request: Request, req: AuthRequest):
@@ -441,20 +456,26 @@ async def auth_login(request: Request, req: AuthRequest):
     token = _acl.session_manager.create(email, role=role)
     _db.create_session(email, token)
     _acl.audit_log("login_success", email=email, ip=ip, details={"role": role})
-    return {"success": True, "token": token, "email": email, "role": role}
+    resp = JSONResponse({"success": True, "token": token, "email": email, "role": role})
+    resp.set_cookie(key="session_token", value=token, httponly=True, secure=COOKIE_SECURE, samesite="Lax")
+    return resp
 
 @app.post("/api/auth/logout")
 async def auth_logout(request: Request):
     data = await request.json()
     token = data.get("token", "")
     ip = _acl._get_client_ip(request)
+    if not token:
+        token = request.cookies.get("session_token", "")
     if token:
         session_info = _acl.session_manager.verify(token)
         email = session_info.get("email") if session_info else None
         _acl.session_manager.destroy(token)
         _db.delete_session(token)
         _acl.audit_log("logout", email=email, ip=ip)
-    return {"success": True}
+    resp = JSONResponse({"success": True})
+    resp.delete_cookie(key="session_token")
+    return resp
 
 @app.get("/api/auth/verify")
 async def auth_verify(request: Request, token: str = ""):
@@ -2545,7 +2566,12 @@ if __name__ == "__main__":
     monitor.start()
 
     try:
-        uvicorn.run(app, host=BIND_HOST, port=BIND_PORT)
+        ssl_kwargs = {}
+        if SSL_KEYFILE and SSL_CERTFILE:
+            ssl_kwargs["ssl_keyfile"] = SSL_KEYFILE
+            ssl_kwargs["ssl_certfile"] = SSL_CERTFILE
+            log.info("[ssl] HTTPS enabled (keyfile=%s, certfile=%s)", SSL_KEYFILE, SSL_CERTFILE)
+        uvicorn.run(app, host=BIND_HOST, port=BIND_PORT, **ssl_kwargs)
     finally:
         MEMORY.shutdown()
         _db.close_pool()

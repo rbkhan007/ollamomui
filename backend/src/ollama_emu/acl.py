@@ -40,6 +40,7 @@ API_KEY_HEADER = "X-API-Key"
 ADMIN_EMAIL = os.environ.get("OLLAMA_EMU_ADMIN_EMAIL", "admin@localhost")
 IP_BLOCKLIST = set(filter(None, os.environ.get("OLLAMA_EMU_IP_BLOCKLIST", "").split(",")))
 IP_ALLOWLIST = set(filter(None, os.environ.get("OLLAMA_EMU_IP_ALLOWLIST", "").split(",")))
+COOKIE_SECURE = os.environ.get("COOKIE_SECURE", "true").lower() in ("1", "true", "yes")
 
 # ============================================================
 # ROLES & PERMISSIONS
