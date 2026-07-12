@@ -2,6 +2,20 @@
 
 All notable changes to the OllamoMUI project are documented here.
 
+## [1.0.5] — Unreleased
+
+### Fixed
+- Switched the PostgreSQL driver from `psycopg2-binary` to `psycopg` (v3) to resolve TLS
+  handshake failures against Neon's connection pooler.
+- `TrustedHostMiddleware` now allows deployment hostnames (Render/Vercel/custom domains) and is
+  configurable via `ALLOWED_HOSTS`, so the Render health check passes.
+- `setup_env.py` merges with existing Render env vars instead of overwriting them.
+- Database pool now degrades gracefully when PostgreSQL is unavailable.
+
+### Changed
+- Payments & licensing migrated from SSLCommerz/Stripe to **Lemon Squeezy** as the primary provider.
+- Documentation, README, and brand references updated to Lemon Squeezy.
+
 ## [1.0.4] — 2026-07-12
 
 ### Changed

@@ -1,31 +1,30 @@
----
-name: Bug report
-about: Create a report to help improve OllamoMUI
+name: 🐛 Bug Report
+about: Report a defect or unexpected behavior
 title: "[Bug] "
 labels: bug
-assignees: ""
+assignees: ''
 ---
 
 ## Describe the bug
-A clear and concise description of the issue.
+A clear and concise description of what the bug is.
 
 ## To Reproduce
 Steps to reproduce the behavior:
 1. Go to '...'
-2. Click on '...'
-3. Scroll down to '...'
-4. See error
+2. Run '...'
+3. See error
 
 ## Expected behavior
-A clear and concise description of what you expected to happen.
+What you expected to happen.
 
-## Screenshots / Logs
-If applicable, add screenshots or server logs (`ollamomui.log`) to help explain.
+## Environment
+- OllamoMUI version: [e.g. 1.0.4]
+- Platform: [Windows / macOS / Linux / Web / Android]
+- Deployment: [local / Render / Docker / self-hosted]
+- Browser (if web): [e.g. Chrome 124]
 
-## Environment (please complete):
-- OS: [e.g. Windows 11, macOS 14, Ubuntu 22.04]
-- Version: [e.g. v1.0.2 — check `/api/version` or the About page]
-- Deployment: [ ] Desktop EXE / [ ] Backend server / [ ] Mobile app / [ ] Docker
+## Logs / Screenshots
+Paste relevant logs (redact secrets!) or screenshots.
 
 ## Additional context
 Add any other context about the problem here.
