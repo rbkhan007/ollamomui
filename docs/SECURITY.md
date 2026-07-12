@@ -10,7 +10,7 @@
 
 This is a **local desktop application**. All API keys, credentials, and user data are stored **locally on your machine** and are never sent to any external server except the LLM providers you explicitly configure.
 
-> **Note on the public site:** `https://ollama-emulator-desktop-ultimate.io` is **static-only** (marketing pages). It has **no backend** and collects **no data, keys, or telemetry** — all sensitive data exists only in the locally-run desktop app.
+> **Note on the public site:** `https://ollamomui.vercel.app` is **static-only** (marketing pages). It has **no backend** and collects **no data, keys, or telemetry** — all sensitive data exists only in the locally-run desktop app.
 
 ### What's Protected
 

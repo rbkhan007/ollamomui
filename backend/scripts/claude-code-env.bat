@@ -31,7 +31,7 @@ set ANTHROPIC_API_KEY=sk-local
 set ANTHROPIC_MODEL=openrouter/auto
 
 echo [1/2] Starting OllamoMUI on http://localhost:11434 ...
-start "OllamaEmu" /B python ollama_emu_desktop.py
+start "OllamoMUI" /B python ollama_emu_desktop.py
 timeout /t 5 >nul
 
 echo [2/2] Launching Claude Code (model: %ANTHROPIC_MODEL%)...
@@ -44,6 +44,6 @@ claude
 
 echo.
 echo Claude Code exited. Stopping emulator...
-taskkill /FI "WINDOWTITLE eq OllamaEmu" >nul 2>&1
+taskkill /FI "WINDOWTITLE eq OllamoMUI" >nul 2>&1
 echo Done.
 pause

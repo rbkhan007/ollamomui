@@ -13,6 +13,8 @@ from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import RedirectResponse, JSONResponse
 from pydantic import BaseModel, EmailStr
 
+from ollama_emu import db
+
 log = logging.getLogger("ollama-emu")
 
 APP_URL = os.getenv("APP_URL", "http://localhost:11434")
@@ -23,8 +25,6 @@ SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 
 router = APIRouter(prefix="/api/payment", tags=["payment"])
 
-
-# ── License Key Helpers ──
 
 def generate_license_key(user_id: str, plan: str) -> str:
     raw = f"OLLAMOMUI-{plan.upper()}-{user_id[:8]}-{secrets.token_hex(4).upper()}-{int(datetime.now(timezone.utc).timestamp())}"
@@ -38,8 +38,6 @@ def hash_license_key(raw_key: str) -> str:
 def verify_license_key(raw_key: str, stored_hash: str) -> bool:
     return hmac.compare_digest(hash_license_key(raw_key), stored_hash)
 
-
-# ── Email Sending ──
 
 def send_license_email(email_to: str, license_key: str, plan: str):
     if not SMTP_SENDER or not SMTP_PASSWORD:
@@ -76,35 +74,33 @@ The OllamoMUI Team
         log.error("Failed to send license email to %s: %s", email_to, e)
 
 
-# ── Database Helpers ──
-
-async def _save_license(db, user_id: str, raw_key: str, plan: str, expiry_days: int = 30):
+def _save_license(user_id: str, raw_key: str, plan: str, expiry_days: int = 30):
     key_hash = hash_license_key(raw_key)
     expiry = datetime.now(timezone.utc) + timedelta(days=expiry_days)
-    await db.execute(
-        """
-        INSERT INTO licenses (user_id, key_hash, raw_key, plan, expiry_date)
-        VALUES ($1, $2, $3, $4, $5)
-        ON CONFLICT (user_id, plan) DO UPDATE
-        SET key_hash = EXCLUDED.key_hash,
-            raw_key = EXCLUDED.raw_key,
-            expiry_date = EXCLUDED.expiry_date,
-            activated = false
-        """,
-        user_id, key_hash, raw_key, plan, expiry,
-    )
+    with db.get_cursor() as cur:
+        cur.execute(
+            """
+            INSERT INTO licenses (user_id, key_hash, raw_key, plan, expiry_date)
+            VALUES (%s, %s, %s, %s, %s)
+            ON CONFLICT (user_id, plan) DO UPDATE
+            SET key_hash = EXCLUDED.key_hash,
+                raw_key = EXCLUDED.raw_key,
+                expiry_date = EXCLUDED.expiry_date,
+                activated = false
+            """,
+            (user_id, key_hash, raw_key, plan, expiry),
+        )
     return raw_key, key_hash
 
 
-async def _update_user_subscription(db, user_id: str, expiry_days: int = 30):
+def _update_user_subscription(user_id: str, expiry_days: int = 30):
     expiry = datetime.now(timezone.utc) + timedelta(days=expiry_days)
-    await db.execute(
-        "UPDATE users SET subscription_status = 'pro', subscription_expiry = $1 WHERE email = $2",
-        expiry, user_id,
-    )
+    with db.get_cursor() as cur:
+        cur.execute(
+            "UPDATE users SET subscription_status = 'pro', subscription_expiry = %s WHERE email = %s",
+            (expiry, user_id),
+        )
 
-
-# ── Routes ──
 
 class LicenseActivateRequest(BaseModel):
     license_key: str
@@ -112,16 +108,17 @@ class LicenseActivateRequest(BaseModel):
 
 
 @router.post("/activate")
-async def activate_license(req: LicenseActivateRequest):
+def activate_license(req: LicenseActivateRequest):
     """Activate a license key. Returns success/failure and remaining days."""
-    from ollama_emu.db import Database
-    db = Database()
     key_hash = hash_license_key(req.license_key)
 
-    row = await db.fetchrow(
-        "SELECT user_id, plan, expiry_date, activated FROM licenses WHERE key_hash = $1",
-        key_hash,
-    )
+    with db.get_cursor(commit=False) as cur:
+        cur.execute(
+            "SELECT user_id, plan, expiry_date, activated FROM licenses WHERE key_hash = %s",
+            (key_hash,),
+        )
+        row = cur.fetchone()
+
     if not row:
         raise HTTPException(status_code=404, detail="Invalid license key")
 
@@ -132,10 +129,11 @@ async def activate_license(req: LicenseActivateRequest):
     if remaining < 0:
         raise HTTPException(status_code=410, detail="License has expired")
 
-    await db.execute(
-        "UPDATE licenses SET activated = true, activated_at = $1, device_id = $2 WHERE key_hash = $3",
-        datetime.now(timezone.utc), req.device_id or "", key_hash,
-    )
+    with db.get_cursor() as cur:
+        cur.execute(
+            "UPDATE licenses SET activated = true, activated_at = %s, device_id = %s WHERE key_hash = %s",
+            (datetime.now(timezone.utc), req.device_id or "", key_hash),
+        )
 
     return {
         "success": True,
@@ -152,7 +150,6 @@ async def sslcommerz_success(request: Request):
     Expects form data with 'tran_id', 'status', 'amount', etc.
     Generates license key and redirects user to result page.
     """
-    from ollama_emu.db import Database
     form = await request.form()
     session_key = form.get("tran_id")
     payment_status = form.get("status")
@@ -161,53 +158,54 @@ async def sslcommerz_success(request: Request):
     if not session_key:
         return RedirectResponse(f"{APP_URL}/payment-result?status=error&message=Missing transaction ID")
 
-    db = Database()
+    with db.get_cursor(commit=False) as cur:
+        cur.execute(
+            "SELECT id, user_id, plan, status FROM payment_sessions WHERE session_key = %s",
+            (session_key,),
+        )
+        row = cur.fetchone()
 
-    # Find the payment session
-    row = await db.fetchrow(
-        "SELECT id, user_id, plan, status FROM payment_sessions WHERE session_key = $1",
-        session_key,
-    )
     if not row:
         return RedirectResponse(f"{APP_URL}/payment-result?status=error&message=Invalid session")
 
     if row["status"] == "success":
-        # Already processed — return existing license key
-        lic = await db.fetchrow(
-            "SELECT raw_key, plan FROM licenses WHERE user_id = $1 AND plan = $2",
-            row["user_id"], row["plan"],
-        )
+        with db.get_cursor(commit=False) as cur:
+            cur.execute(
+                "SELECT raw_key, plan FROM licenses WHERE user_id = %s AND plan = %s",
+                (row["user_id"], row["plan"]),
+            )
+            lic = cur.fetchone()
         if lic:
             return RedirectResponse(
                 f"{APP_URL}/payment-result?status=success&key={lic['raw_key']}&plan={lic['plan']}"
             )
         return RedirectResponse(f"{APP_URL}/payment-result?status=error&message=License not found")
 
-    # Validate payment status from SSLCommerz
     if payment_status != "VALID":
-        await db.execute(
-            "UPDATE payment_sessions SET status = 'failed' WHERE session_key = $1",
-            session_key,
-        )
+        with db.get_cursor() as cur:
+            cur.execute(
+                "UPDATE payment_sessions SET status = 'failed' WHERE session_key = %s",
+                (session_key,),
+            )
         return RedirectResponse(
             f"{APP_URL}/payment-result?status=fail&message=Payment+{payment_status}"
         )
 
-    # Generate license key
     plan = row["plan"]
     raw_key = generate_license_key(row["user_id"], plan)
-    await _save_license(db, row["user_id"], raw_key, plan)
-    await _update_user_subscription(db, row["user_id"])
+    _save_license(row["user_id"], raw_key, plan)
+    _update_user_subscription(row["user_id"])
 
-    # Update payment session
     transaction_id = form.get("bank_tran_id", session_key)
-    await db.execute(
-        "UPDATE payment_sessions SET status = 'success', transaction_id = $1 WHERE session_key = $2",
-        transaction_id, session_key,
-    )
+    with db.get_cursor() as cur:
+        cur.execute(
+            "UPDATE payment_sessions SET status = 'success', transaction_id = %s WHERE session_key = %s",
+            (transaction_id, session_key),
+        )
 
-    # Send email with license key
-    user_row = await db.fetchrow("SELECT email FROM users WHERE email = $1", row["user_id"])
+    with db.get_cursor(commit=False) as cur:
+        cur.execute("SELECT email FROM users WHERE email = %s", (row["user_id"],))
+        user_row = cur.fetchone()
     if user_row:
         send_license_email(user_row["email"], raw_key, plan)
 
@@ -221,12 +219,11 @@ async def sslcommerz_fail(request: Request):
     form = await request.form()
     session_key = form.get("tran_id")
     if session_key:
-        from ollama_emu.db import Database
-        db = Database()
-        await db.execute(
-            "UPDATE payment_sessions SET status = 'failed' WHERE session_key = $1",
-            session_key,
-        )
+        with db.get_cursor() as cur:
+            cur.execute(
+                "UPDATE payment_sessions SET status = 'failed' WHERE session_key = %s",
+                (session_key,),
+            )
     return RedirectResponse(f"{APP_URL}/payment-result?status=fail")
 
 
@@ -235,12 +232,11 @@ async def sslcommerz_cancel(request: Request):
     form = await request.form()
     session_key = form.get("tran_id")
     if session_key:
-        from ollama_emu.db import Database
-        db = Database()
-        await db.execute(
-            "UPDATE payment_sessions SET status = 'cancelled' WHERE session_key = $1",
-            session_key,
-        )
+        with db.get_cursor() as cur:
+            cur.execute(
+                "UPDATE payment_sessions SET status = 'cancelled' WHERE session_key = %s",
+                (session_key,),
+            )
     return RedirectResponse(f"{APP_URL}/payment-result?status=cancel")
 
 
@@ -250,21 +246,18 @@ async def init_payment(user_id: str, plan: str, amount: float):
     Initialize a payment session. Creates a session_key and returns it
     along with the SSLCommerz checkout URL.
     """
-    from ollama_emu.db import Database
     import secrets
 
     session_key = f"OLLAMOMUI-{secrets.token_hex(12).upper()}"
-    db = Database()
+    with db.get_cursor() as cur:
+        cur.execute(
+            """
+            INSERT INTO payment_sessions (session_key, user_id, plan, amount, status)
+            VALUES (%s, %s, %s, %s, 'pending')
+            """,
+            (session_key, user_id, plan, amount),
+        )
 
-    await db.execute(
-        """
-        INSERT INTO payment_sessions (session_key, user_id, plan, amount, status)
-        VALUES ($1, $2, $3, $4, 'pending')
-        """,
-        session_key, user_id, plan, amount,
-    )
-
-    # Build SSLCommerz checkout URL
     store_id = os.getenv("SSLCOMMERZ_STORE_ID", "")
     store_passwd = os.getenv("SSLCOMMERZ_STORE_PASSWORD", "")
     success_url = f"{APP_URL}/api/payment/sslcommerz/success"
@@ -293,12 +286,12 @@ async def init_payment(user_id: str, plan: str, amount: float):
 
 
 @router.get("/license/{user_id}")
-async def get_user_licenses(user_id: str):
+def get_user_licenses(user_id: str):
     """Get all licenses for a user."""
-    from ollama_emu.db import Database
-    db = Database()
-    rows = await db.fetchall(
-        "SELECT plan, expiry_date, activated, activated_at, device_id FROM licenses WHERE user_id = $1 ORDER BY created_at DESC",
-        user_id,
-    )
+    with db.get_cursor(commit=False) as cur:
+        cur.execute(
+            "SELECT plan, expiry_date, activated, activated_at, device_id FROM licenses WHERE user_id = %s ORDER BY created_at DESC",
+            (user_id,),
+        )
+        rows = cur.fetchall()
     return {"licenses": [dict(r) for r in rows]}

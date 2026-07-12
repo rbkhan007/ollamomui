@@ -240,7 +240,7 @@ export default function Settings() {
 
         <SectionTitle>About</SectionTitle>
         <Card>
-          <Text style={styles.name}>OllamaEmu Mobile</Text>
+          <Text style={styles.name}>OllamoMUI Mobile</Text>
           <Text style={styles.muted}>
             React Native client for the Ollama Emulator Desktop. Point it at your
             desktop server to chat with any configured provider from your phone.

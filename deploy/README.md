@@ -33,7 +33,56 @@ The frontend should be deployed separately (see Option B or C below).
 
 ---
 
-## Option B: Render (Easiest)
+## Option B: Vercel + Cloudflare Tunnel (Free – Recommended)
+
+This combo costs **$0/month**: Vercel hosts the frontend with a free `*.vercel.app` subdomain, and Cloudflare Tunnel exposes the backend without open ports.
+
+### Frontend (Vercel)
+
+1. Push your repo to GitHub.
+2. Go to [vercel.com/new](https://vercel.com/new) and import your GitHub repo.
+3. Vercel auto-detects Next.js. Set:
+   - **Root Directory**: `frontend`
+   - **Framework**: Next.js
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `.next`
+4. Add environment variables:
+   ```
+   NEXT_PUBLIC_API_BASE=https://api.ollamomui.com
+   NEXT_PUBLIC_SITE_URL=https://ollamomui.vercel.app
+   ```
+5. Deploy. Your site is live at `https://<project>.vercel.app`.
+6. (Optional) Add a custom domain in Vercel → Project → Domains.
+
+> **Note:** The `vercel.json` at the repo root tells Vercel to build from the `frontend/` directory.
+
+### Backend (Cloudflare Tunnel)
+
+1. Start the backend with Docker:
+   ```bash
+   docker compose up -d backend db
+   ```
+2. Set up Cloudflare Tunnel:
+   ```bash
+   # One-time setup (requires cloudflared installed locally)
+   cloudflared tunnel login
+   cloudflared tunnel create ollamomui-api
+   
+   # Route DNS
+   cloudflared tunnel route dns ollamomui-api api.ollamomui.com
+   ```
+3. Run the tunnel:
+   ```bash
+   docker compose up -d tunnel
+   ```
+4. Verify:
+   ```bash
+   curl https://api.ollamomui.com/api/version
+   ```
+
+---
+
+## Option C: Render (Easiest)
 
 ### Backend
 

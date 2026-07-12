@@ -26,7 +26,7 @@ export default function Chat() {
   const router = useRouter();
   const { connected, baseUrl } = useApp();
   const [msgs, setMsgs] = useState<Msg[]>([
-    { role: "assistant", content: "Connected to OllamaEmu. Ask me anything." },
+    { role: "assistant", content: "Connected to OllamoMUI. Ask me anything." },
   ]);
   const [input, setInput] = useState("");
   const [models, setModels] = useState<string[]>([]);
@@ -169,7 +169,7 @@ export default function Chat() {
             style={styles.input}
             value={input}
             onChangeText={setInput}
-            placeholder="Message OllamaEmu…"
+            placeholder="Message OllamoMUI…"
             placeholderTextColor={COLORS.muted}
             multiline
             onSubmitEditing={send}

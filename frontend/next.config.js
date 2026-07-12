@@ -1,15 +1,23 @@
-// When building for GitHub Pages (project site), set GITHUB_PAGES=true and
-// NEXT_PUBLIC_BASE_PATH=/ollamomui so assets use the repo
-// subpath. The local EXE build leaves these unset and serves at the domain root.
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
+const apiBase = process.env.NEXT_PUBLIC_API_BASE || "";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
+  output: process.env.VERCEL ? undefined : "export",
   distDir: "out",
   basePath: basePath,
   assetPrefix: basePath,
-  images: { unoptimized: true },
+  images: { unoptimized: process.env.VERCEL ? false : true },
 };
+
+if (apiBase) {
+  nextConfig.rewrites = async () => [
+    {
+      source: "/api/:path*",
+      destination: `${apiBase}/api/:path*`,
+    },
+  ];
+}
 
 module.exports = nextConfig;

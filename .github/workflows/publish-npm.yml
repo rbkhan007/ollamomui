@@ -32,4 +32,4 @@ jobs:
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh api --method PATCH "/repos/rbkhan007/Ollama-Emulator-Desktop-Ultimate/packages/npm/ollama-emulator-desktop-ultimate/visibility" -f visibility=public
+        run: gh api --method PATCH "/repos/rbkhan007/ollamomui/packages/npm/ollamomui/visibility" -f visibility=public

@@ -17,7 +17,7 @@ jobs:
           for url in \
             "/user/packages/npm/%40rbkhan007%2Follama-emulator-desktop-ultimate/visibility" \
             "/user/packages/npm/ollama-emulator-desktop-ultimate/visibility" \
-            "/repos/rbkhan007/Ollama-Emulator-Desktop-Ultimate/packages/npm/ollama-emulator-desktop-ultimate/visibility" ; do
+            "/repos/rbkhan007/ollamomui/packages/npm/ollamomui/visibility" ; do
             echo "Trying: $url"
             if gh api --method PATCH "$url" -f visibility=public; then
               echo "SUCCESS via $url"

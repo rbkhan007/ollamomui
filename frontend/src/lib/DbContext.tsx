@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
+import { API_BASE } from "./config";
 
 interface SchemaInfo {
   synced: boolean;
@@ -27,7 +28,7 @@ export function DbProvider({ children }: { children: ReactNode }) {
   const refresh = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/db/schema");
+      const res = await fetch(`${API_BASE}/api/db/schema`);
       if (res.ok) {
         const data = await res.json();
         setSchema(data.schema);

@@ -5,7 +5,7 @@ import { Card, SectionTitle, PrimaryButton } from "../components/ui";
 import { BottomNav } from "../components/BottomNav";
 import { useResponsive } from "../lib/layout";
 
-const SITE = "https://rbkhan007.github.io/ollamomui";
+const SITE = "https://ollamomui.vercel.app";
 
 const FEATURES = [
   ["💸", "100% free tier", "Routes to real free LLMs via OpenRouter, Groq, DeepSeek and more."],

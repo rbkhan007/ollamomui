@@ -1,7 +1,7 @@
-# OllamaEmu — Stop Paying $20/mo for Claude & ChatGPT
+# OllamoMUI — Stop Paying $20/mo for Claude & ChatGPT
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate/main/logo.svg" alt="OllamaEmu" width="320" />
+  <img src="https://raw.githubusercontent.com/rbkhan007/ollamomui/main/logo.svg" alt="OllamoMUI" width="320" />
 </p>
 
 <p align="center">
@@ -9,12 +9,13 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate/releases/latest"><img src="https://img.shields.io/github/v/release/rbkhan007/Ollama-Emulator-Desktop-Ultimate?color=2da44e&label=release&style=flat-square" alt="Release" /></a>
-  <img src="https://img.shields.io/github/downloads/rbkhan007/Ollama-Emulator-Desktop-Ultimate/total?style=flat-square" alt="Downloads" />
-  <img src="https://img.shields.io/github/license/rbkhan007/Ollama-Emulator-Desktop-Ultimate?style=flat-square" alt="License" />
+  <a href="https://vercel.com"><img src="https://img.shields.io/badge/hosted%20on-Vercel-000?style=flat-square&logo=vercel" alt="Hosted on Vercel" /></a>
+  <a href="https://github.com/rbkhan007/ollamomui/releases/latest"><img src="https://img.shields.io/github/v/release/rbkhan007/ollamomui?color=2da44e&label=release&style=flat-square" alt="Release" /></a>
+  <img src="https://img.shields.io/github/downloads/rbkhan007/ollamomui/total?style=flat-square" alt="Downloads" />
+  <img src="https://img.shields.io/github/license/rbkhan007/ollamomui?style=flat-square" alt="License" />
   <img src="https://img.shields.io/badge/python-3.11%2B-blue?style=flat-square" alt="Python" />
   <img src="https://img.shields.io/badge/100%25-FOSS-green?style=flat-square" alt="FOSS" />
-  <a href="https://github.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate/stargazers"><img src="https://img.shields.io/github/stars/rbkhan007/Ollama-Emulator-Desktop-Ultimate?style=social" alt="Stars" /></a>
+  <a href="https://github.com/rbkhan007/ollamomui/stargazers"><img src="https://img.shields.io/github/stars/rbkhan007/ollamomui?style=social" alt="Stars" /></a>
 </p>
 
 ---
@@ -27,19 +28,19 @@
 | Claude Pro | $20 | $240 | Claude 3.5 Sonnet only |
 | Cursor Pro | $20 | $240 | Limited GPT-4 requests |
 | GitHub Copilot | $10-19 | $120-228 | Limited to VS Code |
-| **OllamaEmu** | **$0** | **$0** | **26 free models** |
+| **OllamoMUI** | **$0** | **$0** | **26 free models** |
 
 ## Cost Comparison
 
 ```mermaid
 xychart-beta
-    title "Annual Cost: Paid Subscriptions vs OllamaEmu"
-    x-axis ["ChatGPT Plus", "Claude Pro", "Cursor Pro", "Copilot", "OllamaEmu"]
+    title "Annual Cost: Paid Subscriptions vs OllamoMUI"
+    x-axis ["ChatGPT Plus", "Claude Pro", "Cursor Pro", "Copilot", "OllamoMUI"]
     y-axis "Cost (USD)" 0 --> 280
     bar [240, 240, 240, 228, 0]
 ```
 
-**OllamaEmu: $0/year.** Same quality. Full privacy. No limits.
+**OllamoMUI: $0/year.** Same quality. Full privacy. No limits.
 
 ---
 
@@ -91,9 +92,9 @@ flowchart LR
         CD["Continue.dev"]
     end
 
-    subgraph YourPC["Your PC — OllamaEmu"]
+    subgraph YourPC["Your PC — OllamoMUI"]
         direction TB
-        OE["OllamaEmu Server<br/>localhost:11434"]
+        OE["OllamoMUI Server<br/>localhost:11434"]
         RAG["RAG Engine"]
         MEM["Memory System"]
         USAGE["Usage Analytics"]
@@ -145,7 +146,7 @@ flowchart LR
     style GM fill:#fff,stroke:#059669,color:#064e3b
 ```
 
-**OllamaEmu** pretends to be Ollama (`localhost:11434`) but routes your prompts to **free cloud LLMs**. Your coding tools (Claude Code, Cursor, OpenCode) don't know the difference — they think they're talking to a local model, but you're getting cloud-quality responses for free.
+**OllamoMUI** pretends to be Ollama (`localhost:11434`) but routes your prompts to **free cloud LLMs**. Your coding tools (Claude Code, Cursor, OpenCode) don't know the difference — they think they're talking to a local model, but you're getting cloud-quality responses for free.
 
 ---
 
@@ -153,23 +154,23 @@ flowchart LR
 
 ### Option 1: Download the EXE (Windows)
 ```bash
-# Download OllamaEmu.exe from:
-# https://github.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate/releases/latest
+# Download OllamoMUI.exe from:
+# https://github.com/rbkhan007/ollamomui/releases/latest
 
 # Double-click to run
-OllamaEmu.exe
+OllamoMUI.exe
 ```
 
 ### Option 2: Download the APK (Android)
 ```bash
-# Download OllamaEmu.apk from the same release
+# Download OllamoMUI.apk from the same release
 # Install on your phone, connect to your PC's IP
 ```
 
 ### Option 3: Run from Source
 ```bash
-git clone https://github.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate.git
-cd Ollama-Emulator-Desktop-Ultimate
+git clone https://github.com/rbkhan007/ollamomui.git
+cd ollamomui
 
 # Windows
 run.bat
@@ -186,11 +187,11 @@ Opens `http://localhost:11434` automatically. Add your API key in **Settings** a
 
 | Platform | What You Get | Link |
 |----------|-------------|------|
-| **Windows EXE** | Single-file `OllamaEmu.exe` (embedded dashboard, no install) | [Download](https://github.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate/releases/latest) |
-| **Android APK** | Branded app with 8 screens (Chat, RAG, Memory, Providers, Usage, Settings, About) | [Download](https://github.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate/releases/latest) |
+| **Windows EXE** | Single-file `OllamoMUI.exe` (embedded dashboard, no install) | [Download](https://github.com/rbkhan007/ollamomui/releases/latest) |
+| **Android APK** | Branded app with 8 screens (Chat, RAG, Memory, Providers, Usage, Settings, About) | [Download](https://github.com/rbkhan007/ollamomui/releases/latest) |
 | **From Source** | `run.bat` / `run.sh` | [Clone & Run](#quick-start) |
-| **npm** | `@rbkhan007/ollama-emulator-desktop-ultimate` | [GitHub Packages](#install-from-github-packages) |
-| **Web (Free)** | Live demo at custom domain | [Open Free Tier](https://ollama-emulator-desktop-ultimate.io) |
+| **npm** | `@rbkhan007/ollamomui` | [GitHub Packages](#install-from-github-packages) |
+| **Web (Free)** | Live demo on Vercel | [Open Free Tier](https://ollamomui.vercel.app) |
 
 ---
 
@@ -203,7 +204,7 @@ Opens `http://localhost:11434` automatically. Add your API key in **Settings** a
 | **Anthropic API** | `/v1/messages` — works with Claude Code via `ANTHROPIC_BASE_URL` |
 | **26 Free Models** | Qwen3 Coder 480B, GPT-OSS 120B, Nemotron Ultra 550B, Llama 3.3, Gemma 4 |
 | **Model Catalog** | 9 providers with fallback models stored in PostgreSQL — works without API keys |
-| **Auto-Detect API Key** | Paste any provider's key, OllamaEmu detects which provider it belongs to |
+| **Auto-Detect API Key** | Paste any provider's key, OllamoMUI detects which provider it belongs to |
 | **Models Browser** | Search, filter (free/paid), provider stats at `/models` |
 | **Multi-Provider** | OpenRouter, OpenAI, Anthropic, Gemini, Groq, DeepSeek, Mistral, Together |
 | **RAG Knowledge Base** | Upload docs, paste text, PostgreSQL full-text search + pgvector cosine similarity |
@@ -222,37 +223,10 @@ Opens `http://localhost:11434` automatically. Add your API key in **Settings** a
 ### The Problem
 Every AI coding tool needs a subscription:
 
-```mermaid
-flowchart TD
-    subgraph Paid["You Pay $60+/Month"]
-        direction LR
-        CC1["Claude Code"] -->|$20/mo| A1["Anthropic"]
-        CU1["Cursor Pro"] -->|$20/mo| A2["OpenAI GPT-4"]
-        OC1["OpenCode"] -->|$20/mo| A3["Any Provider"]
-        CD1["Continue.dev"] -->|$20/mo| A4["Various"]
-    end
-
-    A1 -->|$$$| OUT["$$$ Wasted"]
-    A2 -->|$$$| OUT
-    A3 -->|$$$| OUT
-    A4 -->|$$$| OUT
-
-    style Paid fill:#fef2f2,stroke:#dc2626,stroke-width:2px,color:#7f1d1d
-    style OUT fill:#fef2f2,stroke:#dc2626,stroke-width:3px,color:#991b1b
-    style CC1 fill:#fff,stroke:#dc2626,color:#7f1d1d
-    style CU1 fill:#fff,stroke:#dc2626,color:#7f1d1d
-    style OC1 fill:#fff,stroke:#dc2626,color:#7f1d1d
-    style CD1 fill:#fff,stroke:#dc2626,color:#7f1d1d
-    style A1 fill:#fff,stroke:#dc2626,color:#7f1d1d
-    style A2 fill:#fff,stroke:#dc2626,color:#7f1d1d
-    style A3 fill:#fff,stroke:#dc2626,color:#7f1d1d
-    style A4 fill:#fff,stroke:#dc2626,color:#7f1d1d
-```
-
 That's **$60+/month** just to use different tools.
 
 ### The Solution
-**OllamaEmu** sits in the middle. One server. One port. All tools work.
+**OllamoMUI** sits in the middle. One server. One port. All tools work.
 
 ```mermaid
 flowchart LR
@@ -264,7 +238,7 @@ flowchart LR
         CD["Continue.dev"]
     end
 
-    subgraph Emu["OllamaEmu — $0"]
+    subgraph Emu["OllamoMUI — $0"]
         direction TB
         OE["localhost:11434"]
     end
@@ -326,7 +300,7 @@ ANTHROPIC_MODEL=openrouter/auto claude
   "provider": {
     "emu": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "Ollama Emulator",
+      "name": "OllamoMUI",
       "options": {
         "baseURL": "http://localhost:11434/v1",
         "apiKey": "sk-local"
@@ -361,7 +335,7 @@ OLLAMA_HOST=http://localhost:11434 ollama list
 sequenceDiagram
     autonumber
     participant Tool as AI Coding Tool
-    participant Emu as OllamaEmu
+    participant Emu as OllamoMUI
     participant Router as Provider Router
     participant Cloud as Free Cloud LLM
     participant DB as PostgreSQL + pgvector
@@ -578,7 +552,7 @@ flowchart TB
 | `DATABASE_URL` | PostgreSQL connection string (frontend env) |
 
 ### Model Catalog
-On startup, OllamaEmu saves a curated catalog of 9 providers with their models to PostgreSQL (`model_catalog` table). When no API key is configured for a provider, the catalog serves as a fallback so the Models Browser always shows available models. This means you can browse and discover models before adding any API keys.
+On startup, OllamoMUI saves a curated catalog of 9 providers with their models to PostgreSQL (`model_catalog` table). When no API key is configured for a provider, the catalog serves as a fallback so the Models Browser always shows available models. This means you can browse and discover models before adding any API keys.
 
 ### Provider Database
 Provider configs are persisted in PostgreSQL (`providers` table). On first run, 8 providers are seeded automatically. Add custom providers through the Settings page or mobile app.
@@ -591,7 +565,7 @@ Provider configs are persisted in PostgreSQL (`providers` table). On first run, 
 ```bash
 build_exe.bat
 ```
-Produces `dist/OllamaEmu.exe` — a single-file executable with embedded frontend.
+Produces `dist/OllamoMUI.exe` — a single-file executable with embedded frontend.
 
 ### Requirements
 - **Python 3.11+** (backend uses `datetime.UTC`)
@@ -609,10 +583,13 @@ npm install
 npm run dev    # http://localhost:3000
 ```
 
-### Deploy the Public Site (Free on GitHub)
-1. Repo → **Settings → Pages → Source: GitHub Actions**
-2. Push to `main` — the [`deploy-pages.yml`](.github/workflows/deploy-pages.yml) workflow builds and publishes
-3. Live at `https://ollama-emulator-desktop-ultimate.io`
+### Deploy the Public Site (Free on Vercel)
+1. Go to [vercel.com/new](https://vercel.com/new) and import your GitHub repo
+2. Set **Root Directory** to `frontend`
+3. Add env vars: `NEXT_PUBLIC_API_BASE`, `NEXT_PUBLIC_SITE_URL`
+4. Deploy — live at `https://<project>.vercel.app`
+
+> Or use GitHub Pages (alternative): push to `main` — the [`deploy-pages.yml`](.github/workflows/deploy-pages.yml) workflow builds and publishes to `https://rbkhan007.github.io/ollamomui`.
 
 ---
 
@@ -695,7 +672,7 @@ Full details: **[MOBILE.md](MOBILE.md)**
 
 ```mermaid
 graph TB
-    ROOT["OllamaEmu"] --> PY["Python Backend"]
+    ROOT["OllamoMUI"] --> PY["Python Backend"]
     ROOT --> FE["Next.js Frontend"]
     ROOT --> MOB["React Native Mobile"]
     ROOT --> CI["GitHub Actions"]
@@ -749,9 +726,9 @@ graph TB
 
 If this saves you a subscription, **share it**:
 
-- **Twitter/X**: [Tweet about OllamaEmu](https://twitter.com/intent/tweet?text=Stop%20paying%20%2420%2Fmo%20for%20Claude%20%26%20ChatGPT.%20OllamaEmu%20gives%20you%2026%20free%20LLMs%20on%20one%20port.%20%23OllamaEmu%20%23FreeLLM%20%23AI)
+- **Twitter/X**: [Tweet about OllamoMUI](https://twitter.com/intent/tweet?text=Stop%20paying%20%2420%2Fmo%20for%20Claude%20%26%20ChatGPT.%20OllamoMUI%20gives%20you%2026%20free%20LLMs%20on%20one%20port.%20%23OllamoMUI%20%23FreeLLM%20%23AI)
 - **Reddit**: Share in r/LocalLLaMA, r/selfhosted, r/ChatGPT, r/opensource
-- **Hacker News**: [Submit to HN](https://news.ycombinator.com/submitlink?u=https://github.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate&t=OllamaEmu%20%E2%80%94%2026%20free%20LLMs%20on%20one%20port)
+- **Hacker News**: [Submit to HN](https://news.ycombinator.com/submitlink?u=https://github.com/rbkhan007/ollamomui&t=OllamoMUI%20%E2%80%94%2026%20free%20LLMs%20on%20one%20port)
 - **GitHub**: Star the repo, fork it, open issues
 
 **The only price is virality.** Star the repo and tell a friend.

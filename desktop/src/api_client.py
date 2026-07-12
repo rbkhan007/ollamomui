@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any, List, Generator, Callable
 
 
 class ApiClient:
-    def __init__(self, base_url="http://localhost:8000"):
+    def __init__(self, base_url="http://localhost:11434"):
         self.base_url = base_url
         self.session = requests.Session()
         self.session.headers.update({"Content-Type": "application/json"})

@@ -45,7 +45,7 @@ export default function Connect() {
           <View style={styles.logo}>
             <Text style={styles.glyph}>{">"}_</Text>
           </View>
-          <Text style={styles.title}>OllamaEmu</Text>
+          <Text style={styles.title}>OllamoMUI</Text>
           <Text style={styles.subtitle}>Connect your phone to the desktop emulator</Text>
 
           <Text style={styles.label}>Server address</Text>

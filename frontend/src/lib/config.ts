@@ -7,8 +7,14 @@ export const REPO_RAW = "https://raw.githubusercontent.com/rbkhan007/ollamomui/m
 export const RELEASES_URL = `${REPO_URL}/releases/latest`;
 export const DOWNLOAD_URL = `${REPO_URL}/releases/latest/download/ollamomui.exe`;
 
+export const SITE_DOMAIN = process.env.NEXT_PUBLIC_VERCEL_URL
+  ? `${process.env.NEXT_PUBLIC_VERCEL_URL}`
+  : process.env.NEXT_PUBLIC_SITE_URL
+    ? new URL(process.env.NEXT_PUBLIC_SITE_URL).hostname
+    : "vercel.app";
+
 export const FREETIER_DOMAIN =
-  process.env.NEXT_PUBLIC_FREETIER_DOMAIN || "rbkhan007.github.io/ollamomui";
+  process.env.NEXT_PUBLIC_FREETIER_DOMAIN || SITE_DOMAIN;
 export const FREETIER_URL = `https://${FREETIER_DOMAIN}`;
 
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || FREETIER_URL;
@@ -19,6 +25,8 @@ export const EXE_URL = DOWNLOAD_URL;
 
 // 🪙 Stripe Payment Links – create products at https://dashboard.stripe.com/products
 // then paste the generated payment link URLs here.
+export const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "";
+
 export const STRIPE_WEB_PRO = process.env.NEXT_PUBLIC_STRIPE_WEB_PRO || "";
 export const STRIPE_DESKTOP_PRO = process.env.NEXT_PUBLIC_STRIPE_DESKTOP_PRO || "";
 export const STRIPE_MOBILE_ULTIMATE = process.env.NEXT_PUBLIC_STRIPE_MOBILE_ULTIMATE || "";

@@ -30,7 +30,7 @@ echo [OK]
 
 echo [4/5] Building executable...
 python -m PyInstaller --onefile --console ^
-    --name "OllamaEmu" ^
+    --name "OllamoMUI" ^
     --add-data "frontend\out;frontend\out" ^
     --add-data "backend\src\ollama_emu;ollama_emu" ^
     --hidden-import numpy ^

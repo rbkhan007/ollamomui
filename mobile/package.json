@@ -1,6 +1,6 @@
 {
   "name": "ollamomui-mobile",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",

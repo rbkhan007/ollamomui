@@ -85,7 +85,7 @@ from ollama_emu.rag import RAGEngine
 from ollama_emu.memory import MemorySystem
 from ollama_emu.device_identity import ensure_device, get_device, now_local, local_now_iso, device_summary
 
-VERSION = "1.0.2"
+VERSION = "1.0.4"
 
 # ============================================================
 # CONFIGURATION & PROVIDER DATABASE

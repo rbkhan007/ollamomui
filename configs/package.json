@@ -1,15 +1,15 @@
 {
-  "name": "@rbkhan007/ollama-emulator-desktop-ultimate",
-  "version": "1.0.6",
-  "description": "Run a fake Ollama server locally that routes to real free LLM models (OpenRouter, OpenAI, Anthropic, Groq, DeepSeek, Gemini) with RAG, memory, and a Next.js dashboard.",
-  "license": "UNLICENSED",
+  "name": "@rbkhan007/ollamomui",
+  "version": "1.0.4",
+  "description": "OllamoMUI – Free, self-hosted AI gateway with RAG, memory, and a stunning desktop GUI.",
+  "license": "MIT",
   "author": "Rhasan@dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate.git"
+    "url": "https://github.com/rbkhan007/ollamomui.git"
   },
-  "homepage": "https://github.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate#readme",
-  "bugs": "https://github.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate/issues",
+  "homepage": "https://github.com/rbkhan007/ollamomui#readme",
+  "bugs": "https://github.com/rbkhan007/ollamomui/issues",
   "keywords": [
     "ollama",
     "llm",
@@ -17,8 +17,9 @@
     "anthropic",
     "openrouter",
     "ai",
-    "emulator",
-    "rag"
+    "rag",
+    "memory",
+    "ollamomui"
   ],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -32,11 +33,6 @@
     "brand-mark.svg",
     "favicon.svg",
     "logo.svg",
-    "ollama_emu_desktop.py",
-    "rag.py",
-    "memory.py",
-    "cli.py",
-    "device_identity.py",
     "requirements.txt",
     "frontend",
     "mobile"

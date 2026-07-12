@@ -1,4 +1,4 @@
-# OllamaEmu Mobile — Free LLMs in Your Pocket
+# OllamoMUI Mobile — Free LLMs in Your Pocket
 
 The mobile client is a **React Native (Expo)** app in `mobile/`. It connects to the
 desktop server (`ollama_emu_desktop.py`, FastAPI) over the network and proxies
@@ -39,8 +39,8 @@ That's it — you can chat, browse providers/models, and view usage from your ph
 
 ## Download the APK
 
-The branded standalone **`OllamaEmu.apk`** is attached to every
-[GitHub Release](https://github.com/rbkhan007/Ollama-Emulator-Desktop-Ultimate/releases/latest).
+The branded standalone **`OllamoMUI.apk`** is attached to every
+[GitHub Release](https://github.com/rbkhan007/ollamomui/releases/latest).
 
 - **Portrait-locked** — no auto-rotation
 - **Branded identity** — custom icon, adaptive icon, splash screen, notification icon
@@ -59,7 +59,7 @@ eas build -p android --profile apk   # standalone APK (assembleRelease)
 ```
 
 > The EAS project lives under the Expo account **`rhavex`** as
-> `@rhavex/ollama-emu-mobile` (see `expo.extra.eas.projectId` in `app.json`).
+> `@rhavex/ollamomui-mobile` (see `expo.extra.eas.projectId` in `app.json`).
 > With a robot token (`EXPO_TOKEN`) you must run `eas init --force` once before
 > the first build. Track progress with `eas build:view <id>` or `eas build:list`.
 
@@ -155,8 +155,8 @@ Pushing a tag `v*` (or `workflow_dispatch`) runs
 [`.github/workflows/release.yml`](.github/workflows/release.yml), which:
 
 1. **Builds the Windows EXE** with PyInstaller (embedded `frontend/out`, branded
-   `brand-mark.ico` icon) and uploads `OllamaEmu.exe` to the GitHub Release.
-2. **Builds the Android APK** with EAS and uploads `OllamaEmu.apk` — **only when
+   `brand-mark.ico` icon) and uploads `OllamoMUI.exe` to the GitHub Release.
+2. **Builds the Android APK** with EAS and uploads `OllamoMUI.apk` — **only when
    the repo secret `EXPO_TOKEN` (an Expo access token) is set**, otherwise that
    job is skipped.
 
@@ -169,4 +169,4 @@ git push origin v1.0.x
 
 The EXE is attached automatically. For the APK, add the `EXPO_TOKEN` repo secret
 (Settings → Secrets → Actions) under the Expo account `rhavex`, then re-run the
-workflow (or re-push the tag) and `OllamaEmu.apk` will be attached too.
+workflow (or re-push the tag) and `OllamoMUI.apk` will be attached too.

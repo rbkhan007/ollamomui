@@ -107,7 +107,7 @@ async function main() {
     <rect width="1200" height="630" fill="#06060e"/>
     <rect width="1200" height="630" fill="url(#glow)"/>
     <g transform="translate(300,315) scale(6)">${markGroup}</g>
-    <text x="560" y="300" font-family="Arial, Helvetica, sans-serif" font-size="84" font-weight="800" fill="url(#t)">OllamaEmu</text>
+    <text x="560" y="300" font-family="Arial, Helvetica, sans-serif" font-size="84" font-weight="800" fill="url(#t)">OllamoMUI</text>
     <text x="562" y="360" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="600" fill="#c7c9e0">Free local LLM proxy</text>
     <text x="562" y="408" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="600" fill="#c7c9e0">RAG · Memory · Analytics</text>
   </svg>`;

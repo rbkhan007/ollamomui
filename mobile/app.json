@@ -2,7 +2,7 @@
   "expo": {
     "name": "OllamoMUI",
     "slug": "ollamomui-mobile",
-    "version": "1.0.2",
+    "version": "1.0.4",
     "orientation": "portrait",
     "scheme": "ollamomui",
     "userInterfaceStyle": "dark",
