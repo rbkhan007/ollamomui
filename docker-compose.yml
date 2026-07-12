@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: ollamaemu
+      POSTGRES_PASSWORD: ${PGPASSWORD:-ollamaemu}
+      POSTGRES_DB: ollamaemu
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./configs/setup_database.sql:/docker-entrypoint-initdb.d/01-setup.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ollamaemu"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: .
+    ports:
+      - "11434:11434"
+    environment:
+      PGHOST: postgres
+      PGPORT: 5432
+      PGUSER: ollamaemu
+      PGPASSWORD: ${PGPASSWORD:-ollamaemu}
+      PGDATABASE: ollamaemu
+      OLLAMA_EMU_BIND: 0.0.0.0
+      OLLAMA_EMU_PORT: 11434
+      OLLAMA_EMU_PROVIDER: ${OLLAMA_EMU_PROVIDER:-openrouter}
+      OLLAMA_EMU_API_KEY: ${OLLAMA_EMU_API_KEY:-}
+      OLLAMA_EMU_EMBEDDING_BACKEND: tfidf
+      OLLAMA_EMU_DISABLE_RATE_LIMIT: "1"
+      SSLCOMMERZ_STORE_ID: ${SSLCOMMERZ_STORE_ID:-}
+      SSLCOMMERZ_STORE_PASSWORD: ${SSLCOMMERZ_STORE_PASSWORD:-}
+      SMTP_SENDER: ${SMTP_SENDER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      APP_URL: ${APP_URL:-http://localhost:11434}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:
