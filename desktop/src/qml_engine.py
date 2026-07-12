@@ -4,6 +4,7 @@ from PySide6.QtCore import QUrl, QObject, Signal, Property
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 from .api_client import ApiClient
+from .updater import UpdaterManager
 
 QML_DIR = Path(__file__).resolve().parent / "qml"
 
@@ -33,6 +34,7 @@ class QmlEngine:
         self.engine = QQmlApplicationEngine()
         self.api = ApiClient()
         self.theme = ThemeManager()
+        self.updater = UpdaterManager()
 
         self.engine.addImportPath(str(QML_DIR))
         self.engine.addImportPath(str(QML_DIR / "components"))
@@ -40,6 +42,7 @@ class QmlEngine:
 
         self.engine.rootContext().setContextProperty("apiClient", self.api)
         self.engine.rootContext().setContextProperty("themeManager", self.theme)
+        self.engine.rootContext().setContextProperty("updaterManager", self.updater)
 
         main_qml = QML_DIR / "main.qml"
         self.engine.load(QUrl.fromLocalFile(str(main_qml)))

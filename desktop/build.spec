@@ -65,6 +65,7 @@ hiddenimports = [
     "ollama_emu.cli",
     "ollama_emu.device_identity",
     "ollama_emu.memory_monitor",
+    "ollama_emu.updater",
     "psutil",
 ]
 

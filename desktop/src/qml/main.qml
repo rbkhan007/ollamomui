@@ -96,6 +96,11 @@ ApplicationWindow {
         z: 9998
     }
 
+    // Auto-update notification
+    UpdateDialog {
+        id: updateDialog
+    }
+
     // ── Keyboard Shortcuts ──
     Shortcut { sequence: "Ctrl+1"; onActivated: { stackLayout.currentIndex = 0; sidebar.currentIndex = 0 } }
     Shortcut { sequence: "Ctrl+2"; onActivated: { stackLayout.currentIndex = 1; sidebar.currentIndex = 1 } }
