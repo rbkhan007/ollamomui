@@ -28,6 +28,7 @@ import ipaddress
 import urllib.parse
 import argparse
 from ollama_emu import acl as _acl
+from ollama_emu.payment import router as payment_router
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s", stream=sys.stdout)
 log = logging.getLogger("ollama-emu")
@@ -351,6 +352,8 @@ def configure_cors(application):
         allow_headers=["*"],
     )
     application.middleware("http")(_acl.create_acl_middleware(application))
+
+app.include_router(payment_router)
 
 # ============================================================
 # RAG & MEMORY

@@ -306,6 +306,37 @@ CREATE TABLE IF NOT EXISTS rate_limits (
 );
 CREATE INDEX IF NOT EXISTS idx_rate_key ON rate_limits(key);
 
+-- ── Payment & Licenses ──────────────────────────────
+CREATE TABLE IF NOT EXISTS payment_sessions (
+    id             SERIAL PRIMARY KEY,
+    session_key    TEXT UNIQUE NOT NULL,
+    user_id        TEXT NOT NULL,
+    plan           TEXT NOT NULL,
+    amount         REAL DEFAULT 0,
+    currency       TEXT DEFAULT 'BDT',
+    status         TEXT DEFAULT 'pending',
+    transaction_id TEXT DEFAULT '',
+    created_at     TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_payment_session_key ON payment_sessions(session_key);
+CREATE INDEX IF NOT EXISTS idx_payment_user ON payment_sessions(user_id);
+
+CREATE TABLE IF NOT EXISTS licenses (
+    id           SERIAL PRIMARY KEY,
+    user_id      TEXT NOT NULL,
+    key_hash     TEXT NOT NULL,
+    raw_key      TEXT NOT NULL,
+    plan         TEXT NOT NULL,
+    expiry_date  TIMESTAMPTZ NOT NULL,
+    activated    BOOLEAN DEFAULT false,
+    activated_at TIMESTAMPTZ,
+    device_id    TEXT DEFAULT '',
+    created_at   TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, plan)
+);
+CREATE INDEX IF NOT EXISTS idx_licenses_user ON licenses(user_id);
+CREATE INDEX IF NOT EXISTS idx_licenses_key ON licenses(key_hash);
+
 -- ── IVFFlat index for pgvector (requires data to exist) ──
 -- Created after first documents are inserted.
 """
@@ -326,6 +357,8 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
 ALTER TABLE sessions ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'user';
 ALTER TABLE sessions ADD COLUMN IF NOT EXISTS last_activity TIMESTAMPTZ DEFAULT NOW();
 ALTER TABLE sessions ADD COLUMN IF NOT EXISTS ip TEXT DEFAULT '';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS subscription_status TEXT DEFAULT 'free';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS subscription_expiry TIMESTAMPTZ;
     """
     try:
         with get_conn() as conn:

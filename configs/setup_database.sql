@@ -293,6 +293,40 @@ INSERT INTO providers (name, url, models_url, auth_type, default_model, free_heu
     ('together', 'https://api.together.xyz/v1/chat/completions', 'https://api.together.xyz/v1/models', 'bearer', 'meta-llama/Llama-3-70b-chat-hf', 'false', 'openai', '')
 ON CONFLICT (name) DO NOTHING;
 
+-- ── Payment & Licenses ──────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS payment_sessions (
+    id             SERIAL PRIMARY KEY,
+    session_key    TEXT UNIQUE NOT NULL,
+    user_id        TEXT NOT NULL,
+    plan           TEXT NOT NULL,
+    amount         REAL DEFAULT 0,
+    currency       TEXT DEFAULT 'BDT',
+    status         TEXT DEFAULT 'pending',
+    transaction_id TEXT DEFAULT '',
+    created_at     TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_payment_session_key ON payment_sessions(session_key);
+CREATE INDEX IF NOT EXISTS idx_payment_user ON payment_sessions(user_id);
+
+CREATE TABLE IF NOT EXISTS licenses (
+    id           SERIAL PRIMARY KEY,
+    user_id      TEXT NOT NULL,
+    key_hash     TEXT NOT NULL,
+    raw_key      TEXT NOT NULL,
+    plan         TEXT NOT NULL,
+    expiry_date  TIMESTAMPTZ NOT NULL,
+    activated    BOOLEAN DEFAULT false,
+    activated_at TIMESTAMPTZ,
+    device_id    TEXT DEFAULT '',
+    created_at   TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, plan)
+);
+CREATE INDEX IF NOT EXISTS idx_licenses_user ON licenses(user_id);
+CREATE INDEX IF NOT EXISTS idx_licenses_key ON licenses(key_hash);
+
+ALTER TABLE users ADD COLUMN IF NOT EXISTS subscription_status TEXT DEFAULT 'free';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS subscription_expiry TIMESTAMPTZ;
+
 INSERT INTO schema_version (version, prisma_hash) VALUES (1, '')
 ON CONFLICT (version) DO NOTHING;
 
