@@ -52,7 +52,7 @@ Repository = "https://github.com/rbkhan007/ollamomui"
 Issues = "https://github.com/rbkhan007/ollamomui/issues"
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["backend/src"]
 
 [tool.ruff]
 line-length = 120

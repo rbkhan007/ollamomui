@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY pyproject.toml .
-COPY backend/src/ollama_emu/ ./ollama_emu/
+COPY backend/src/ ./src/
 
 RUN pip install --no-cache-dir -e .
 
