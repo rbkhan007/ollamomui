@@ -1,14 +1,81 @@
+import json
 import requests
 from typing import Optional, Dict, Any, List, Generator, Callable
+from PySide6.QtCore import QObject, Signal, Slot, QRunnable, QThreadPool
 
 
-class ApiClient:
+class _WorkerSignals(QObject):
+    """QRunnable cannot own signals, so the worker carries a QObject for them."""
+    finished = Signal(str)
+    error = Signal(str)
+
+
+class ApiWorker(QRunnable):
+    """Runs a blocking ApiClient method off the GUI thread."""
+
+    def __init__(self, client: "ApiClient", method: str, args: list, kwargs: dict):
+        super().__init__()
+        self._client = client
+        self._method = method
+        self._args = args
+        self._kwargs = kwargs
+        self.signals = _WorkerSignals()
+
+    def run(self):
+        try:
+            result = getattr(self._client, self._method)(*self._args, **self._kwargs)
+            self.signals.finished.emit(json.dumps(result, default=str))
+        except Exception as e:
+            self.signals.error.emit(str(e))
+
+
+class ApiClient(QObject):
+    # ── Async signals (QML connects via Connections) ──
+    requestFinished = Signal(str, str)  # (requestId, jsonPayload)
+    requestError = Signal(str, str)     # (requestId, errorMessage)
+    loadingChanged = Signal(bool)
+
     def __init__(self, base_url="http://localhost:11434"):
+        super().__init__()
         self.base_url = base_url
         self.session = requests.Session()
         self.session.headers.update({"Content-Type": "application/json"})
         self._token: Optional[str] = None
         self._preferences: Dict[str, str] = {}
+        self._pool = QThreadPool.globalInstance()
+        self._active = 0
+
+    # ── Async executor: run any ApiClient method on a worker thread ──
+    @Slot(str, str, str, str)
+    def executeAsync(self, requestId: str, method: str, argsJson: str = "[]", kwargsJson: str = "{}"):
+        try:
+            args = json.loads(argsJson) if argsJson else []
+            kwargs = json.loads(kwargsJson) if kwargsJson else {}
+        except Exception as e:
+            self.requestError.emit(requestId, f"bad args: {e}")
+            return
+        if not hasattr(self, method):
+            self.requestError.emit(requestId, f"unknown method: {method}")
+            return
+        worker = ApiWorker(self, method, args, kwargs)
+        worker.signals.finished.connect(lambda payload: self._done(requestId, payload))
+        worker.signals.error.connect(lambda err: self._fail(requestId, err))
+        self._active += 1
+        if self._active == 1:
+            self.loadingChanged.emit(True)
+        self._pool.start(worker)
+
+    def _done(self, requestId: str, payload: str):
+        self._active = max(0, self._active - 1)
+        if self._active == 0:
+            self.loadingChanged.emit(False)
+        self.requestFinished.emit(requestId, payload)
+
+    def _fail(self, requestId: str, err: str):
+        self._active = max(0, self._active - 1)
+        if self._active == 0:
+            self.loadingChanged.emit(False)
+        self.requestError.emit(requestId, err)
 
     # ── Token ──────────────────────────────────────────────
     @property
@@ -50,6 +117,13 @@ class ApiClient:
 
     def change_password(self, old_password: str, new_password: str) -> Dict[str, Any]:
         return self._request("POST", "/api/auth/change-password", json={"old_password": old_password, "new_password": new_password})
+
+    # ── License activation ───────────────────────────────
+    def activate_license(self, license_key: str, device_id: str = "") -> Dict[str, Any]:
+        return self._request("POST", "/api/payment/activate", json={
+            "license_key": license_key,
+            "device_id": device_id,
+        })
 
     # ── Providers ─────────────────────────────────────────
     def get_providers(self) -> List[Dict[str, Any]]:
@@ -227,6 +301,21 @@ class ApiClient:
     def import_all(self, data: Dict[str, Any]) -> Dict[str, Any]:
         return self._request("POST", "/api/import", json=data)
 
+    def export_backup(self, path: str) -> Dict[str, Any]:
+        import json
+        data = self.export_all()
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+        return {"status": "ok", "path": path, "providers": len(data.get("providers", [])),
+                "facts": len(data.get("memory_facts", [])), "messages": len(data.get("memory_messages", [])),
+                "documents": len(data.get("rag_documents", []))}
+
+    def import_backup(self, path: str) -> Dict[str, Any]:
+        import json
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return self.import_all(data)
+
     # ── Preferences (client-side) ─────────────────────────
     def get_preference(self, key: str, default: str = "") -> str:
         return self._preferences.get(key, default)
@@ -314,6 +403,8 @@ class ApiClient:
     # Export/Import
     exportAll = export_all
     importAll = import_all
+    exportBackup = export_backup
+    importBackup = import_backup
 
     # Preferences
     setPreference = set_preference

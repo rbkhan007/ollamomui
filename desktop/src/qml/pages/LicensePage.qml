@@ -40,7 +40,7 @@ Rectangle {
             Item { Layout.preferredHeight: 10 }
 
             Text {
-                text: "License Activation"
+                text: qsTr("License Activation")
                 font: Theme.fontHeading
                 font.pixelSize: 22
                 color: Theme.textPrimary
@@ -69,7 +69,7 @@ Rectangle {
                     spacing: 14
 
                     Text {
-                        text: "License Key"
+                        text: qsTr("License Key")
                         font: Theme.fontBody
                         font.bold: true
                         color: Theme.textPrimary
@@ -92,7 +92,7 @@ Rectangle {
                             font.family: "Courier New"
                             font.pixelSize: 14
                             color: Theme.textPrimary
-                            placeholderText: "OLLAMOMUI-..."
+                            placeholderText: qsTr("OLLAMOMUI-...")
                             placeholderTextColor: Theme.textMuted
                             onTextChanged: {
                                 activateBtn.enabled = text.trim().length > 0
@@ -102,7 +102,7 @@ Rectangle {
 
                     Button {
                         id: activateBtn
-                        text: "Activate License"
+                        text: qsTr("Activate License")
                         enabled: false
                         implicitHeight: 40
                         implicitWidth: 180
@@ -122,24 +122,21 @@ Rectangle {
                         onClicked: {
                             window.showLoading(true)
                             var key = licenseInput.text.trim()
-                            apiClient.request("POST", "/api/payment/activate", {
-                                license_key: key,
-                                device_id: apiClient.getPreference("device_id", "")
-                            }, function(resp) {
-                                window.showLoading(false)
-                                if (resp && resp.success) {
-                                    apiClient.setPreference("license_key", key)
-                                    apiClient.setPreference("license_plan", resp.plan)
-                                    apiClient.setPreference("license_expiry", resp.expires_at)
-                                    hasLicense = true
-                                    currentPlan = resp.plan
-                                    expiresAt = resp.expires_at
-                                    licenseInput.readOnly = true
-                                    window.showToast("License activated: " + resp.plan, 1)
-                                } else {
-                                    window.showToast(resp && resp.detail || "Activation failed", 3)
-                                }
-                            })
+                            var deviceId = apiClient.getPreference("device_id", "")
+                            try {
+                                var resp = apiClient.activateLicense(key, deviceId)
+                                apiClient.setPreference("license_key", key)
+                                apiClient.setPreference("license_plan", resp.plan)
+                                apiClient.setPreference("license_expiry", resp.expires_at)
+                                hasLicense = true
+                                currentPlan = resp.plan
+                                expiresAt = resp.expires_at
+                                licenseInput.readOnly = true
+                                window.showToast(qsTr("License activated: ") + resp.plan, 1)
+                            } catch (e) {
+                                window.showToast(qsTr("Activation failed") + ": " + (e ? e.toString() : ""), 3)
+                            }
+                            window.showLoading(false)
                         }
                     }
                 }
@@ -164,7 +161,7 @@ Rectangle {
                             color: "#2da44e"
                         }
                         Text {
-                            text: "License Active"
+                            text: qsTr("License Active")
                             font: Theme.fontHeading
                             font.pixelSize: 18
                             color: "#2da44e"
@@ -172,19 +169,19 @@ Rectangle {
                     }
 
                     Text {
-                        text: "Plan: " + currentPlan
+                        text: qsTr("Plan: ") + currentPlan
                         font: Theme.fontBody
                         color: Theme.textPrimary
                     }
 
                     Text {
-                        text: "Expires: " + expiresAt
+                        text: qsTr("Expires: ") + expiresAt
                         font: Theme.fontBody
                         color: Theme.textSecondary
                     }
 
                     Button {
-                        text: "Deactivate"
+                        text: qsTr("Deactivate")
                         flat: true
                         implicitHeight: 36
                         contentItem: Text {
@@ -203,22 +200,19 @@ Rectangle {
                             expiresAt = ""
                             licenseInput.readOnly = false
                             licenseInput.text = ""
-                            window.showToast("License deactivated", 2)
+                            window.showToast(qsTr("License deactivated"), 2)
                         }
                     }
                 }
             }
 
             Text {
-                text: "Need a license? Visit ollamomui.com/pricing"
+                text: qsTr("Need a license? Visit ollamomui.com/pricing")
                 font: Theme.fontBody
                 color: Theme.accentPrimary
                 visible: !hasLicense
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: Qt.openUrlExternally("https://ollamomui.vercel.app/pricing")
-                }
+                HoverHandler { cursorShape: Qt.PointingHandCursor }
+                TapHandler { onTapped: Qt.openUrlExternally("https://ollamomui.vercel.app/pricing") }
             }
 
             Item { Layout.preferredHeight: 20 }
