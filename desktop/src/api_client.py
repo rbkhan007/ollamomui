@@ -141,6 +141,15 @@ class ApiClient:
     def get_rag_stats(self) -> Dict[str, Any]:
         return self._request("GET", "/api/rag/stats")
 
+    def upload_document(self, file_path: str, collection: str = "default") -> Dict[str, Any]:
+        import os
+        url = f"{self.base_url}/api/rag/upload"
+        with open(file_path, "rb") as f:
+            files = {"file": (os.path.basename(file_path), f, "application/octet-stream")}
+            resp = self.session.post(url, files=files, data={"collection": collection})
+            resp.raise_for_status()
+            return resp.json()
+
     # ── Memory ────────────────────────────────────────────
     def get_memory_messages(self, session_id: str = None, limit: int = 100, offset: int = 0) -> List[Dict[str, Any]]:
         params = {"limit": limit, "offset": offset}
@@ -271,6 +280,7 @@ class ApiClient:
     addRagText = add_rag_text
     searchRag = search_rag
     getRagStats = get_rag_stats
+    uploadDocument = upload_document
 
     # Memory
     getMemoryMessages = get_memory_messages

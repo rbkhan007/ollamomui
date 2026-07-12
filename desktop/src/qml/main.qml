@@ -19,6 +19,13 @@ ApplicationWindow {
         toast.show(msg, type, dur)
     }
 
+    // Global loading state
+    property bool isLoading: false
+    function showLoading(loading) {
+        isLoading = loading
+        loadingSpinner.running = loading
+    }
+
     Rectangle {
         id: background
         anchors.fill: parent
@@ -78,6 +85,15 @@ ApplicationWindow {
     Toast {
         id: toast
         anchors.horizontalCenter: parent.horizontalCenter
+    }
+
+    // Global loading spinner
+    ProgressSpinner {
+        id: loadingSpinner
+        anchors.centerIn: parent
+        running: window.isLoading
+        size: 56
+        z: 9998
     }
 
     // ── Keyboard Shortcuts ──

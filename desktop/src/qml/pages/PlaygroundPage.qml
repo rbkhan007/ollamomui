@@ -204,24 +204,50 @@ Rectangle {
         chatModel.append({ message: text, isUser: true })
         messageInput.text = ""
 
-        var model = modelCombo.currentValue || "llama3.2:1b"
-        var messages = []
-        for (var i = 0; i < chatModel.count; i++) {
-            var role = chatModel.get(i).isUser ? "user" : "assistant"
-            messages.push({ role: role, content: chatModel.get(i).message })
-        }
+        var model = modelCombo.currentValue || modelCombo.currentText || "llama3.2:1b"
+        var msgs = [{ role: "user", content: text }]
 
         chatModel.append({ message: "", isUser: false })
         var replyIdx = chatModel.count - 1
 
-        try {
-            var result = apiClient.chatCompletion(model, messages, false)
-            var reply = result.choices && result.choices[0] ? result.choices[0].message.content : "No response"
-            chatModel.setProperty(replyIdx, "message", reply)
-        } catch(e) {
-            chatModel.setProperty(replyIdx, "message", "Error: " + e.message)
-        } finally {
-            isLoading = false
+        var xhr = new XMLHttpRequest()
+        var url = apiClient.base_url + "/v1/chat/completions"
+        xhr.open("POST", url, true)
+        xhr.setRequestHeader("Content-Type", "application/json")
+        if (apiClient.token) {
+            xhr.setRequestHeader("Authorization", "Bearer " + apiClient.token)
+        }
+        var body = JSON.stringify({ model: model, messages: msgs, stream: true })
+        xhr.send(body)
+
+        var fullReply = ""
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 3 || xhr.readyState === 4) {
+                var raw = xhr.responseText
+                var lines = raw.split("\n")
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i]
+                    if (line.indexOf("data: ") === 0) {
+                        var jsonStr = line.substring(6).trim()
+                        if (jsonStr === "[DONE]" || jsonStr === "") continue
+                        try {
+                            var parsed = JSON.parse(jsonStr)
+                            var delta = parsed.choices && parsed.choices[0] && parsed.choices[0].delta
+                            if (delta && delta.content) {
+                                fullReply += delta.content
+                                chatModel.setProperty(replyIdx, "message", fullReply)
+                            }
+                        } catch(e) {}
+                    }
+                }
+                if (xhr.readyState === 4) {
+                    if (xhr.status !== 200) {
+                        chatModel.setProperty(replyIdx, "message", "Error: " + (xhr.statusText || xhr.responseText))
+                    }
+                    isLoading = false
+                }
+            }
         }
     }
 }

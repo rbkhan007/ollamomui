@@ -42,6 +42,49 @@ Rectangle {
             }
 
             Button {
+                text: "Upload File"
+                flat: true; implicitWidth: 110; implicitHeight: 40
+                contentItem: Text {
+                    text: parent.text; color: "#ffffff"; font: Theme.fontBody; font.bold: true
+                    horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter
+                }
+                background: Rectangle {
+                    radius: Theme.radiusMedium
+                    gradient: Gradient {
+                        GradientStop { position: 0.0; color: Theme.accentSecondary }
+                        GradientStop { position: 1.0; color: Theme.accentPrimary }
+                    }
+                }
+                onClicked: fileDialog.open()
+            }
+
+            FileDialog {
+                id: fileDialog
+                title: "Choose a document to index"
+                nameFilters: ["Documents (*.pdf *.txt *.md *.docx *.html *.csv)", "All files (*)"]
+                onAccepted: {
+                    var raw = fileDialog.fileUrl.toString()
+                    var path = raw.startsWith("file:///") ? raw.substring(8) : raw
+                    window.showLoading(true)
+                    try {
+                        var result = apiClient.uploadDocument(path)
+                        window.showToast("File indexed (" + (result.chunks || 0) + " chunks)", 1)
+                        refreshDocuments()
+                    } catch(e) {
+                        window.showToast("Upload failed: " + e.message, 2)
+                    }
+                    window.showLoading(false)
+                }
+            }
+
+            ProgressSpinner {
+                id: ragSpinner
+                anchors.centerIn: parent
+                running: false
+                size: 48
+            }
+
+            Button {
                 text: "\u21BB"
                 flat: true; implicitWidth: 40; implicitHeight: 40
                 contentItem: Text {
