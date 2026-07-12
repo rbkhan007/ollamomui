@@ -104,7 +104,7 @@ OllamoMUI is a **free‑to‑use, open‑core AI gateway** that:
 
 | # | Task | How / Notes |
 |---|------|-------------|
-| 1 | **Set Lemon Squeezy live keys** | Add `LEMON_SQUEEZY_API_KEY`, `LEMON_SQUEEZY_STORE_ID`, `LEMON_SQUEEZY_WEBHOOK_SECRET` to Render. Register webhook (`/api/payment/webhook`). Test with test card `4242 4242 4242 4242`. |
+| 1 | **Set Lemon Squeezy live keys (optional)** | Manual WhatsApp sales already works (see *Manual Sales Workflow*) — automate later only if desired. To enable: add `LEMON_SQUEEZY_API_KEY`, `LEMON_SQUEEZY_STORE_ID`, `LEMON_SQUEEZY_WEBHOOK_SECRET` to Render, register webhook (`/api/payment/webhook`), test with `4242 4242 4242 4242`. |
 | 2 | **Buy custom domain** (optional) | Purchase `ollamomui.com`; point root to Vercel (`76.76.21.21`); update Vercel + Render env vars. |
 | 3 | **Build & test desktop EXE on Windows** | `cd desktop && python fetch_postgres.py && python build.py --onefile`. Verify local PG boots, QML compiles, async round‑trip works. (PySide6 not installed in dev sandbox → cannot build here.) |
 | 4 | **Build & publish mobile APK** | `cd mobile && npx eas login && npx eas build --platform android --profile apk`. Upload to Play Store. |
@@ -147,7 +147,7 @@ bank transfer) and licenses are issued manually. This is fully functional today.
 ## 🧭 Recommended Next Steps (Order of Execution)
 
 1. **Sanity‑check desktop EXE** – build/test on Windows to confirm QML compiles + async/local‑PG work end‑to‑end.
-2. **Set live Lemon Squeezy keys** – switch from sandbox to live, test a $1 transaction, verify license generation + email.
+2. **(Optional) Set live Lemon Squeezy keys** – only if you want automated checkout; manual WhatsApp sales is already functional (no gateway needed).
 3. **Run/confirm the test suite** is green (CI or local) before claiming test coverage.
 4. **Deploy mobile APK** – build and upload (even beta).
 5. **Optionally set up custom domain**, then **launch promotion**.
