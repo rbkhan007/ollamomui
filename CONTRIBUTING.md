@@ -11,7 +11,7 @@ cd ollamomui
 
 # Backend
 python -m venv .venv && .venv\Scripts\activate   # or: source .venv/bin/activate
-pip install -e "backend/[dev]"
+pip install -e ".[dev]"
 
 # Frontend
 cd frontend && npm install

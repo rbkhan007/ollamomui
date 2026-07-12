@@ -1,7 +1,7 @@
 # OllamoMUI Mobile — Free LLMs in Your Pocket
 
 The mobile client is a **React Native (Expo)** app in `mobile/`. It connects to the
-desktop server (`ollama_emu_desktop.py`, FastAPI) over the network and proxies
+desktop server (`desktop/src/launcher.py`, FastAPI) over the network and proxies
 chats to whichever LLM provider the server has configured.
 
 ```
@@ -21,7 +21,7 @@ chats to whichever LLM provider the server has configured.
 
 1. Start the desktop server on your computer:
    ```bash
-   python ollama_emu_desktop.py        # serves on http://localhost:11434
+    python desktop/src/launcher.py      # serves on http://localhost:11434
    ```
 2. In `mobile/`, install deps and start Expo:
    ```bash

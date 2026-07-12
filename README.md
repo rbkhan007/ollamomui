@@ -45,7 +45,7 @@ curl http://localhost:11434/api/chat -d '{"model":"free","messages":[{"role":"us
 - **Persistent memory** (every conversation auto-saves facts & summaries)
 - A **desktop GUI** (PySide6 + QML, dark/light theme, auto-updater)
 - A **mobile app** (React Native / Expo with full CRUD)
-- **License management** with **Lemon Squeezy** payments and email delivery
+- **License management** — manual key issuance (WhatsApp sales) with optional **Lemon Squeezy** payments + email delivery
 - A **freemium proxy** that works with Claude Code, Cursor, OpenCode, and any Ollama-compatible tool
 
 > 💡 Drop-in replacement for Ollama: point any tool at `http://localhost:11434` and it just works.
@@ -86,7 +86,7 @@ curl http://localhost:11434/api/chat -d '{"model":"free","messages":[{"role":"us
   <tr>
     <td width="33%">
       <h3>💳 Payments & Licensing</h3>
-      <p>Lemon Squeezy integration (global + test mode). Auto license generation + email delivery on purchase.</p>
+      <p>Manual license-key issuance (WhatsApp sales) plus optional Lemon Squeezy integration (global + test mode). Auto license generation + email delivery on purchase.</p>
     </td>
     <td width="33%">
       <h3>🔒 Enterprise Security</h3>
@@ -178,7 +178,7 @@ git clone https://github.com/rbkhan007/ollamomui.git
 cd ollamomui
 
 # Backend
-pip install -e "backend/[dev]"
+pip install -e ".[dev]"
 python -m ollama_emu.main --host 0.0.0.0 --port 11434
 
 # Frontend (separate terminal)
@@ -194,7 +194,7 @@ Download from [Releases](https://github.com/rbkhan007/ollamomui/releases/latest)
 
 ---
 
-## 💸 Pricing (via Lemon Squeezy)
+## 💸 Pricing
 
 | Tier | Price | What You Get |
 |------|-------|-------------|
@@ -203,7 +203,7 @@ Download from [Releases](https://github.com/rbkhan007/ollamomui/releases/latest)
 | **Mobile Ultimate** | $2.99/mo | Play Store app, full CRUD, notifications |
 | **Web Pro** | $9.99/mo | Unlimited RAG, cloud sync, priority support |
 
-> Powered by [Lemon Squeezy](https://www.lemonsqueezy.com/) — supports test mode, global cards, and taxes handled for you.
+> Licenses can also be purchased directly via WhatsApp (manual key delivery). When automated checkout is enabled, payments are powered by [Lemon Squeezy](https://www.lemonsqueezy.com/) — supports test mode, global cards, and taxes handled for you.
 > **[View pricing →](https://ollamomui.vercel.app/pricing)**
 
 ---
@@ -214,8 +214,7 @@ Download from [Releases](https://github.com/rbkhan007/ollamomui/releases/latest)
 ollamomui/
 ├── backend/          # Python FastAPI backend
 │   ├── src/ollama_emu/   # Core application
-│   ├── tests/test_api.py # Integration tests
-│   └── scripts/          # Build & run scripts
+│   └── tests/test_api.py # Integration tests (standalone, run with --online)
 ├── frontend/         # Next.js marketing site
 │   └── src/app/          # Pages & components
 ├── desktop/          # PySide6 + QML desktop GUI
@@ -250,7 +249,7 @@ ollamomui/
 1. Fork the repo
 2. Create a feature branch: `git checkout -b feat/my-feature`
 3. Make your changes
-4. Run tests: `python -m pytest backend/tests/`
+4. Run tests: `python backend/tests/test_api.py --online` (requires a live PostgreSQL + network)
 5. Submit a PR
 
 All contributions are welcome — bug fixes, new providers, UI improvements, and documentation.

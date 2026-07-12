@@ -52,8 +52,12 @@ endpoints).
 
 ### 2.1 Install Desktop Dependencies
 ```bash
+# From the repo root: install the backend package (importable as `ollama_emu`)
+pip install -e .
+# Then the desktop GUI toolkit + requirements
 cd desktop
-pip install -r requirements.txt   # PySide6, PyInstaller, psycopg3, etc.
+pip install -r requirements.txt   # PySide6, requests, markdown, psutil
+pip install pyinstaller
 ```
 
 ### 2.2 Download PostgreSQL Binaries (one time)

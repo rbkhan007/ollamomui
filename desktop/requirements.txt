@@ -2,4 +2,6 @@ PySide6>=6.6.0
 requests>=2.31.0
 markdown>=3.5.0
 psutil>=5.9.0
-ollamomui @ file:///${PROJECT_ROOT}
+# The `ollamomui` package (importable as `ollama_emu`) is installed from the
+# repo root, NOT via a file:// URL (which is not portable). Run from the repo root:
+#     pip install -e .

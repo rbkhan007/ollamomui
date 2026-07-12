@@ -11,10 +11,16 @@ All notable changes to the OllamoMUI project are documented here.
   configurable via `ALLOWED_HOSTS`, so the Render health check passes.
 - `setup_env.py` merges with existing Render env vars instead of overwriting them.
 - Database pool now degrades gracefully when PostgreSQL is unavailable.
+- Fixed frontend `next build` type error: `Navbar.tsx` now uses a named import for `BrandIcon` (it was a default import that broke the static export).
+- Fixed `desktop/requirements.txt` broken `file:///${PROJECT_ROOT}` editable reference; the `ollamomui` package is now installed from the repo root (`pip install -e .`).
+- Fixed documentation references to the non-existent `ollama_emu_desktop.py` (now `desktop/src/launcher.py` / `python -m ollama_emu.main`) and `build_exe.bat` (now `python desktop/build.py --onefile`).
 
 ### Changed
 - Payments & licensing migrated from SSLCommerz/Stripe to **Lemon Squeezy** as the primary provider.
 - Documentation, README, and brand references updated to Lemon Squeezy.
+- Manual WhatsApp sales pipeline is the active licensing path; Lemon Squeezy remains an optional, not-yet-live payment provider.
+- Desktop EXE verified building on Python 3.14 / PySide6 6.11 via `python desktop/build.py --onefile`.
+- Test instructions corrected: the suite is a standalone script (`python backend/tests/test_api.py --online`), not `pytest`.
 
 ## [1.0.4] — 2026-07-12
 
@@ -68,7 +74,7 @@ All notable changes to the OllamoMUI project are documented here.
 - Professional Python package restructure (`backend/src/ollama_emu/`)
 - `pyproject.toml` with installable package configuration
 - Launcher scripts for Windows and Unix (`run.bat`, `run.sh`, `ollamaemu.bat`, `ollamaemu.sh`)
-- PyInstaller EXE build script (`build_exe.bat`)
+- PyInstaller EXE build script (`build.py`)
 - Documentation directory with README, SECURITY, MOBILE, ASSETS docs
 - Resource directory with branding assets (SVG icons, favicons, diagrams)
 - Configs directory with `.env.example`, `setup_database.sql`, CI configs

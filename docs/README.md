@@ -1,7 +1,7 @@
 # OllamoMUI — Stop Paying $20/mo for Claude & ChatGPT
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/rbkhan007/ollamomui/main/logo.svg" alt="OllamoMUI" width="320" />
+  <img src="https://raw.githubusercontent.com/rbkhan007/ollamomui/main/resources/ollamomui.svg" alt="OllamoMUI" width="320" />
 </p>
 
 <p align="center">
@@ -563,9 +563,9 @@ Provider configs are persisted in PostgreSQL (`providers` table). On first run, 
 
 ### Standalone EXE (Windows)
 ```bash
-build_exe.bat
+python desktop/build.py --onefile
 ```
-Produces `dist/OllamoMUI.exe` — a single-file executable with embedded frontend.
+Produces `dist/ollamomui.exe` — a single-file executable with embedded frontend.
 
 ### Requirements
 - **Python 3.11+** (backend uses `datetime.UTC`)
@@ -575,7 +575,7 @@ Produces `dist/OllamoMUI.exe` — a single-file executable with embedded fronten
 ```bash
 # Backend
 pip install -r requirements.txt
-python ollama_emu_desktop.py
+python -m ollama_emu.main
 
 # Frontend (separate dev server)
 cd frontend
@@ -677,7 +677,7 @@ graph TB
     ROOT --> MOB["React Native Mobile"]
     ROOT --> CI["GitHub Actions"]
 
-    PY --> SERVER["ollama_emu_desktop.py<br/>FastAPI Server"]
+    PY --> SERVER["ollama_emu/main.py<br/>FastAPI Server"]
     PY --> RAG["rag.py<br/>RAG Engine"]
     PY --> MEM["memory.py<br/>Memory System"]
     PY --> DBMOD["db.py<br/>PostgreSQL Pool + Schema"]
@@ -740,8 +740,8 @@ If this saves you a subscription, **share it**:
 1. Fork the repo
 2. Create a feature branch
 3. Make your changes
-4. Run `tsc --noEmit` (frontend) and `python -m py_compile ollama_emu_desktop.py` (backend)
-5. Ensure `python test.py` passes (requires PostgreSQL running)
+4. Run `tsc --noEmit` (frontend) and `python -m py_compile backend/src/ollama_emu/main.py` (backend)
+5. Ensure `python backend/tests/test_api.py --online` passes (requires PostgreSQL running)
 6. Submit a PR
 
 ---

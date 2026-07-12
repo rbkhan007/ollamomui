@@ -4,7 +4,7 @@ This directory contains the SVG source files for the OllamoMUI branding. These c
 
 ## Files Included
 
-1. `logo.svg` - Full logo with brand mark and wordmark (500x140px)
+1. `ollamomui.svg` - Full logo with brand mark and wordmark (500x140px)
 2. `brand-mark.svg` - Just the brand mark/icon (64x64px viewBox)
 3. `favicon.svg` - Simplified version for browser favicon (32x32px viewBox)
 4. `brand-mark.ico` - Multi-resolution Windows application icon (16/24/32/48/64/128/256px), generated from `brand-mark.svg`
@@ -96,7 +96,7 @@ The application already includes:
 To use with Claude Code CLI for free AI assistance:
 1. Get a free API key from OpenRouter.ai
 2. Set environment variable: `set OLLAMA_EMU_API_KEY=sk-or-v1-your-key-here`
-3. Run: `python ollama_emu_desktop.py`
+3. Run: `python -m ollama_emu.main`
 4. Configure Claude Code:
    ```bash
    set ANTHROPIC_BASE_URL=http://localhost:11434

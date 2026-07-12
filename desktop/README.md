@@ -67,7 +67,21 @@ No license or payment is required to use your own keys.
 
 This lets anyone run OllamoMUI for free with their own API keys or a local model server.
 
-## Building
+## Building from source
 
-See `build_exe.bat` (uses `build.spec`). The output is a one-folder bundle under
-`dist/ollamomui/` plus a console EXE. Runs on Windows 10/11 (x64).
+Prerequisites: install the backend package and the desktop GUI toolkit from the
+repo root, then vendor PostgreSQL and build:
+
+```powershell
+# From the repo root
+pip install -e .                 # installs the `ollamomui` (ollama_emu) package
+pip install pyinstaller pyside6  # build toolchain
+
+cd desktop
+python fetch_postgres.py         # download Windows PostgreSQL binaries
+python build.py --onefile        # -> dist/ollamomui.exe (single file)
+```
+
+The resulting `dist/ollamomui.exe` is a self-contained Windows EXE (PySide6 + QML +
+bundled FastAPI backend + local PostgreSQL). Runs on Windows 10/11 (x64). See
+[EXECUTION_GUIDE.md](../EXECUTION_GUIDE.md) for the full step-by-step.
