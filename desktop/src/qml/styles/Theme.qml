@@ -3,7 +3,7 @@ pragma Singleton
 import QtQuick 2.15
 
 QtObject {
-    property bool dark: true
+    property bool dark: themeManager.darkTheme
 
     property color bgPrimary:   dark ? "#0f0f1a" : "#f5f5fa"
     property color bgSecondary: dark ? "#1a1a2e" : "#e8e8f0"
@@ -40,19 +40,16 @@ QtObject {
     property font fontSmall: Qt.font({ family: "Segoe UI", pixelSize: 11 })
     property font fontCode: Qt.font({ family: "Cascadia Code,Consolas", pixelSize: 12 })
 
-    // ── SPACING SCALE (single source of truth) ──
     property int padMicro:  4
     property int padSmall:  8
     property int padMedium: 16
     property int padLarge:  24
     property int padXLarge: 32
 
-    // ── ANIMATION DURATIONS ──
     property int durationFast:   150
     property int durationNormal: 250
     property int durationSlow:   350
 
-    // ── TYPOGRAPHY ALIASES ──
     property font fontDisplay: Qt.font({ family: "Segoe UI", pixelSize: 28, weight: Font.DemiBold })
     property int  fontTitle:   24
     property int  fontCaption: 11

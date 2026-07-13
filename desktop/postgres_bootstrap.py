@@ -104,18 +104,28 @@ def pick_port(bin_dir: Path) -> int:
 
 def start_postgres(bin_dir: Path, ddir: Path, port: int) -> None:
     ddir.mkdir(parents=True, exist_ok=True)
-    run(
-        bin_dir,
-        "pg_ctl",
-        "start",
-        "-D",
-        str(ddir),
-        "-o",
-        f'-p {port} -c listen_addresses="127.0.0.1" -c wal_level=minimal',
-        "-l",
-        str(log_file()),
-        "-w",
-    )
+    try:
+        run(
+            bin_dir,
+            "pg_ctl",
+            "start",
+            "-D",
+            str(ddir),
+            "-o",
+            f'-p {port} -c listen_addresses="127.0.0.1" -c wal_level=minimal '
+            f"-c max_wal_senders=0 -c max_replication_slots=0",
+            "-l",
+            str(log_file()),
+            "-w",
+            capture=False,
+        )
+    except RuntimeError as exc:
+        extra = ""
+        try:
+            extra = "\n" + (ddir / "logfile").read_text(errors="ignore")[-2000:]
+        except Exception:
+            pass
+        raise RuntimeError(str(exc) + extra)
 
 
 def stop_postgres(bin_dir: Path | None, ddir: Path) -> None:

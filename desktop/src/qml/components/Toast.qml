@@ -1,11 +1,12 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import OllamoMUI 1.0
 
 Rectangle {
     id: root
 
     property string message: ""
-    property int toastType: 0  // 0=info, 1=success, 2=error
+    property int toastType: 0
     property int duration: 3000
 
     signal dismissed()

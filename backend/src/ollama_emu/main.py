@@ -318,25 +318,46 @@ def delete_session(token: str):
     _db.delete_session(token)
 
 
-init_db()
-PROVIDER_CONFIGS, API_KEYS = load_providers_from_db()
+def init_app_state():
+    """Initialize DB-backed application state.
 
-if ACTIVE_PROVIDER not in PROVIDER_CONFIGS and PROVIDER_CONFIGS:
-    ACTIVE_PROVIDER = next(iter(PROVIDER_CONFIGS))
-
-if ACTIVE_PROVIDER not in API_KEYS and "openrouter" in API_KEYS:
-    ACTIVE_PROVIDER = "openrouter"
-elif ACTIVE_PROVIDER not in API_KEYS:
-    for _pname, _pkey in API_KEYS.items():
-        ACTIVE_PROVIDER = _pname
-        break
-
-log.info("Startup active provider: %s (has_key=%s)", ACTIVE_PROVIDER, bool(API_KEYS.get(ACTIVE_PROVIDER)))
+    Deferred from import time so the app can be imported (and uvicorn can bind)
+    before a database is reachable. In the desktop EXE this runs inside the
+    server startup event, after the bundled PostgreSQL has been bootstrapped.
+    """
+    global PROVIDER_CONFIGS, API_KEYS, ACTIVE_PROVIDER
+    init_db()
+    PROVIDER_CONFIGS, API_KEYS = load_providers_from_db()
+    if ACTIVE_PROVIDER not in PROVIDER_CONFIGS and PROVIDER_CONFIGS:
+        ACTIVE_PROVIDER = next(iter(PROVIDER_CONFIGS))
+    if ACTIVE_PROVIDER not in API_KEYS and "openrouter" in API_KEYS:
+        ACTIVE_PROVIDER = "openrouter"
+    elif ACTIVE_PROVIDER not in API_KEYS:
+        for _pname, _pkey in API_KEYS.items():
+            ACTIVE_PROVIDER = _pname
+            break
+    log.info("Startup active provider: %s (has_key=%s)", ACTIVE_PROVIDER, bool(API_KEYS.get(ACTIVE_PROVIDER)))
 
 # ============================================================
 # FASTAPI APP
 # ============================================================
 app = FastAPI(title="OllamoMUI – Free AI Gateway", version=VERSION)
+
+
+@app.on_event("startup")
+def _startup():
+    import threading
+
+    def _init_app_state_safe():
+        try:
+            init_app_state()
+        except Exception as exc:  # noqa: BLE001
+            log.error(
+                "Application state initialization failed (is the database reachable?): %s",
+                exc,
+            )
+
+    threading.Thread(target=_init_app_state_safe, daemon=True).start()
 
 
 def _cors_origins() -> list:

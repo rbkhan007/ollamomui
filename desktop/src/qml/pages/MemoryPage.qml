@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15
+import OllamoMUI 1.0
 
 Rectangle {
     color: "transparent"
@@ -10,7 +11,7 @@ Rectangle {
     property var sessions: []
     property var memoryStats: ({})
 
-    property int activeTab: 0  // 0=messages, 1=facts, 2=sessions
+    property int activeTab: 0
 
     ColumnLayout {
         anchors.fill: parent
@@ -37,7 +38,6 @@ Rectangle {
             }
         }
 
-        // Tab bar
         Rectangle {
             Layout.fillWidth: true; Layout.preferredHeight: 40; radius: Theme.radiusMedium
             color: Theme.bgSecondary
@@ -72,7 +72,6 @@ Rectangle {
             }
         }
 
-        // Search bar
         RowLayout {
             Layout.fillWidth: true; spacing: 12; visible: activeTab !== 2
             Rectangle {
@@ -99,7 +98,6 @@ Rectangle {
             }
         }
 
-        // Messages tab
         Rectangle {
             Layout.fillWidth: true; Layout.fillHeight: true
             radius: Theme.radiusLarge; color: Theme.surface; border.color: Theme.border; border.width: 1
@@ -177,7 +175,6 @@ Rectangle {
             }
         }
 
-        // Facts tab
         Rectangle {
             Layout.fillWidth: true; Layout.fillHeight: true
             radius: Theme.radiusLarge; color: Theme.surface; border.color: Theme.border; border.width: 1
@@ -253,7 +250,6 @@ Rectangle {
             }
         }
 
-        // Sessions tab
         Rectangle {
             Layout.fillWidth: true; Layout.fillHeight: true
             radius: Theme.radiusLarge; color: Theme.surface; border.color: Theme.border; border.width: 1
@@ -295,7 +291,6 @@ Rectangle {
         }
     }
 
-    // ── Add Fact Dialog ──
     Dialog {
         id: addFactDialog
         title: qsTr("Add Fact")
@@ -334,7 +329,6 @@ Rectangle {
         }
     }
 
-    // ── Delete Confirmations ──
     Dialog {
         id: confirmDeleteMsgDialog
         property string msgId: ""

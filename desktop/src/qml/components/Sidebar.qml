@@ -1,11 +1,12 @@
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15
+import OllamoMUI 1.0
 
 Rectangle {
     id: root
 
-    property int currentIndex: 2  // default to Home
+    property int currentIndex: 2
     property var pages: [
         { label: qsTr("Login"),      icon: "\u263A", section: "account" },
         { label: qsTr("Register"),   icon: "\u270E", section: "account" },
@@ -102,18 +103,15 @@ Rectangle {
 
                 HoverHandler {
                     cursorShape: Qt.PointingHandCursor
-                    onHoveredChanged: if (!isActive) parent.color = hovered ? Theme.surfaceAlt : "transparent"
                 }
                 TapHandler {
                     onTapped: {
-                        root.currentIndex = index
                         root.pageSelected(index)
                     }
                 }
             }
         }
 
-        // Section separator
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
@@ -129,24 +127,26 @@ Rectangle {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 48
-            color: "transparent"
+            radius: Theme.radiusMedium
             Layout.leftMargin: 8
             Layout.rightMargin: 8
+            color: "transparent"
 
             RowLayout {
                 anchors.fill: parent
                 anchors.leftMargin: 12
                 anchors.rightMargin: 12
-                spacing: 8
+                spacing: 12
 
                 Text {
-                    text: themeManager.darkTheme ? "\u2600" : "\u2601"
+                    text: "\u263E"
                     font.pixelSize: 16
                     color: Theme.textSecondary
                 }
                 Text {
-                    text: qsTr("Theme")
+                    text: qsTr("Dark Mode")
                     font: Theme.fontBody
+                    font.pixelSize: 13
                     color: Theme.textPrimary
                     Layout.fillWidth: true
                 }

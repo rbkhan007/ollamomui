@@ -99,6 +99,10 @@ def run_pyinstaller(onefile: bool = False):
             "--hidden-import", "dotenv",
             "--hidden-import", "python_multipart",
             "--hidden-import", "postgres_bootstrap",
+            "--hidden-import", "qml_engine",
+            "--hidden-import", "api_client",
+            "--hidden-import", "updater",
+            "--paths", str(PROJECT_ROOT / "desktop" / "src"),
             "--distpath", str(DIST_DIR),
             "--workpath", str(BUILD_DIR),
             "--clean",
@@ -111,6 +115,11 @@ def run_pyinstaller(onefile: bool = False):
         postgres_dir = PROJECT_ROOT / "desktop" / "postgres"
         if postgres_dir.exists():
             cmd += ["--add-data", f"{postgres_dir}{os.pathsep}postgres"]
+
+        # Bundle postgres_bootstrap.py so local PostgreSQL auto-starts in the EXE.
+        postgres_bootstrap = PROJECT_ROOT / "desktop" / "postgres_bootstrap.py"
+        if postgres_bootstrap.exists():
+            cmd += ["--add-data", f"{postgres_bootstrap}{os.pathsep}postgres_bootstrap.py"]
 
     print(f"[BUILD] Running: {' '.join(cmd)}")
     result = subprocess.run(cmd, capture_output=True, text=True)

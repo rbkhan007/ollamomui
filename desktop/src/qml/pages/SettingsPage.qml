@@ -1,7 +1,8 @@
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
-import QtQuick.Controls 2.15
 import QtQuick.Dialogs 1.3
+import QtQuick.Controls 2.15
+import OllamoMUI 1.0
 
 Rectangle {
     color: "transparent"
@@ -89,7 +90,6 @@ Rectangle {
                 }
             }
 
-            // ── Provider List ──
             SettingsSection {
                 title: qsTr("Providers (") + providers.length + ")"
                 Layout.fillWidth: true
@@ -130,7 +130,7 @@ Rectangle {
                                     color: Theme.textPrimary
                                 }
                                 Text {
-                                    text: (modelData.type || "") + " · " + (modelData.api_key_set ? "Key set" : "No key")
+                                    text: (modelData.type || "") + " \u00B7 " + (modelData.api_key_set ? "Key set" : "No key")
                                     font: Theme.fontSmall
                                     color: Theme.textMuted
                                 }
@@ -189,7 +189,6 @@ Rectangle {
                 }
             }
 
-            // ── Server ──
             SettingsSection {
                 title: qsTr("Server")
                 Layout.fillWidth: true
@@ -209,7 +208,6 @@ Rectangle {
                 }
             }
 
-            // ── Appearance ──
             SettingsSection {
                 title: qsTr("Appearance")
                 Layout.fillWidth: true
@@ -221,7 +219,6 @@ Rectangle {
                 }
             }
 
-            // ── Account ──
             SettingsSection {
                 title: qsTr("Account")
                 Layout.fillWidth: true
@@ -257,7 +254,6 @@ Rectangle {
                 }
             }
 
-            // ── Users (admin) ──
             SettingsSection {
                 title: qsTr("Users (") + users.length + ")"
                 Layout.fillWidth: true
@@ -290,7 +286,6 @@ Rectangle {
                 }
             }
 
-            // ── Export / Import ──
             SettingsSection {
                 title: qsTr("Data Export / Import")
                 Layout.fillWidth: true
@@ -340,7 +335,6 @@ Rectangle {
                 }
             }
 
-            // ── Export / Import file dialogs ──
             FileDialog {
                 id: exportDialog
                 title: qsTr("Save backup")
@@ -366,14 +360,13 @@ Rectangle {
                 }
             }
 
-            // ── About ──
             SettingsSection {
                 title: qsTr("About")
                 Layout.fillWidth: true
 
                 ColumnLayout {
                     Layout.fillWidth: true; spacing: 6
-                    Text { text: qsTr("OllamoMUI – Free AI Gateway"); font: Theme.fontSubheading; color: Theme.textPrimary }
+                    Text { text: qsTr("OllamoMUI \u2013 Free AI Gateway"); font: Theme.fontSubheading; color: Theme.textPrimary }
                     Text { text: qsTr("Version 1.0.4"); font: Theme.fontBody; color: Theme.textSecondary }
                     Text { text: qsTr("Copyright (c) 2024-2026 Rhasan@dev"); font: Theme.fontSmall; color: Theme.textMuted }
                 }
@@ -381,7 +374,6 @@ Rectangle {
         }
     }
 
-    // ── Provider Add/Edit Dialog ──
     Dialog {
         id: providerDialog
         property bool isEdit: false
@@ -470,7 +462,6 @@ Rectangle {
         }
     }
 
-    // ── Change Password Dialog ──
     Dialog {
         id: changePasswordDialog
         title: qsTr("Change Password")
@@ -504,7 +495,6 @@ Rectangle {
         }
     }
 
-    // ── Delete Confirmation Dialog ──
     Dialog {
         id: confirmDialog
         property string targetName: ""

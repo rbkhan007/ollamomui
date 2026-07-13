@@ -1,7 +1,7 @@
 import json
 import requests
 from typing import Optional, Dict, Any, List, Generator, Callable
-from PySide6.QtCore import QObject, Signal, Slot, QRunnable, QThreadPool
+from PySide6.QtCore import QObject, Signal, Slot, Property, QRunnable, QThreadPool
 
 
 class _WorkerSignals(QObject):
@@ -30,14 +30,15 @@ class ApiWorker(QRunnable):
 
 
 class ApiClient(QObject):
-    # ── Async signals (QML connects via Connections) ──
-    requestFinished = Signal(str, str)  # (requestId, jsonPayload)
-    requestError = Signal(str, str)     # (requestId, errorMessage)
+    requestFinished = Signal(str, str)
+    requestError = Signal(str, str)
     loadingChanged = Signal(bool)
+    base_url_changed = Signal()
+    token_changed = Signal()
 
     def __init__(self, base_url="http://localhost:11434"):
         super().__init__()
-        self.base_url = base_url
+        self._base_url = base_url
         self.session = requests.Session()
         self.session.headers.update({"Content-Type": "application/json"})
         self._token: Optional[str] = None
@@ -45,7 +46,16 @@ class ApiClient(QObject):
         self._pool = QThreadPool.globalInstance()
         self._active = 0
 
-    # ── Async executor: run any ApiClient method on a worker thread ──
+    def _get_base_url(self):
+        return self._base_url
+
+    def _set_base_url(self, url):
+        if self._base_url != url:
+            self._base_url = url
+            self.base_url_changed.emit()
+
+    base_url = Property(str, _get_base_url, _set_base_url, notify=base_url_changed)
+
     @Slot(str, str, str, str)
     def executeAsync(self, requestId: str, method: str, argsJson: str = "[]", kwargsJson: str = "{}"):
         try:
@@ -77,18 +87,19 @@ class ApiClient(QObject):
             self.loadingChanged.emit(False)
         self.requestError.emit(requestId, err)
 
-    # ── Token ──────────────────────────────────────────────
     @property
     def token(self):
         return self._token
 
     @token.setter
     def token(self, value: Optional[str]):
-        self._token = value
-        if value:
-            self.session.headers.update({"Authorization": f"Bearer {value}"})
-        else:
-            self.session.headers.pop("Authorization", None)
+        if self._token != value:
+            self._token = value
+            if value:
+                self.session.headers.update({"Authorization": f"Bearer {value}"})
+            else:
+                self.session.headers.pop("Authorization", None)
+            self.token_changed.emit()
 
     def _request(self, method: str, path: str, **kwargs) -> Any:
         url = f"{self.base_url}{path}"
@@ -96,10 +107,8 @@ class ApiClient(QObject):
         resp.raise_for_status()
         return resp.json()
 
-    # ── Auth ──────────────────────────────────────────────
     def login(self, email: str, password: str) -> Dict[str, Any]:
         result = self._request("POST", "/api/auth/login", json={"email": email, "password": password})
-        self.token = result.get("token")
         return result
 
     def register(self, email: str, password: str) -> Dict[str, Any]:
@@ -118,14 +127,12 @@ class ApiClient(QObject):
     def change_password(self, old_password: str, new_password: str) -> Dict[str, Any]:
         return self._request("POST", "/api/auth/change-password", json={"old_password": old_password, "new_password": new_password})
 
-    # ── License activation ───────────────────────────────
     def activate_license(self, license_key: str, device_id: str = "") -> Dict[str, Any]:
         return self._request("POST", "/api/payment/activate", json={
             "license_key": license_key,
             "device_id": device_id,
         })
 
-    # ── Providers ─────────────────────────────────────────
     def get_providers(self) -> List[Dict[str, Any]]:
         return self._request("GET", "/api/providers")
 
@@ -136,12 +143,14 @@ class ApiClient(QObject):
         return self._request("GET", f"/api/providers/{name}")
 
     def add_provider(self, name: str, url: str, provider_type: str, models_url: str = "",
-                     auth_type: str = "bearer", default_model: str = "",
-                     free_heuristic: bool = False, api_key: str = "") -> Dict[str, Any]:
+                     api_key: str = "", is_default: bool = False) -> Dict[str, Any]:
         return self._request("POST", "/api/providers/add", json={
-            "name": name, "url": url, "type": provider_type, "models_url": models_url,
-            "auth_type": auth_type, "default_model": default_model,
-            "free_heuristic": free_heuristic, "api_key": api_key,
+            "name": name,
+            "url": url,
+            "type": provider_type,
+            "models_url": models_url,
+            "api_key": api_key,
+            "is_default": is_default,
         })
 
     def update_provider(self, name: str, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -159,7 +168,6 @@ class ApiClient(QObject):
     def auto_detect_key(self, api_key: str) -> Dict[str, Any]:
         return self._request("POST", "/api/auth/auto-detect", json={"api_key": api_key})
 
-    # ── Models ────────────────────────────────────────────
     def get_models(self) -> Dict[str, Any]:
         return self._request("GET", "/api/models")
 
@@ -170,15 +178,12 @@ class ApiClient(QObject):
     def get_free_models(self) -> Dict[str, Any]:
         return self._request("GET", "/api/models/free")
 
-    # ── Chat ──────────────────────────────────────────────
     def chat_completion(self, model: str, messages: List[Dict[str, str]], stream: bool = False) -> Any:
         payload = {"model": model, "messages": messages, "stream": stream}
+        resp = self.session.post(f"{self.base_url}/v1/chat/completions", json=payload,
+                                 headers={"Content-Type": "application/json"}, timeout=120)
         if stream:
-            resp = self.session.post(f"{self.base_url}/v1/chat/completions", json=payload, stream=True, timeout=60)
-            resp.raise_for_status()
             return self._stream_lines(resp)
-        resp = self.session.post(f"{self.base_url}/v1/chat/completions", json=payload, timeout=60)
-        resp.raise_for_status()
         return resp.json()
 
     def _stream_lines(self, resp: requests.Response) -> Generator[str, None, None]:
@@ -187,10 +192,9 @@ class ApiClient(QObject):
                 if line.startswith("data: "):
                     data = line[6:]
                     if data.strip() == "[DONE]":
-                        break
+                        continue
                     yield data
 
-    # ── RAG ───────────────────────────────────────────────
     def get_rag_documents(self) -> List[Dict[str, Any]]:
         return self._request("GET", "/api/rag/documents")
 
@@ -224,7 +228,6 @@ class ApiClient(QObject):
             resp.raise_for_status()
             return resp.json()
 
-    # ── Memory ────────────────────────────────────────────
     def get_memory_messages(self, session_id: str = None, limit: int = 100, offset: int = 0) -> List[Dict[str, Any]]:
         params = {"limit": limit, "offset": offset}
         if session_id:
@@ -261,7 +264,6 @@ class ApiClient(QObject):
     def get_memory_stats(self) -> Dict[str, Any]:
         return self._request("GET", "/api/memory/stats")
 
-    # ── Users ─────────────────────────────────────────────
     def get_users(self) -> List[Dict[str, Any]]:
         return self._request("GET", "/api/users")
 
@@ -274,14 +276,12 @@ class ApiClient(QObject):
     def delete_user(self, email: str) -> Dict[str, Any]:
         return self._request("DELETE", f"/api/users/{email}")
 
-    # ── Usage ─────────────────────────────────────────────
     def get_usage_stats(self) -> Dict[str, Any]:
         return self._request("GET", "/api/usage/stats")
 
     def clear_usage(self) -> Dict[str, Any]:
         return self._request("POST", "/api/usage/clear")
 
-    # ── System ────────────────────────────────────────────
     def health_check(self) -> Dict[str, Any]:
         return self._request("GET", "/api/status")
 
@@ -294,7 +294,6 @@ class ApiClient(QObject):
     def get_device(self) -> Dict[str, Any]:
         return self._request("GET", "/api/device")
 
-    # ── Export / Import ───────────────────────────────────
     def export_all(self) -> Dict[str, Any]:
         return self._request("GET", "/api/export")
 
@@ -305,10 +304,9 @@ class ApiClient(QObject):
         import json
         data = self.export_all()
         with open(path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2)
+            json.dump(data, f, indent=2, default=str)
         return {"status": "ok", "path": path, "providers": len(data.get("providers", [])),
-                "facts": len(data.get("memory_facts", [])), "messages": len(data.get("memory_messages", [])),
-                "documents": len(data.get("rag_documents", []))}
+                "facts": len(data.get("facts", [])), "messages": len(data.get("messages", []))}
 
     def import_backup(self, path: str) -> Dict[str, Any]:
         import json
@@ -316,100 +314,130 @@ class ApiClient(QObject):
             data = json.load(f)
         return self.import_all(data)
 
-    # ── Preferences (client-side) ─────────────────────────
     def get_preference(self, key: str, default: str = "") -> str:
         return self._preferences.get(key, default)
 
     def set_preference(self, key: str, value: str) -> None:
         self._preferences[key] = value
 
-    # ── Folder picker (stub – real integration uses QML) ─
     def open_folder_picker(self) -> str:
         return ""
 
-    # ── Deploy proxy environment ──────────────────────────
     def deploy_proxy_env(self) -> Dict[str, Any]:
         try:
             return self._request("POST", "/api/proxy/deploy")
         except Exception:
             return {"status": "stub", "message": "Deploy endpoint not yet available on server"}
 
-    # ═══════════════════════════════════════════════════════
-    # CamelCase aliases for QML compatibility
-    # ═══════════════════════════════════════════════════════
-    # Auth
-    changePassword = change_password
-    verifyToken = verify_token
-    autoDetectKey = auto_detect_key
+    # ====== QML @Slot camelCase wrappers ======
+    @Slot(result='QVariant')
+    def getUsage(self):
+        return self.get_usage_stats()
 
-    # Providers
-    listProviders = list_providers
-    getProviders = get_providers
-    getProvider = get_provider
-    addProvider = add_provider
-    updateProvider = update_provider
-    deleteProvider = delete_provider
-    activateProvider = activate_provider
-    saveConfig = save_config
+    @Slot(result='QVariant')
+    def getModelList(self):
+        return self.get_model_list()
 
-    # Models
-    getModels = get_models
-    getModelList = get_model_list
-    getFreeModels = get_free_models
+    @Slot(result='QVariant')
+    def getMemoryMessages(self):
+        return self.get_memory_messages()
 
-    # Chat
-    chatCompletion = chat_completion
+    @Slot(result='QVariant')
+    def getMemoryFacts(self):
+        return self.get_memory_facts()
 
-    # RAG
-    getRagDocuments = get_rag_documents
-    getRagDocument = get_rag_document
-    getRagChunks = get_rag_chunks
-    updateRagChunk = update_rag_chunk
-    deleteRagDocument = delete_rag_document
-    addRagText = add_rag_text
-    searchRag = search_rag
-    getRagStats = get_rag_stats
-    uploadDocument = upload_document
+    @Slot(result='QVariant')
+    def getMemorySessions(self):
+        return self.get_memory_sessions()
 
-    # Memory
-    getMemoryMessages = get_memory_messages
-    getMemoryMessage = get_memory_message
-    deleteMemoryMessage = delete_memory_message
-    clearMemoryMessages = clear_memory_messages
-    getMemorySessions = get_memory_sessions
-    getMemoryFacts = get_memory_facts
-    addMemoryFact = add_memory_fact
-    deleteMemoryFact = delete_memory_fact
-    searchMemory = search_memory
-    getMemoryStats = get_memory_stats
+    @Slot(result='QVariant')
+    def getMemoryStats(self):
+        return self.get_memory_stats()
 
-    # Users
-    getUsers = get_users
-    getUser = get_user
-    updateUserRole = update_user_role
-    deleteUser = delete_user
+    @Slot(str, result='QVariant')
+    def searchMemory(self, q):
+        return self.search_memory(q)
 
-    # Usage
-    getUsage = get_usage_stats
-    getUsageStats = get_usage_stats
-    clearUsage = clear_usage
+    @Slot(str, str, str, result='QVariant')
+    def addMemoryFact(self, f, s, i):
+        return self.add_memory_fact(f, s, i)
 
-    # System
-    getVersion = get_version
-    getStatus = get_status
-    getDevice = get_device
-    healthCheck = health_check
+    @Slot(str, result='QVariant')
+    def deleteMemoryMessage(self, i):
+        return self.delete_memory_message(i)
 
-    # Export/Import
-    exportAll = export_all
-    importAll = import_all
-    exportBackup = export_backup
-    importBackup = import_backup
+    @Slot(str, result='QVariant')
+    def deleteMemoryFact(self, i):
+        return self.delete_memory_fact(i)
 
-    # Preferences
-    setPreference = set_preference
-    getPreference = get_preference
+    @Slot(bool, result='QVariant')
+    def clearMemoryMessages(self, c):
+        return self.clear_memory_messages(c)
 
-    # Folder / Deploy
-    openFolderPicker = open_folder_picker
-    deployProxyEnv = deploy_proxy_env
+    @Slot(result='QVariant')
+    def getRagDocuments(self):
+        return self.get_rag_documents()
+
+    @Slot(str, result='QVariant')
+    def getRagChunks(self, d):
+        return self.get_rag_chunks(d)
+
+    @Slot(result='QVariant')
+    def getRagStats(self):
+        return self.get_rag_stats()
+
+    @Slot(str, result='QVariant')
+    def searchRag(self, q):
+        return self.search_rag(q)
+
+    @Slot(str, str, result='QVariant')
+    def updateRagChunk(self, i, c):
+        return self.update_rag_chunk(i, c)
+
+    @Slot(str, result='QVariant')
+    def deleteRagDocument(self, d):
+        return self.delete_rag_document(d)
+
+    @Slot(str, str, result='QVariant')
+    def activateLicense(self, k, d=""):
+        return self.activate_license(k, d)
+
+    @Slot(str, 'QVariant', result='QVariant')
+    def updateProvider(self, n, data):
+        return self.update_provider(n, data)
+
+    @Slot(str, str, str, str, result='QVariant')
+    def addProvider(self, n, u, t, m):
+        return self.add_provider(n, u, t, m)
+
+    @Slot(str, str, result='QVariant')
+    def changePassword(self, o, n):
+        return self.change_password(o, n)
+
+    @Slot(str, result='QVariant')
+    def deleteProvider(self, n):
+        return self.delete_provider(n)
+
+    @Slot(result='QVariant')
+    def listProviders(self):
+        return self.list_providers()
+
+    @Slot(result='QVariant')
+    def getUsers(self):
+        return self.get_users()
+
+    @Slot(result='QVariant')
+    def getProviders(self):
+        return self.get_providers()
+
+    @Slot(result='QVariant')
+    def healthCheck(self):
+        return self.health_check()
+
+    @Slot(str, str, result='QVariant')
+    def getPreference(self, k, d=""):
+        return self.get_preference(k, d)
+
+    @Slot(str, str, result='QVariant')
+    def setPreference(self, k, v):
+        return self.set_preference(k, v)

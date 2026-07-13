@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15
+import OllamoMUI 1.0
 
 Rectangle {
     color: "transparent"
@@ -117,8 +118,8 @@ Rectangle {
                     }
                     onClicked: {
                         var sidebarObj = window.findChild("sidebar")
-                        if (sidebarObj) sidebarObj.currentIndex = 1
-                        stackLayout.currentIndex = 1
+                        if (sidebarObj) sidebarObj.currentIndex = 3
+                        stackLayout.currentIndex = 3
                     }
                 }
 
@@ -138,57 +139,13 @@ Rectangle {
                     }
                     background: Rectangle {
                         radius: Theme.radiusMedium
-                        color: "transparent"
                         border.color: Theme.accentPrimary
                         border.width: 1
+                        color: "transparent"
                     }
                     onClicked: Qt.openUrlExternally("https://github.com/rbkhan007/ollamomui")
                 }
             }
-
-            Item { Layout.preferredHeight: 40 }
-        }
-    }
-
-    component FeatureCard: Rectangle {
-        property string title
-        property string description
-        property string icon
-
-        implicitHeight: 180
-        radius: Theme.radiusLarge
-        color: Theme.surface
-        border.color: Theme.border
-        border.width: 1
-
-        ColumnLayout {
-            anchors.fill: parent
-            anchors.margins: 20
-            spacing: 12
-
-            Text {
-                text: parent.parent.icon
-                font.pixelSize: 32
-                color: Theme.accentPrimary
-            }
-
-            Text {
-                text: parent.parent.title
-                font: Theme.fontSubheading
-                color: Theme.textPrimary
-            }
-
-            Text {
-                text: parent.parent.description
-                font: Theme.fontBody
-                color: Theme.textSecondary
-                wrapMode: Text.WordWrap
-                Layout.fillWidth: true
-            }
-        }
-
-        HoverHandler {
-            onHoveredChanged: parent.color = hovered ? Theme.surfaceAlt : Theme.surface
         }
     }
 }

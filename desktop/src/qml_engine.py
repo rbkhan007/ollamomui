@@ -3,10 +3,15 @@ from pathlib import Path
 from PySide6.QtCore import QUrl, QObject, Signal, Property
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
-from .api_client import ApiClient
-from .updater import UpdaterManager
+from api_client import ApiClient
+from updater import UpdaterManager
 
-QML_DIR = Path(__file__).resolve().parent / "qml"
+if getattr(sys, "frozen", False):
+    # PyInstaller onefile: data was added with dest "qml" at the extraction root.
+    _MEIPASS = getattr(sys, "_MEIPASS", str(Path(sys.executable).resolve().parent))
+    QML_DIR = Path(_MEIPASS) / "qml"
+else:
+    QML_DIR = Path(__file__).resolve().parent / "qml"
 
 class ThemeManager(QObject):
     currentThemeChanged = Signal()

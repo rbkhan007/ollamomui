@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import OllamoMUI 1.0
 
 Rectangle {
     id: root
@@ -38,7 +39,7 @@ Rectangle {
             Text {
                 anchors.centerIn: parent
                 font.pixelSize: 20
-                text: qsTr("🔄")
+                text: qsTr("\uD83D\uDD04")
             }
         }
 
@@ -100,67 +101,60 @@ Rectangle {
             contentItem: Text {
                 text: skipBtn.text
                 font: skipBtn.font
-                color: Theme.textSecondary
+                color: "#ffffff"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
 
             background: Rectangle {
                 radius: 8
-                color: "transparent"
-                border.color: Theme.border
-                border.width: 1
+                color: skipBtn.enabled ? "#636e72" : "#636e7280"
             }
 
             onClicked: {
-                updaterManager.skipVersion()
                 root.visible_ = false
             }
         }
     }
 
-    // Inline progress indicator (replaces the row when downloading)
     Rectangle {
-        id: progressOverlay
-        anchors.fill: parent
-        radius: 12
-        color: Theme.surface
-        border.color: Theme.border
-        border.width: 1
         visible: downloading
-        z: 1
+        anchors.fill: parent
+        color: Theme.surface
+        radius: 12
+        z: 9999
 
         ColumnLayout {
             anchors.centerIn: parent
             spacing: 10
-            width: parent.width - 48
 
             Text {
                 text: qsTr("Downloading update...")
                 font.pixelSize: 13
-                font.weight: Font.Bold
                 color: Theme.textPrimary
                 Layout.alignment: Qt.AlignHCenter
             }
 
             Rectangle {
                 Layout.fillWidth: true
-                height: 6
+                Layout.preferredHeight: 6
+                Layout.leftMargin: 20
+                Layout.rightMargin: 20
                 radius: 3
                 color: Theme.border
 
                 Rectangle {
-                    id: progressBar
-                    width: parent.width * (downloadProgress / 100)
+                    width: parent.width * (root.downloadProgress / 100)
                     height: parent.height
                     radius: 3
-                    color: "#6c5ce7"
+                    color: Theme.accentPrimary
+
                     Behavior on width { NumberAnimation { duration: 200 } }
                 }
             }
 
             Text {
-                text: Math.round(downloadProgress) + "%"
+                text: Math.round(root.downloadProgress) + "%"
                 font.pixelSize: 11
                 color: Theme.textSecondary
                 Layout.alignment: Qt.AlignHCenter
@@ -170,32 +164,26 @@ Rectangle {
 
     Connections {
         target: updaterManager
-        function onUpdateAvailable(version, url) {
-            root.latestVersion = version
-            root.downloadUrl = url
-            root.visible_ = true
-        }
-        function onUpdateProgress(progress) {
+
+        function onDownloadProgress(progress) {
             root.downloadProgress = progress
         }
-        function onUpdateFinished(success, message) {
+
+        function onDownloadComplete() {
             root.downloading = false
-            if (!success) {
-                root.visible_ = false
-                window.showToast(qsTr("Update failed: ") + message, 2)
-            }
+            root.visible_ = false
         }
-        function onCheckFinished() {
-            if (updaterManager.status === "up_to_date") {
-                // silently up to date
-            }
+
+        function onError(errorMessage) {
+            root.downloading = false
+            console.error("Update error:", errorMessage)
         }
     }
 
     Component.onCompleted: {
-        // Check for updates 3 seconds after launch
+        root.downloadProgress = 0
         Qt.callLater(function() {
-            updaterManager.check()
+            updaterManager.checkForUpdates()
         })
     }
 }

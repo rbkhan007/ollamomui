@@ -7,14 +7,18 @@ from pathlib import Path
 if getattr(sys, "frozen", False):
     BUNDLE = Path(sys.executable).resolve().parent
     sys.path.insert(0, str(BUNDLE))
+    _meipass = getattr(sys, "_MEIPASS", None)
+    if _meipass:
+        sys.path.insert(0, str(Path(_meipass)))
 else:
     ROOT = Path(__file__).resolve().parent.parent.parent
     sys.path.insert(0, str(ROOT / "backend" / "src"))
-    sys.path.insert(0, str(ROOT / "desktop"))
+    sys.path.insert(0, str(ROOT / "desktop" / "src"))
 
 from ollama_emu.main import app
 
 _PG_STATE = {}
+
 
 def start_local_postgres():
     try:
@@ -33,6 +37,7 @@ def start_local_postgres():
         return
     print(f"[postgres] local PostgreSQL ready at {result.get('dsn')}")
 
+
 def stop_local_postgres():
     bin_dir = _PG_STATE.get("bin_dir")
     ddir = _PG_STATE.get("data_dir")
@@ -43,17 +48,34 @@ def stop_local_postgres():
         except Exception:
             pass
 
+
 def run_server():
-    uvicorn.run(app, host="127.0.0.1", port=11434, log_level="warning")
+    import os
+    import traceback
+
+    try:
+        uvicorn.run(app, host="127.0.0.1", port=11434, log_level="warning")
+    except Exception:
+        log = os.path.join(os.environ.get("TEMP", "."), "ollamomui_server.log")
+        try:
+            with open(log, "w") as fh:
+                fh.write(traceback.format_exc())
+        except Exception:
+            pass
+
 
 def main():
-    start_local_postgres()
     atexit.register(stop_local_postgres)
+    # Start PostgreSQL bootstrap and the API server concurrently so the server
+    # binds (port 11434) immediately and connects to the DB once it is ready,
+    # instead of blocking the GUI on Postgres startup.
+    threading.Thread(target=start_local_postgres, daemon=True).start()
     threading.Thread(target=run_server, daemon=True).start()
 
-    from .qml_engine import QmlEngine
+    from qml_engine import QmlEngine
     engine = QmlEngine()
     sys.exit(engine.run())
+
 
 if __name__ == "__main__":
     main()

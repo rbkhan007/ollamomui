@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15
+import OllamoMUI 1.0
 
 Rectangle {
     color: "transparent"
@@ -64,7 +65,6 @@ Rectangle {
             }
         }
 
-        // Bar chart
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 220
