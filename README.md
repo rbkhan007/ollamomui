@@ -21,6 +21,9 @@
   <a href="https://github.com/rbkhan007/ollamomui/releases/latest"><img src="https://img.shields.io/github/v/release/rbkhan007/ollamomui?color=2da44e&label=release&style=flat-square" alt="Release" /></a>
   <img src="https://img.shields.io/github/downloads/rbkhan007/ollamomui/total?style=flat-square" alt="Downloads" />
   <a href="https://github.com/rbkhan007/ollamomui/stargazers"><img src="https://img.shields.io/github/stars/rbkhan007/ollamomui?style=social" alt="Stars" /></a>
+  <a href="https://github.com/rbkhan007/ollamomui/actions/workflows/test.yml"><img src="https://github.com/rbkhan007/ollamomui/actions/workflows/test.yml/badge.svg" alt="Test Backend" /></a>
+  <a href="https://github.com/rbkhan007/ollamomui/actions/workflows/lighthouse.yml"><img src="https://github.com/rbkhan007/ollamomui/actions/workflows/lighthouse.yml/badge.svg" alt="Lighthouse CI" /></a>
+  <img src="https://img.shields.io/badge/Vercel-Live-brightgreen?style=flat-square&logo=vercel" alt="Vercel Live" />
   <img src="https://img.shields.io/github/license/rbkhan007/ollamomui?style=flat-square" alt="License" />
 </p>
 

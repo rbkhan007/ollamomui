@@ -1,16 +1,28 @@
 name: Lighthouse CI
 
-on: [push]
+on:
+  push:
+    branches: [ main ]
 
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run Lighthouse
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+      - name: Build static site
+        run: |
+          cd frontend
+          npm run build
+      - name: Run Lighthouse on static build
         uses: treosh/lighthouse-ci-action@v10
         with:
-          urls: |
-            https://ollamomui.vercel.app
+          staticDistDir: frontend/out
           uploadArtifacts: true
           temporaryPublicStorage: true

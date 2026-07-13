@@ -1,6 +1,10 @@
 name: Test Backend
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   test:
@@ -29,10 +33,26 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+          pip install -r desktop/requirements.txt
+      - name: Run migrations
+        run: |
+          python -c "
+import os
+os.environ['DATABASE_URL'] = 'postgresql://ollamaemu:password@localhost:5432/ollamaemu'
+from backend.src.ollama_emu.db import migrate_schema
+migrate_schema()
+          "
       - name: Start backend in background
         run: |
-          python -m backend.src.ollama_emu.main &
-          sleep 5
+          python -m backend.src.ollama_emu.main > backend.log 2>&1 &
+          echo "Waiting for server to start..."
+          for i in {1..30}; do
+            if curl -s -o /dev/null -w "%{http_code}" http://localhost:11434/api/status | grep -q 200; then
+              echo "Server is ready!"
+              break
+            fi
+            sleep 2
+          done
         env:
           DATABASE_URL: postgresql://ollamaemu:password@localhost:5432/ollamaemu
       - name: Run tests
@@ -40,5 +60,8 @@ jobs:
           cd backend/tests
           python test_api.py --online
         env:
-          OLLAMA_EMU_TEST_BASE: http://localhost:11435
+          OLLAMA_EMU_TEST_BASE: http://localhost:11434
           DATABASE_URL: postgresql://ollamaemu:password@localhost:5432/ollamaemu
+      - name: Show backend logs (if failure)
+        if: failure()
+        run: cat backend.log
