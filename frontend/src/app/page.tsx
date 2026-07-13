@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
+import ArchitectureHero from "@/components/ArchitectureHero";
 import {
   REPO_URL,
   RELEASES_URL,
@@ -8,7 +9,6 @@ import {
   EXE_URL,
   FREETIER_URL,
   SITE_URL,
-  ASSET_BASE,
 } from "@/lib/config";
 
 export const metadata: Metadata = {
@@ -171,13 +171,10 @@ export default function Home() {
           or <a href={RELEASES_URL} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent-2)" }}>browse all releases</a> &middot; macOS / Linux via <code style={{ fontFamily: "var(--font-mono)" }}>run.sh</code>
         </div>
 
-        <div style={{ position: "relative", maxWidth: 760, margin: "48px auto 0" }}>
-          <img
-            src={`${ASSET_BASE}/neural-proxy.svg`}
-            alt="OllamoMUI neural proxy — routes your prompts to free LLMs"
-            className="spidey-panel"
-            style={{ width: "100%", height: "auto", display: "block", borderRadius: 22, animation: "floatSlow 7s ease-in-out infinite" }}
-          />
+        <div style={{ position: "relative", maxWidth: 960, margin: "48px auto 0" }}>
+          <div className="spidey-panel" style={{ borderRadius: 22, overflow: "hidden", animation: "floatSlow 7s ease-in-out infinite" }}>
+            <ArchitectureHero />
+          </div>
           <div className="spidey-burst" style={{ position: "absolute", top: -16, left: -8, width: 92, height: 92, fontSize: 12, transform: "rotate(-10deg)" }}>
             FREE<br />LOCAL<br />AI
           </div>
