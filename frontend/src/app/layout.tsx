@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import UniversalNav from "@/components/UniversalNav";
 import Footer from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
 import { GradientOrbs, MeshGrid } from "@/components/Background";
@@ -174,7 +174,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <GradientOrbs />
               <MeshGrid />
               <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-                <Navbar />
+                <UniversalNav />
                 <main style={{ flex: 1 }}>
                   {children}
                 </main>

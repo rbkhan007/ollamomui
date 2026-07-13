@@ -1,0 +1,228 @@
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 64px;
+  background: var(--nav-bg);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.container {
+  max-width: 1400px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.brandLogo {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6c5ce7, #00cec9);
+}
+
+.brandText {
+  color: var(--text);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.03em;
+}
+
+.badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: rgba(108, 92, 231, 0.1);
+  color: #6c5ce7;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 100%;
+}
+
+.link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.link:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.linkActive {
+  color: #6c5ce7 !important;
+  background: rgba(108, 92, 231, 0.1) !important;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.themeBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.themeBtn:hover {
+  color: var(--text);
+  border-color: rgba(108, 92, 231, 0.3);
+}
+
+.starBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--surface);
+  color: var(--text-muted);
+  border: 1px solid var(--glass-border);
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.starBtn:hover {
+  color: var(--text);
+  border-color: rgba(108, 92, 231, 0.3);
+  background: var(--glass-hover);
+}
+
+.burger {
+  display: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: var(--surface);
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0;
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+
+.burgerBar {
+  display: block;
+  width: 16px;
+  height: 2px;
+  background: var(--text-muted);
+  border-radius: 1px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.burgerOpen .burgerBar:nth-child(1) {
+  transform: translateY(3px) rotate(45deg);
+}
+
+.burgerOpen .burgerBar:nth-child(2) {
+  transform: translateY(-3px) rotate(-45deg);
+}
+
+.menuActions {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .nav {
+    height: 56px;
+  }
+
+  .actions .themeBtn,
+  .actions .starBtn {
+    display: none;
+  }
+
+  .burger {
+    display: flex;
+  }
+
+  .menu {
+    position: fixed;
+    top: 56px;
+    right: -100%;
+    width: 280px;
+    height: calc(100vh - 56px);
+    background: var(--bg);
+    border-left: 1px solid var(--glass-border);
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 20px 16px;
+    gap: 2px;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
+    overflow-y: auto;
+  }
+
+  .menuOpen {
+    right: 0;
+  }
+
+  .link {
+    font-size: 15px;
+    padding: 10px 14px;
+  }
+
+  .menuActions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--glass-border);
+  }
+
+  .menuActions .themeBtn,
+  .menuActions .starBtn {
+    display: flex;
+    flex: 1;
+  }
+
+  .menuActions .starBtn {
+    justify-content: center;
+  }
+}
