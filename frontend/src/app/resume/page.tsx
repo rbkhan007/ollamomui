@@ -37,7 +37,7 @@ const FACEBOOK = "https://www.facebook.com/rakibul.hassan.269825";
 
 export default function ResumePage() {
   return (
-    <main style={{ maxWidth: 880, margin: "0 auto", padding: "40px 24px" }}>
+    <main style={{ maxWidth: 880, margin: "0 auto", padding: "clamp(24px, 5vw, 48px) clamp(16px, 4vw, 24px)" }}>
       <style>{`
         @media print {
           body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }

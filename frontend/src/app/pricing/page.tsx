@@ -29,8 +29,8 @@ export const metadata: Metadata = {
 
 export default function Pricing() {
   return (
-    <main style={{ maxWidth: 1000, margin: "0 auto", padding: "40px 24px" }}>
-      <h1 style={{ fontSize: "2.5rem", fontWeight: 800, textAlign: "center", marginBottom: 8 }}>
+    <main style={{ maxWidth: 1000, margin: "0 auto", padding: "clamp(24px, 5vw, 48px) clamp(16px, 4vw, 24px)" }}>
+      <h1 style={{ fontSize: "clamp(1.8rem, 5vw, 2.5rem)", fontWeight: 800, textAlign: "center", marginBottom: 8, color: "var(--text)" }}>
         Choose your plan
       </h1>
       <p style={{ textAlign: "center", color: "var(--text-muted)", marginBottom: 40 }}>

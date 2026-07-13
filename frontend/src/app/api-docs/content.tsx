@@ -135,7 +135,7 @@ export function ApiDocsContent() {
     <>
       {sections.map((section) => (
         <section key={section} style={{ marginBottom: 40 }}>
-          <h2 style={{ fontSize: "1.3rem", fontWeight: 700, marginBottom: 16, paddingBottom: 8, borderBottom: "1px solid var(--glass-border)" }}>
+          <h2 style={{ fontSize: "1.3rem", fontWeight: 700, marginBottom: 16, paddingBottom: 8, borderBottom: "1px solid var(--glass-border)", color: "var(--text)" }}>
             {section}
           </h2>
           {endpoints.filter((e) => e.section === section).map((ep, i) => {

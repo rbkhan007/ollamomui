@@ -32,9 +32,7 @@ export default function UniversalNav() {
   const { theme, toggle } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
+  useEffect(() => { setIsOpen(false); }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -67,16 +65,17 @@ export default function UniversalNav() {
           <div className={styles.menuActions}>
             <button
               onClick={toggle}
-              className={styles.themeBtn}
+              className={styles.menuActionBtn}
               aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             >
               {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+              <span>{theme === "dark" ? "Light" : "Dark"}</span>
             </button>
             <a
               href={REPO_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.starBtn}
+              className={styles.menuActionBtn}
             >
               <StarIcon /> Star
             </a>
@@ -86,7 +85,7 @@ export default function UniversalNav() {
         <div className={styles.actions}>
           <button
             onClick={toggle}
-            className={styles.themeBtn}
+            className={styles.desktopBtn}
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
           >
             {theme === "dark" ? <SunIcon /> : <MoonIcon />}
@@ -95,9 +94,9 @@ export default function UniversalNav() {
             href={REPO_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className={styles.starBtn}
+            className={styles.desktopBtn}
           >
-            <StarIcon /> Star on GitHub
+            <StarIcon /> Star
           </a>
           <button
             className={`${styles.burger} ${isOpen ? styles.burgerOpen : ""}`}
@@ -105,8 +104,9 @@ export default function UniversalNav() {
             aria-expanded={isOpen}
             aria-label="Toggle navigation menu"
           >
-            <span className={styles.burgerBar} />
-            <span className={styles.burgerBar} />
+            <span />
+            <span />
+            <span />
           </button>
         </div>
       </div>
