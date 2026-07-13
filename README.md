@@ -102,44 +102,69 @@ This project was designed with security as a first-class concern, not an afterth
 
 ## Architecture
 
-```
-                         ┌──────────────┐
-                         │   Clients    │
-                         │  Web/Desktop │
-                         │   /Mobile    │
-                         └──────┬───────┘
-                                │ Ollama / OpenAI / Anthropic format
-                                ▼
-                    ┌───────────────────────┐
-                    │   FastAPI Gateway     │
-                    │  /v1/chat/completions │
-                    │  /api/chat            │
-                    │  /api/generate        │
-                    └───────────┬───────────┘
-                                │
-                    ┌───────────▼───────────┐
-                    │    ACL Middleware     │
-                    │  Auth · Rate Limit    │
-                    │  IP filter · Audit    │
-                    └───────────┬───────────┘
-                                │
-                    ┌───────────▼───────────┐
-                    │    Provider Router    │
-                    │  OpenAI · Anthropic   │
-                    │  Gemini · Groq · etc  │
-                    └───────────┬───────────┘
-                                │
-                    ┌───────────▼───────────┐
-                    │   Upstream LLM(s)     │
-                    │  Free via OpenRouter  │
-                    └───────────┬───────────┘
-                                │
-                    ┌───────────▼───────────┐
-                    │   Streaming Response  │
-                    └───────────────────────┘
+### System Overview
+
+```mermaid
+graph TD
+    subgraph Clients
+        A[Desktop EXE<br/>PySide6 + QML]
+        B[Mobile App<br/>React Native]
+        C[Web Browser<br/>Next.js]
+    end
+
+    subgraph Backend
+        D[FastAPI Server<br/>Python]
+        E[Local PostgreSQL<br/>(Desktop bundle)]
+        F[Cloud PostgreSQL<br/>NeonDB]
+        G[Payment / Licensing<br/>Lemon Squeezy]
+    end
+
+    subgraph External
+        H[LLM Providers<br/>OpenRouter, OpenAI, Gemini]
+    end
+
+    A -->|HTTP| D
+    B -->|HTTPS| D
+    C -->|HTTPS| D
+    D --> E
+    D --> F
+    D --> G
+    D --> H
 ```
 
-**Middleware chain**: API Key Check → Rate Limiter → Payload Validation → RAG Context Fetch → Memory Injection (all async, non-blocking).
+### Request Lifecycle
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant FastAPI
+    participant DB
+    participant LLM
+
+    Client->>FastAPI: POST /v1/chat/completions
+    FastAPI->>FastAPI: Auth & rate limiting
+    FastAPI->>DB: Save conversation (async)
+    FastAPI->>LLM: Forward request
+    LLM-->>FastAPI: Stream response
+    FastAPI-->>Client: Stream chunks
+```
+
+### Deployment
+
+```mermaid
+graph TD
+    subgraph Cloud
+        Vercel[Vercel<br/>Frontend]
+        Render[Render<br/>Backend]
+        Neon[NeonDB<br/>PostgreSQL]
+        GitHub[GitHub Actions<br/>CI/CD]
+    end
+
+    GitHub -->|Build & Deploy| Vercel
+    GitHub -->|Build & Deploy| Render
+    Render --> Neon
+    Vercel -->|API calls| Render
+```
 
 ---
 

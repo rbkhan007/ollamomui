@@ -2,6 +2,23 @@
 
 Base URL: `http://localhost:11434`
 
+## API Call Flow
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant FastAPI
+    participant DB
+    participant LLM
+
+    Client->>FastAPI: POST /v1/chat/completions
+    FastAPI->>FastAPI: Auth & rate limiting
+    FastAPI->>DB: Save conversation (async)
+    FastAPI->>LLM: Forward request
+    LLM-->>FastAPI: Stream response
+    FastAPI-->>Client: Stream chunks
+```
+
 ## Authentication
 
 ### POST /api/auth/register

@@ -1,5 +1,24 @@
 # Security Policy
 
+## Security Architecture
+
+```mermaid
+graph TD
+    Security[OllamoMUI Security] --> Pillar1[Data Sovereignty<br/>Local-first, localhost binding, encrypted keys]
+    Security --> Pillar2[Authentication & Access<br/>PBKDF2, RBAC, JWT secure cookies]
+    Security --> Pillar3[Network Defense<br/>SSRF protection, rate limiting, IP filtering]
+    Security --> Pillar4[Operational Integrity<br/>Audit logs, file sanitisation, memory monitor]
+
+    Pillar1 --> P1a[All data stays on your machine]
+    Pillar1 --> P1b[Zero telemetry or analytics]
+    Pillar2 --> P2a[200K PBKDF2 iterations]
+    Pillar2 --> P2b[Max 5 active sessions]
+    Pillar3 --> P3a[Private IP blocks]
+    Pillar3 --> P3b[Configurable rate limit]
+    Pillar4 --> P4a[Every mutation logged]
+    Pillar4 --> P4b[10MB file upload cap]
+```
+
 ## Supported Versions
 
 | Version | Supported          |
