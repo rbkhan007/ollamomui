@@ -1121,12 +1121,15 @@ def build_openai_payload(ollama_req: dict, model: str) -> dict:
     msgs = ollama_req.get("messages", [])
     if not msgs and "prompt" in ollama_req:
         msgs = [{"role": "user", "content": ollama_req["prompt"]}]
-    return {
+    payload: dict = {
         "messages": msgs,
         "model": model,
         "stream": True,
         "temperature": ollama_req.get("temperature", 0.7),
     }
+    if "max_tokens" in ollama_req:
+        payload["max_tokens"] = ollama_req["max_tokens"]
+    return payload
 
 
 def build_anthropic_payload(ollama_req: dict, model: str) -> dict:
@@ -1139,17 +1142,27 @@ def build_anthropic_payload(ollama_req: dict, model: str) -> dict:
             msgs.append({"role": m["role"], "content": m["content"]})
     if not msgs and "prompt" in ollama_req:
         msgs = [{"role": "user", "content": ollama_req["prompt"]}]
-    return {"model": model, "messages": msgs, "system": sys_prompt, "stream": True, "max_tokens": 4096}
+    payload: dict = {"model": model, "messages": msgs, "system": sys_prompt, "stream": True}
+    payload["max_tokens"] = ollama_req.get("max_tokens", 4096)
+    if "temperature" in ollama_req:
+        payload["temperature"] = ollama_req["temperature"]
+    return payload
 
 
 def build_gemini_payload(ollama_req: dict, model: str) -> dict:
     msgs = []
     for m in ollama_req.get("messages", []):
-        role = "model" if m["role"] == "assistant" else "user"
-        msgs.append({"role": role, "parts": [{"text": m["content"]}]})
+        if m["role"] == "system":
+            msgs.append({"role": "user", "parts": [{"text": f"[System instruction] {m['content']}"}]})
+        else:
+            role = "model" if m["role"] == "assistant" else "user"
+            msgs.append({"role": role, "parts": [{"text": m["content"]}]})
     if not msgs and "prompt" in ollama_req:
         msgs = [{"role": "user", "parts": [{"text": ollama_req["prompt"]}]}]
-    return {"contents": msgs, "generationConfig": {"temperature": ollama_req.get("temperature", 0.7)}}
+    config: dict = {"temperature": ollama_req.get("temperature", 0.7)}
+    if "max_tokens" in ollama_req:
+        config["maxOutputTokens"] = ollama_req["max_tokens"]
+    return {"contents": msgs, "generationConfig": config}
 
 
 def _build_provider_payload(messages: list, model: str, provider_type: str, extra: dict = None) -> dict:

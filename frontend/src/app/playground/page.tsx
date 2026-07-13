@@ -33,7 +33,7 @@ export default function PlaygroundPage() {
   const [maxTokens, setMaxTokens] = useState(2048);
   const [showSuggestions, setShowSuggestions] = useState(true);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const mermaidRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
 
   const scrollBottom = useCallback(() => {
     setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
@@ -61,8 +61,10 @@ export default function PlaygroundPage() {
   useEffect(() => { scrollBottom(); }, [messages]);
 
   useEffect(() => {
-    if (!mermaidRef.current || typeof window === "undefined") return;
-    const blocks = mermaidRef.current.querySelectorAll<HTMLElement>(".mermaid-svg");
+    if (typeof window === "undefined") return;
+    const parent = document.getElementById("playground-messages");
+    if (!parent) return;
+    const blocks = parent.querySelectorAll<HTMLElement>(".mermaid-svg");
     if (!blocks.length) return;
     import("mermaid").then(mermaid => {
       mermaid.default.initialize({ theme: "base", themeVariables: { background: "transparent", primaryColor: "#6c5ce7", secondaryColor: "#00cec9", tertiaryColor: "#fd79a8", primaryTextColor: "#111827", lineColor: "#6c5ce7" } });
@@ -200,7 +202,7 @@ export default function PlaygroundPage() {
         if (lang === "mermaid") {
           const id = `mermaid-${Date.now()}-${i}`;
           return (
-            <div key={i} className="mermaid-svg" id={id} data-code={code} ref={mermaidRef}
+            <div key={i} className="mermaid-svg" id={id} data-code={code}
               style={{ background: "var(--bg)", padding: 16, borderRadius: 10, margin: "8px 0", overflow: "auto", minHeight: 60, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <span style={{ color: "var(--text-muted)", fontSize: 13 }}>Rendering diagram...</span>
             </div>
@@ -346,7 +348,7 @@ export default function PlaygroundPage() {
       )}
 
       {/* Messages */}
-      <div className="stagger-2" style={{
+      <div id="playground-messages" className="stagger-2" style={{
         flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 12,
         padding: 16, background: "var(--surface)", borderRadius: 12, border: "1px solid var(--border)",
         marginBottom: 12,
