@@ -47,7 +47,7 @@ export function CaseStudyContent() {
                 <span style={{ fontSize: 24 }}>{p.icon}</span>
                 <h3 style={{ fontSize: "1.1rem", fontWeight: 700, margin: 0 }}>{p.name}</h3>
               </div>
-              <div style={{ fontSize: 13, color: "#6c5ce7", fontWeight: 600, marginBottom: 16 }}>
+              <div style={{ fontSize: 13, color: "var(--accent)", fontWeight: 600, marginBottom: 16 }}>
                 {p.tech}
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
@@ -80,7 +80,7 @@ export function CaseStudyContent() {
               <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-muted)", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.04em" }}>
                 {m.label}
               </div>
-              <div style={{ fontSize: "1.6rem", fontWeight: 800, color: "#6c5ce7", letterSpacing: "-0.02em", marginBottom: 4 }}>
+              <div style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--accent)", letterSpacing: "-0.02em", marginBottom: 4 }}>
                 {m.value}
               </div>
               <div style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.4 }}>

@@ -155,7 +155,7 @@ export default function About() {
           </p>
           <div style={{ marginTop: 16 }}>
             <Link href="/security" style={{
-              fontSize: 13, fontWeight: 600, color: "#6c5ce7", textDecoration: "none",
+              fontSize: 13, fontWeight: 600, color: "var(--accent)", textDecoration: "none",
             }}>
               View full security architecture →
             </Link>

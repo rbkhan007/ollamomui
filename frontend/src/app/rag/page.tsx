@@ -124,12 +124,12 @@ export default function RagPage() {
           <h1>Knowledge Base (RAG)</h1>
           <p>Upload documents, paste text, and search your indexed content</p>
           {!databaseConnected && (
-            <div style={{ marginTop: 8, padding: "6px 12px", background: "rgba(255,107,107,0.1)", borderRadius: 6, fontSize: 12, color: "#ff6b6b" }}>
+            <div style={{ marginTop: 8, padding: "6px 12px", background: "rgba(225,112,85,0.1)", borderRadius: 6, fontSize: 12, color: "var(--red)" }}>
               PostgreSQL not connected — RAG features are unavailable
             </div>
           )}
           {databaseConnected && schema && !schema.synced && (
-            <div style={{ marginTop: 8, padding: "6px 12px", background: "rgba(255,193,7,0.1)", borderRadius: 6, fontSize: 12, color: "#ffc107" }}>
+            <div style={{ marginTop: 8, padding: "6px 12px", background: "rgba(253,203,110,0.1)", borderRadius: 6, fontSize: 12, color: "var(--accent-4)" }}>
               Schema out of date (v{schema.db_version} vs v{schema.expected_version}) — run migration
             </div>
           )}

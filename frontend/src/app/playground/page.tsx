@@ -83,7 +83,8 @@ export default function PlaygroundPage() {
     const blocks = parent.querySelectorAll<HTMLElement>(".mermaid-svg");
     if (!blocks.length) return;
     import("mermaid").then(mermaid => {
-      mermaid.default.initialize({ theme: "base", themeVariables: { background: "transparent", primaryColor: "#6c5ce7", secondaryColor: "#00cec9", tertiaryColor: "#fd79a8", primaryTextColor: "#111827", lineColor: "#6c5ce7" } });
+      const textColor = getComputedStyle(document.documentElement).getPropertyValue("--text").trim() || "#eef0ff";
+      mermaid.default.initialize({ theme: "base", themeVariables: { background: "transparent", primaryColor: "#6c5ce7", secondaryColor: "#00cec9", tertiaryColor: "#fd79a8", primaryTextColor: textColor, lineColor: "#6c5ce7" } });
       blocks.forEach(el => {
         const code = el.getAttribute("data-code");
         const id = el.id;

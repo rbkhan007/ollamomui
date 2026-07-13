@@ -156,8 +156,8 @@ export function ApiDocsContent() {
                 </p>
                 <div style={{ position: "relative" }}>
                   <pre style={{
-                    background: "rgba(0,0,0,0.3)", borderRadius: 8, padding: 14, fontSize: 13,
-                    overflow: "auto", fontFamily: "monospace", color: "#a5b4fc", lineHeight: 1.5,
+                    background: "var(--bg-2)", borderRadius: 8, padding: 14, fontSize: 13,
+                    overflow: "auto", fontFamily: "monospace", color: "var(--text)", lineHeight: 1.5,
                   }}>
                     <code>{ep.code}</code>
                   </pre>

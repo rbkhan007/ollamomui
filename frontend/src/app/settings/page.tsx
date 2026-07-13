@@ -373,7 +373,7 @@ export default function SettingsPage() {
                   <ProviderIcon name={p.name} size={22} />
                   <div style={{ fontWeight: 700 }}>{p.name}</div>
                   <span style={badge}>{p.type}</span>
-                  {isActive && <span style={{ ...badge, background: "rgba(108,92,231,0.15)", color: "#6c5ce7" }}>active</span>}
+                  {isActive && <span style={{ ...badge, background: "rgba(108,92,231,0.15)", color: "var(--accent)" }}>active</span>}
                   {p.api_key_set ? (
                     <span style={{ ...badge, background: "rgba(0,184,148,0.15)", color: "var(--green, #00b894)" }}>
                       key {p.api_key_masked}

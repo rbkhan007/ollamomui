@@ -87,7 +87,7 @@ export default function ResumePage() {
             <div key={group.category} style={{
               background: "var(--surface)", borderRadius: 12, border: "1px solid var(--glass-border)", padding: 16,
             }}>
-              <h3 style={{ fontSize: 13, fontWeight: 700, color: "#6c5ce7", margin: "0 0 8px", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+              <h3 style={{ fontSize: 13, fontWeight: 700, color: "var(--accent)", margin: "0 0 8px", textTransform: "uppercase", letterSpacing: "0.04em" }}>
                 {group.category}
               </h3>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
@@ -113,7 +113,7 @@ export default function ResumePage() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, flexWrap: "wrap", gap: 8 }}>
             <h3 style={{ fontSize: "1.1rem", fontWeight: 700, margin: 0 }}>OllamoMUI</h3>
             <div className="no-print" style={{ display: "flex", gap: 10 }}>
-              <a href="https://ollamomui.vercel.app" target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: "#6c5ce7", fontWeight: 600, textDecoration: "none" }}>Live Site</a>
+              <a href="https://ollamomui.vercel.app" target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: "var(--accent)", fontWeight: 600, textDecoration: "none" }}>Live Site</a>
               <a href={REPO_URL} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: "var(--text-muted)", fontWeight: 600, textDecoration: "none" }}>Source</a>
             </div>
           </div>
@@ -134,7 +134,7 @@ export default function ResumePage() {
             {["FastAPI", "Next.js", "TypeScript", "React Native", "PySide6", "PostgreSQL", "pgvector", "Docker"].map((tech) => (
               <span key={tech} style={{
                 fontSize: 12, padding: "3px 10px", borderRadius: 6,
-                background: "rgba(0,206,201,0.08)", color: "#00cec9", fontWeight: 500,
+                background: "rgba(0,206,201,0.08)", color: "var(--accent-2)", fontWeight: 500,
               }}>
                 {tech}
               </span>
@@ -177,12 +177,12 @@ export default function ResumePage() {
 
       <section style={{ textAlign: "center", padding: "24px 0", borderTop: "1px solid var(--glass-border)" }}>
         <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", fontSize: 13, color: "var(--text-muted)", marginBottom: 8 }}>
-          <a href="mailto:rbkhan00009@gmail.com" style={{ color: "#6c5ce7", fontWeight: 600, textDecoration: "none" }}>Email</a>
-          <a href={FREELANCER} target="_blank" rel="noopener noreferrer" style={{ color: "#6c5ce7", fontWeight: 600, textDecoration: "none" }}>Freelancer</a>
-          <a href={REPO_URL} target="_blank" rel="noopener noreferrer" style={{ color: "#6c5ce7", fontWeight: 600, textDecoration: "none" }}>GitHub</a>
-          <a href={FACEBOOK} target="_blank" rel="noopener noreferrer" style={{ color: "#6c5ce7", fontWeight: 600, textDecoration: "none" }}>Facebook</a>
-          <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" style={{ color: "#6c5ce7", fontWeight: 600, textDecoration: "none" }}>WhatsApp</a>
-          <a href={PERSONAL_SITE} target="_blank" rel="noopener noreferrer" style={{ color: "#6c5ce7", fontWeight: 600, textDecoration: "none" }}>Portfolio</a>
+          <a href="mailto:rbkhan00009@gmail.com" style={{ color: "var(--accent)", fontWeight: 600, textDecoration: "none" }}>Email</a>
+          <a href={FREELANCER} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", fontWeight: 600, textDecoration: "none" }}>Freelancer</a>
+          <a href={REPO_URL} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", fontWeight: 600, textDecoration: "none" }}>GitHub</a>
+          <a href={FACEBOOK} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", fontWeight: 600, textDecoration: "none" }}>Facebook</a>
+          <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", fontWeight: 600, textDecoration: "none" }}>WhatsApp</a>
+          <a href={PERSONAL_SITE} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", fontWeight: 600, textDecoration: "none" }}>Portfolio</a>
         </div>
         <p className="no-print" style={{ color: "var(--text-muted)", fontSize: 12, margin: 0 }}>
           Use the <strong>Print / Save PDF</strong> button above to save as a PDF resume.
