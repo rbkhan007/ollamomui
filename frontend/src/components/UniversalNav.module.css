@@ -59,6 +59,39 @@
   position: relative;
   display: flex;
   align-items: center;
+  gap: 2px;
+}
+
+/* Inline nav links */
+.navLink {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.navLink:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.navLinkActive {
+  color: #6c5ce7 !important;
+  background: rgba(108, 92, 231, 0.1) !important;
+}
+
+/* More dropdown wrapper */
+.dropdownWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .dropdownBtn {
@@ -223,6 +256,13 @@
   display: none;
 }
 
+/* Medium screens: collapse inline links into More dropdown only */
+@media (max-width: 1280px) {
+  .navLink {
+    display: none;
+  }
+}
+
 @media (max-width: 1024px) {
   .nav {
     height: 56px;
@@ -317,19 +357,22 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-.menuOpen .link:nth-child(1) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.04s both; }
-.menuOpen .link:nth-child(2) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both; }
-.menuOpen .link:nth-child(3) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both; }
-.menuOpen .link:nth-child(4) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both; }
-.menuOpen .link:nth-child(5) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.20s both; }
-.menuOpen .link:nth-child(6) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both; }
-.menuOpen .link:nth-child(7) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both; }
-.menuOpen .link:nth-child(8) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.32s both; }
-.menuOpen .link:nth-child(9) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.36s both; }
-.menuOpen .link:nth-child(10) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.40s both; }
-.menuOpen .link:nth-child(11) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.44s both; }
-.menuOpen .link:nth-child(12) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.48s both; }
-.menuOpen .menuActions { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.52s both; }
+.menuOpen .link:nth-child(1) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.03s both; }
+.menuOpen .link:nth-child(2) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both; }
+.menuOpen .link:nth-child(3) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.09s both; }
+.menuOpen .link:nth-child(4) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both; }
+.menuOpen .link:nth-child(5) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both; }
+.menuOpen .link:nth-child(6) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both; }
+.menuOpen .link:nth-child(7) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.21s both; }
+.menuOpen .link:nth-child(8) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both; }
+.menuOpen .link:nth-child(9) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.27s both; }
+.menuOpen .link:nth-child(10) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.30s both; }
+.menuOpen .link:nth-child(11) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.33s both; }
+.menuOpen .link:nth-child(12) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.36s both; }
+.menuOpen .link:nth-child(13) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.39s both; }
+.menuOpen .link:nth-child(14) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both; }
+.menuOpen .link:nth-child(15) { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both; }
+.menuOpen .menuActions { animation: menuSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.48s both; }
 
 @media (max-width: 480px) {
   .container {

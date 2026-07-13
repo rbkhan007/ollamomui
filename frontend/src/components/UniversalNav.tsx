@@ -12,20 +12,28 @@ interface NavLink {
   href: string;
 }
 
-const NAV_LINKS: NavLink[] = [
+const PRIMARY_LINKS: NavLink[] = [
   { label: "Home", href: "/" },
   { label: "Playground", href: "/playground" },
   { label: "Knowledge", href: "/rag" },
   { label: "Memory", href: "/memory" },
+  { label: "Status", href: "/status" },
+  { label: "Case Study", href: "/case-study" },
+];
+
+const MORE_LINKS: NavLink[] = [
   { label: "Architecture", href: "/architecture" },
   { label: "API Docs", href: "/api-docs" },
-  { label: "Status", href: "/status" },
   { label: "Security", href: "/security" },
   { label: "Pricing", href: "/pricing" },
   { label: "Download", href: "/download" },
   { label: "Resume", href: "/resume" },
   { label: "About", href: "/about" },
+  { label: "Settings", href: "/settings" },
+  { label: "Admin", href: "/admin" },
 ];
+
+const ALL_LINKS = [...PRIMARY_LINKS, ...MORE_LINKS];
 
 export default function UniversalNav() {
   const pathname = usePathname();
@@ -103,38 +111,51 @@ export default function UniversalNav() {
           <span className={styles.badge}>v1.0.4</span>
         </Link>
 
-        {/* Desktop: Pages dropdown */}
-        <div className={styles.desktopNav} ref={ddRef}>
-          <button
-            className={styles.dropdownBtn}
-            onClick={() => setDdOpen((o) => !o)}
-            aria-expanded={ddOpen}
-            aria-haspopup="true"
-          >
-            Pages
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "transform 0.2s", transform: ddOpen ? "rotate(180deg)" : "" }}>
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </button>
-          {ddOpen && (
-            <div className={styles.dropdownPanel}>
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`${styles.ddLink} ${isActive(link.href) ? styles.ddLinkActive : ""}`}
-                  onClick={() => setDdOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          )}
+        {/* Desktop: inline primary links */}
+        <div className={styles.desktopNav}>
+          {PRIMARY_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`${styles.navLink} ${isActive(link.href) ? styles.navLinkActive : ""}`}
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          {/* More dropdown */}
+          <div className={styles.dropdownWrap} ref={ddRef}>
+            <button
+              className={styles.dropdownBtn}
+              onClick={() => setDdOpen((o) => !o)}
+              aria-expanded={ddOpen}
+              aria-haspopup="true"
+            >
+              More
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "transform 0.2s", transform: ddOpen ? "rotate(180deg)" : "" }}>
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            {ddOpen && (
+              <div className={styles.dropdownPanel}>
+                {MORE_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`${styles.ddLink} ${isActive(link.href) ? styles.ddLinkActive : ""}`}
+                    onClick={() => setDdOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Mobile: burger menu */}
         <div className={`${styles.menu} ${isOpen ? styles.menuOpen : ""}`}>
-          {NAV_LINKS.map((link) => (
+          {ALL_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
