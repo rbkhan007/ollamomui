@@ -208,7 +208,7 @@ export default function SettingsPage() {
         </p>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <input
-            style={{ ...input, flex: 1, minWidth: 240 }}
+            style={{ ...input, flex: 1, minWidth: 0 }}
             placeholder="http://localhost:11434"
             value={apiBase}
             onChange={(e) => setApiBaseInput(e.target.value)}
@@ -239,7 +239,7 @@ export default function SettingsPage() {
         </p>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <input
-            style={{ ...input, flex: 1, minWidth: 240 }}
+            style={{ ...input, flex: 1, minWidth: 0 }}
             type="password"
             placeholder="sk-… / sk-or-v1-… / gsk_… "
             value={detectKey}
@@ -292,7 +292,7 @@ export default function SettingsPage() {
             const rowBusy = busy === p.name;
             return (
               <div key={p.name} style={{ ...subPanel, borderColor: isActive ? "rgba(108,92,231,0.4)" : "var(--glass-border)" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
                   <ProviderIcon name={p.name} size={22} />
                   <div style={{ fontWeight: 700 }}>{p.name}</div>
                   <span style={badge}>{p.type}</span>

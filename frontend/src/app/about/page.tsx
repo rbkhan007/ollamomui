@@ -149,8 +149,8 @@ export default function About() {
           View Pricing →
         </Link>
         <br /><br />
-        <a href={REPO_URL} target="_blank" rel="noopener noreferrer" style={{
-          color: "var(--text-muted)", fontSize: 13,
+        <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="break-all" style={{
+          color: "var(--text-muted)", fontSize: 13, wordBreak: "break-all", overflowWrap: "anywhere",
         }}>
           GitHub → {REPO_URL}
         </a>

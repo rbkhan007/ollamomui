@@ -96,7 +96,7 @@ function PaymentResultInner() {
           <p style={{ color: "var(--text-muted)", marginBottom: 24 }}>
             You can resume checkout anytime. No charges were made.
           </p>
-          <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+          <div className="cta-row" style={{ display: "flex", gap: 12, justifyContent: "center" }}>
             <Link href="/pricing" style={{
               display: "inline-block", padding: "12px 24px", borderRadius: 10,
               background: "var(--gradient-1)", color: "white", textDecoration: "none",

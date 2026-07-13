@@ -119,7 +119,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav style={{
+      <nav className="site-nav" style={{
         position: "sticky",
         top: 0,
         zIndex: 100,
@@ -196,7 +196,7 @@ export default function Navbar() {
           {theme === "dark" ? <SunIcon /> : <MoonIcon />}
         </button>
 
-        <a href={REPO_URL} target="_blank" rel="noopener noreferrer" style={{
+        <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="nav-star" style={{
           marginLeft: 8,
           padding: "7px 14px", borderRadius: 10, fontSize: 13, fontWeight: 600,
           background: "var(--surface)", color: "var(--text)",

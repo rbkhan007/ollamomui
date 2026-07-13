@@ -18,7 +18,7 @@ export default function CancelPage() {
         No worries – no charges were made. You can still use the free tier anytime,
         or come back when you&apos;re ready to upgrade.
       </p>
-      <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+      <div className="cta-row" style={{ display: "flex", gap: 12, justifyContent: "center" }}>
         <Link href="/pricing" style={{
           display: "inline-block", padding: "12px 24px", borderRadius: 10,
           background: "var(--gradient-1)", color: "white", textDecoration: "none",

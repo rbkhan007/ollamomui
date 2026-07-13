@@ -157,12 +157,12 @@ export default function PlaygroundPage() {
             {provider || "Loading..."}
           </span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
           <label style={{ fontSize: 13, color: "var(--text-muted)", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>
             <input type="checkbox" checked={freeOnly} onChange={e => setFreeOnly(e.target.checked)} style={{ width: "auto" }} />
             Free only
           </label>
-          <select value={model} onChange={e => setModel(e.target.value)} style={{ width: 240 }}>
+          <select value={model} onChange={e => setModel(e.target.value)} style={{ flex: "1 1 180px", minWidth: 0, maxWidth: 240 }}>
             {models.length === 0 && <option value="">No models loaded</option>}
             {models.map(m => (
               <option key={m.name} value={m.name}>{m.name} {m.free ? "Free" : ""}</option>
@@ -213,7 +213,7 @@ export default function PlaygroundPage() {
       </div>
 
       {/* Input */}
-      <div className="stagger-3" style={{ display: "flex", gap: 8 }}>
+      <div className="stagger-3" style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         <textarea
           aria-label="Message"
           value={input}
@@ -222,6 +222,7 @@ export default function PlaygroundPage() {
           placeholder="Type a message..."
           rows={2}
           disabled={loading}
+          style={{ flex: 1, minWidth: 0 }}
         />
         <button className="btn btn-primary" onClick={send} disabled={loading || !input.trim()} style={{ alignSelf: "flex-end", minWidth: 80 }}>
           {loading ? "Thinking..." : "Send"}

@@ -77,6 +77,17 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+/* Prevent media/embeds from causing horizontal overflow on small screens */
+img, video { max-width: 100%; height: auto; }
+
+/* Utility: allow a flex child to shrink below its content size
+   (prevents long text / inputs from forcing horizontal scroll). */
+.min-w-0 { min-width: 0; }
+.no-wrap { white-space: nowrap; }
+.break-all { overflow-wrap: anywhere; word-break: break-all; }
+
 body {
   font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--bg);
@@ -582,6 +593,12 @@ input[type="file"]::file-selector-button:hover { background: var(--glass-hover);
   .nav-links, .nav-auth { display: none !important; }
   .nav-burger { display: inline-flex !important; }
 }
+/* Phones: drop the inline GitHub button (it lives in the hamburger menu),
+   tighten nav padding, stack tight flex rows, and let buttons wrap. */
+@media (max-width: 760px) {
+  .nav-star { display: none !important; }
+  .site-nav { padding: 10px 14px !important; gap: 6px !important; }
+}
 @media (max-width: 900px) {
   .stat-grid { grid-template-columns: repeat(2, 1fr); }
   .grid-2 { grid-template-columns: 1fr !important; }
@@ -597,6 +614,11 @@ input[type="file"]::file-selector-button:hover { background: var(--glass-hover);
   .page-header h1 { font-size: 22px; }
   .usage-hourly-labels { display: none; }
 }
+/* Phones: stack dual-button rows and allow wrapping so they never overflow */
+@media (max-width: 600px) {
+  .cta-row { flex-direction: column !important; align-items: stretch !important; }
+  .cta-row > a, .cta-row > button, .cta-row > Link { justify-content: center !important; }
+}
 @media (max-width: 560px) {
   .stat-grid { grid-template-columns: repeat(2, 1fr); }
   .hero-cta { flex-direction: column; align-items: stretch; }
@@ -604,6 +626,7 @@ input[type="file"]::file-selector-button:hover { background: var(--glass-hover);
 }
 @media (max-width: 480px) {
   .page-container { padding: 16px 12px; }
+  .spidey-burst { display: none; }
 }
 
 /* Two-column form/grid helper that collapses on small screens */

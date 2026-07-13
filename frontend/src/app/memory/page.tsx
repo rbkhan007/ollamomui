@@ -144,7 +144,7 @@ export default function MemoryPage() {
       </div>
 
       {/* Tabs + actions */}
-      <div className="stagger-1" style={{ display: "flex", gap: 8, marginBottom: 16, alignItems: "center", justifyContent: "space-between" }}>
+      <div className="stagger-1" style={{ display: "flex", gap: 8, marginBottom: 16, alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }}>
         <div style={{ display: "flex", gap: 4 }}>
           {(["messages", "facts", "sessions"] as const).map(t => (
             <button key={t} className={`btn ${tab === t ? "btn-primary" : "btn-ghost"}`} onClick={() => setTab(t)}>
@@ -210,9 +210,9 @@ export default function MemoryPage() {
         <div>
           <div className="card stagger-3" style={{ marginBottom: 16 }}>
             <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 12 }}>Add Fact</h2>
-            <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-              <input aria-label="Fact to remember" placeholder="Fact to remember..." value={factText} onChange={e => setFactText(e.target.value)} style={{ flex: 2 }} />
-              <input aria-label="Source" placeholder="Source (optional)" value={factSource} onChange={e => setFactSource(e.target.value)} style={{ flex: 1 }} />
+            <div style={{ display: "flex", gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
+              <input aria-label="Fact to remember" placeholder="Fact to remember..." value={factText} onChange={e => setFactText(e.target.value)} style={{ flex: "2 1 200px", minWidth: 0 }} />
+              <input aria-label="Source" placeholder="Source (optional)" value={factSource} onChange={e => setFactSource(e.target.value)} style={{ flex: "1 1 140px", minWidth: 0 }} />
               <button className="btn btn-primary" onClick={addFact}>Add</button>
             </div>
           </div>
@@ -223,17 +223,17 @@ export default function MemoryPage() {
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {facts.map(f => (
-                  <div key={f.id} style={{
-                    display: "flex", justifyContent: "space-between", alignItems: "center",
-                    padding: "10px 14px", background: "var(--surface-2)", borderRadius: 8,
-                  }}>
-                    <div>
-                      <div style={{ fontWeight: 500 }}>{f.fact}</div>
-                      <div style={{ fontSize: 11, color: "var(--text-muted)" }}>
-                        {f.source} &middot; {f.importance} &middot; {f.created_at}
-                      </div>
+                <div key={f.id} style={{
+                  display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10,
+                  padding: "10px 14px", background: "var(--surface-2)", borderRadius: 8,
+                }}>
+                  <div className="min-w-0" style={{ minWidth: 0, flex: "1 1 auto" }}>
+                    <div className="break-all" style={{ fontWeight: 500, wordBreak: "break-word" }}>{f.fact}</div>
+                    <div style={{ fontSize: 11, color: "var(--text-muted)", overflowWrap: "anywhere" }}>
+                      {f.source} &middot; {f.importance} &middot; {f.created_at}
                     </div>
-                    <button className="btn btn-ghost btn-sm" onClick={() => deleteFact(f.id)}>
+                  </div>
+                  <button className="btn btn-ghost btn-sm" onClick={() => deleteFact(f.id)} style={{ flexShrink: 0 }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="3 6 5 6 21 6" />
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
@@ -259,15 +259,15 @@ export default function MemoryPage() {
               {sessions.map(s => (
                 <div key={s.id} style={{
                   padding: "12px 14px", background: "var(--surface-2)", borderRadius: 8,
-                  display: "flex", justifyContent: "space-between", alignItems: "center",
+                  display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10,
                 }}>
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: 14 }}>{s.name || s.id}</div>
-                    <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                  <div className="min-w-0" style={{ minWidth: 0, flex: "1 1 auto" }}>
+                    <div className="break-all" style={{ fontWeight: 600, fontSize: 14, wordBreak: "break-word" }}>{s.name || s.id}</div>
+                    <div style={{ fontSize: 12, color: "var(--text-muted)", overflowWrap: "anywhere" }}>
                       {s.message_count} messages &middot; Model: {s.model || "any"} &middot; {s.created_at}
                     </div>
                   </div>
-                  <button className="btn btn-ghost btn-sm" onClick={() => clearMemory(s.id)}>
+                  <button className="btn btn-ghost btn-sm" onClick={() => clearMemory(s.id)} style={{ flexShrink: 0 }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="3 6 5 6 21 6" />
                       <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
