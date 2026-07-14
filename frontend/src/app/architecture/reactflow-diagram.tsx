@@ -89,54 +89,23 @@ const edgeTypes = {
   custom: CustomEdge,
 };
 
-/* ─── Theme color palette ─── */
-const C = {
-  green: "var(--green)",
-  blue: "var(--accent)",
-  purple: "var(--accent-2)",
-  pink: "var(--accent-3)",
-  orange: "#f59e0b",
-  teal: "#0d9488",
-  brown: "var(--accent-4)",
-  gray: "var(--text-muted)",
-};
-
 /* ─── Custom Node Components ─── */
 
-const GatewayNode = memo(function GatewayNode({ data }: NodeProps) {
-  return (
-    <div style={{
-      padding: "12px 20px",
-      borderRadius: 12,
-      background: "color-mix(in srgb, var(--accent) 10%, var(--surface))",
-      border: "2px solid var(--accent)",
-      minWidth: 160,
-      textAlign: "center",
-    }}>
-      <div style={{ fontSize: 14, fontWeight: 700, color: "var(--accent)" }}>{data.label}</div>
-      {data.sub && <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4 }}>{data.sub}</div>}
-    </div>
-  );
-});
+const nodeColor = (type: string, data: Record<string, unknown>): string => {
+  if (data.color) return data.color as string;
+  switch (type) {
+    case "client": return "var(--green)";
+    case "gateway": return "var(--accent)";
+    case "middleware": return "var(--accent-3)";
+    case "storage": return "var(--accent-4)";
+    default: return "var(--accent-2)";
+  }
+};
 
-const MiddlewareNode = memo(function MiddlewareNode({ data }: NodeProps) {
-  return (
-    <div style={{
-      padding: "12px 20px",
-      borderRadius: 12,
-      background: "color-mix(in srgb, var(--accent-3) 10%, var(--surface))",
-      border: "2px solid var(--accent-3)",
-      minWidth: 160,
-      textAlign: "center",
-    }}>
-      <div style={{ fontSize: 14, fontWeight: 700, color: "var(--accent-3)" }}>{data.label}</div>
-      {data.sub && <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4 }}>{data.sub}</div>}
-    </div>
-  );
-});
-
-const ProviderNode = memo(function ProviderNode({ data }: NodeProps) {
-  const color = data.color || "var(--accent-2)";
+const BaseNode = memo(function BaseNode({ type, data }: { type: string; data: Record<string, unknown> }) {
+  const color = nodeColor(type, data);
+  const label = typeof data.label === "string" ? data.label : "";
+  const sub = typeof data.sub === "string" ? data.sub : null;
   return (
     <div style={{
       padding: "12px 20px",
@@ -146,42 +115,30 @@ const ProviderNode = memo(function ProviderNode({ data }: NodeProps) {
       minWidth: 160,
       textAlign: "center",
     }}>
-      <div style={{ fontSize: 14, fontWeight: 700, color }}>{data.label}</div>
-      {data.sub && <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4 }}>{data.sub}</div>}
+      <div style={{ fontSize: 14, fontWeight: 700, color }}>{label}</div>
+      {sub && <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4 }}>{sub}</div>}
     </div>
   );
+});
+
+const GatewayNode = memo(function GatewayNode({ data }: NodeProps) {
+  return <BaseNode type="gateway" data={data} />;
+});
+
+const MiddlewareNode = memo(function MiddlewareNode({ data }: NodeProps) {
+  return <BaseNode type="middleware" data={data} />;
+});
+
+const ProviderNode = memo(function ProviderNode({ data }: NodeProps) {
+  return <BaseNode type="provider" data={data} />;
 });
 
 const StorageNode = memo(function StorageNode({ data }: NodeProps) {
-  return (
-    <div style={{
-      padding: "12px 20px",
-      borderRadius: 12,
-      background: "color-mix(in srgb, var(--accent-4) 10%, var(--surface))",
-      border: "2px solid var(--accent-4)",
-      minWidth: 160,
-      textAlign: "center",
-    }}>
-      <div style={{ fontSize: 14, fontWeight: 700, color: "var(--accent-4)" }}>{data.label}</div>
-      {data.sub && <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4 }}>{data.sub}</div>}
-    </div>
-  );
+  return <BaseNode type="storage" data={data} />;
 });
 
 const ClientNode = memo(function ClientNode({ data }: NodeProps) {
-  return (
-    <div style={{
-      padding: "12px 20px",
-      borderRadius: 12,
-      background: "color-mix(in srgb, var(--green) 10%, var(--surface))",
-      border: "2px solid var(--green)",
-      minWidth: 160,
-      textAlign: "center",
-    }}>
-      <div style={{ fontSize: 14, fontWeight: 700, color: "var(--green)" }}>{data.label}</div>
-      {data.sub && <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4 }}>{data.sub}</div>}
-    </div>
-  );
+  return <BaseNode type="client" data={data} />;
 });
 
 const nodeTypes = {
@@ -192,10 +149,39 @@ const nodeTypes = {
   client: ClientNode,
 };
 
+/* ─── Adaptive edge factory ─── */
+const arrowClsd = { type: MarkerType.ArrowClosed, width: 18, height: 18 } as const;
+
+function colorOf(nodes: Node[], id: string): string {
+  const n = nodes.find((x) => x.id === id);
+  if (!n) return "var(--accent)";
+  return nodeColor(n.type || "gateway", n.data as Record<string, unknown>);
+}
+
+function createEdge(
+  id: string,
+  source: string,
+  target: string,
+  nodes: Node[],
+  opts?: { animated?: boolean; label?: string; dashed?: boolean },
+): Edge {
+  const c = colorOf(nodes, source);
+  return {
+    id,
+    source,
+    target,
+    type: "custom",
+    animated: opts?.animated,
+    style: { stroke: c, ...(opts?.dashed ? { strokeDasharray: "5 5" } : {}) },
+    markerEnd: { ...arrowClsd, color: c },
+    ...(opts?.label ? { label: opts.label } : {}),
+  };
+}
+
 /* ─── Unified nodes combining both systems ─── */
 
 const initialNodes: Node[] = [
-  // ── Request Lifecycle ──
+  /* ── Request Lifecycle ── */
   { id: "cli", type: "client", position: { x: 50, y: 180 }, data: { label: "CLI Client", sub: "Claude Code / Cursor" } },
   { id: "proxy", type: "gateway", position: { x: 300, y: 180 }, data: { label: "OllamoMUI Proxy", sub: "localhost:11434" } },
   { id: "memory", type: "storage", position: { x: 300, y: 320 }, data: { label: "PostgreSQL", sub: "Memory & Sessions" } },
@@ -208,14 +194,14 @@ const initialNodes: Node[] = [
   { id: "deepseek", type: "provider", position: { x: 850, y: 250 }, data: { label: "DeepSeek", sub: "deepseek-v3", color: "var(--accent)" } },
   { id: "gemini", type: "provider", position: { x: 850, y: 320 }, data: { label: "Gemini", sub: "gemini-2.5-pro", color: "var(--accent-2)" } },
 
-  // ── RAG Pipeline (Ingestion) ──
+  /* ── RAG Pipeline (Ingestion) ── */
   { id: "upload", type: "client", position: { x: 1200, y: 320 }, data: { label: "Document Upload", sub: "PDF / TXT / CSV" } },
   { id: "chunk", type: "gateway", position: { x: 1450, y: 320 }, data: { label: "Chunking", sub: "Split into Passages" } },
   { id: "embed", type: "gateway", position: { x: 1700, y: 320 }, data: { label: "Embedding", sub: "Vector Representation" } },
   { id: "pgvector", type: "storage", position: { x: 1980, y: 260 }, data: { label: "pgvector Index", sub: "Cosine Similarity" } },
   { id: "pgtrgm", type: "storage", position: { x: 1980, y: 370 }, data: { label: "pg_trgm Index", sub: "Fuzzy Keyword Match" } },
 
-  // ── RAG Pipeline (Query) ──
+  /* ── RAG Pipeline (Query) ── */
   { id: "query", type: "client", position: { x: 1200, y: 90 }, data: { label: "User Query", sub: "Natural Language" } },
   { id: "semantic", type: "provider", position: { x: 1450, y: 40 }, data: { label: "Semantic Search", sub: "Vector Cosine Sim", color: "var(--accent-2)" } },
   { id: "keyword", type: "provider", position: { x: 1450, y: 140 }, data: { label: "Keyword Search", sub: "pg_trgm Fuzzy", color: "var(--accent-3)" } },
@@ -223,43 +209,41 @@ const initialNodes: Node[] = [
   { id: "llm", type: "gateway", position: { x: 1980, y: 90 }, data: { label: "LLM Provider", sub: "Context Injection" } },
 ];
 
-/* ─── Unified edges ─── */
-
-const arrowClsd = { type: MarkerType.ArrowClosed, width: 18, height: 18 } as const;
+/* ─── Edges auto-derived from node colors ─── */
 
 const initialEdges: Edge[] = [
-  // ── Request Lifecycle ──
-  { id: "l1", type: "custom", source: "cli", target: "proxy", animated: true, style: { stroke: C.green }, markerEnd: arrowClsd },
-  { id: "l2", type: "custom", source: "proxy", target: "memory", style: { stroke: C.brown, strokeDasharray: "5 5" }, markerEnd: arrowClsd, label: "Auto-save" },
-  { id: "l3", type: "custom", source: "proxy", target: "acl", style: { stroke: C.pink }, markerEnd: arrowClsd },
-  { id: "l4", type: "custom", source: "acl", target: "router", style: { stroke: C.teal }, markerEnd: arrowClsd, label: "Allow" },
-  { id: "l5", type: "custom", source: "router", target: "stream", style: { stroke: C.green }, markerEnd: arrowClsd },
-  { id: "l6", type: "custom", source: "router", target: "openai", style: { stroke: "#10a37f" }, markerEnd: arrowClsd },
-  { id: "l7", type: "custom", source: "router", target: "anthropic", style: { stroke: "var(--accent-3)" }, markerEnd: arrowClsd },
-  { id: "l8", type: "custom", source: "router", target: "groq", style: { stroke: "#f59e0b" }, markerEnd: arrowClsd },
-  { id: "l9", type: "custom", source: "router", target: "deepseek", style: { stroke: "var(--accent)" }, markerEnd: arrowClsd },
-  { id: "l10", type: "custom", source: "router", target: "gemini", style: { stroke: "var(--accent-2)" }, markerEnd: arrowClsd },
-  { id: "l11", type: "custom", source: "openai", target: "stream", style: { stroke: "#10a37f" }, markerEnd: arrowClsd },
-  { id: "l12", type: "custom", source: "anthropic", target: "stream", style: { stroke: "var(--accent-3)" }, markerEnd: arrowClsd },
-  { id: "l13", type: "custom", source: "groq", target: "stream", style: { stroke: "#f59e0b" }, markerEnd: arrowClsd },
-  { id: "l14", type: "custom", source: "deepseek", target: "stream", style: { stroke: "var(--accent)" }, markerEnd: arrowClsd },
-  { id: "l15", type: "custom", source: "gemini", target: "stream", style: { stroke: "var(--accent-2)" }, markerEnd: arrowClsd },
-  { id: "l16", type: "custom", source: "stream", target: "cli", animated: true, style: { stroke: C.green }, markerEnd: arrowClsd, label: "SSE Stream" },
+  /* ── Request Lifecycle ── */
+  createEdge("l1", "cli", "proxy", initialNodes, { animated: true }),
+  createEdge("l2", "proxy", "memory", initialNodes, { dashed: true, label: "Auto-save" }),
+  createEdge("l3", "proxy", "acl", initialNodes),
+  createEdge("l4", "acl", "router", initialNodes, { label: "Allow" }),
+  createEdge("l5", "router", "stream", initialNodes),
+  createEdge("l6", "router", "openai", initialNodes),
+  createEdge("l7", "router", "anthropic", initialNodes),
+  createEdge("l8", "router", "groq", initialNodes),
+  createEdge("l9", "router", "deepseek", initialNodes),
+  createEdge("l10", "router", "gemini", initialNodes),
+  createEdge("l11", "openai", "stream", initialNodes),
+  createEdge("l12", "anthropic", "stream", initialNodes),
+  createEdge("l13", "groq", "stream", initialNodes),
+  createEdge("l14", "deepseek", "stream", initialNodes),
+  createEdge("l15", "gemini", "stream", initialNodes),
+  createEdge("l16", "stream", "cli", initialNodes, { animated: true, label: "SSE Stream" }),
 
-  // ── RAG Ingestion ──
-  { id: "r1", type: "custom", source: "upload", target: "chunk", style: { stroke: C.green }, markerEnd: arrowClsd },
-  { id: "r2", type: "custom", source: "chunk", target: "embed", style: { stroke: C.teal }, markerEnd: arrowClsd },
-  { id: "r3", type: "custom", source: "embed", target: "pgvector", style: { stroke: C.brown }, markerEnd: arrowClsd, label: "Vector index" },
-  { id: "r4", type: "custom", source: "chunk", target: "pgtrgm", style: { stroke: "var(--accent-3)" }, markerEnd: arrowClsd, label: "Keyword index" },
+  /* ── RAG Ingestion ── */
+  createEdge("r1", "upload", "chunk", initialNodes),
+  createEdge("r2", "chunk", "embed", initialNodes),
+  createEdge("r3", "embed", "pgvector", initialNodes, { label: "Vector index" }),
+  createEdge("r4", "chunk", "pgtrgm", initialNodes, { label: "Keyword index" }),
 
-  // ── RAG Query ──
-  { id: "r5", type: "custom", source: "query", target: "semantic", style: { stroke: "var(--accent-2)" }, markerEnd: arrowClsd },
-  { id: "r6", type: "custom", source: "query", target: "keyword", style: { stroke: "var(--accent-3)" }, markerEnd: arrowClsd },
-  { id: "r7", type: "custom", source: "semantic", target: "pgvector", style: { stroke: "var(--accent-2)", strokeDasharray: "5 5" }, markerEnd: arrowClsd },
-  { id: "r8", type: "custom", source: "keyword", target: "pgtrgm", style: { stroke: "var(--accent-3)", strokeDasharray: "5 5" }, markerEnd: arrowClsd },
-  { id: "r9", type: "custom", source: "pgvector", target: "merge", style: { stroke: "var(--accent-2)" }, markerEnd: arrowClsd, label: "Results" },
-  { id: "r10", type: "custom", source: "pgtrgm", target: "merge", style: { stroke: "var(--accent-3)" }, markerEnd: arrowClsd, label: "Results" },
-  { id: "r11", type: "custom", source: "merge", target: "llm", animated: true, style: { stroke: C.teal }, markerEnd: arrowClsd },
+  /* ── RAG Query ── */
+  createEdge("r5", "query", "semantic", initialNodes),
+  createEdge("r6", "query", "keyword", initialNodes),
+  createEdge("r7", "semantic", "pgvector", initialNodes, { dashed: true }),
+  createEdge("r8", "keyword", "pgtrgm", initialNodes, { dashed: true }),
+  createEdge("r9", "pgvector", "merge", initialNodes, { label: "Results" }),
+  createEdge("r10", "pgtrgm", "merge", initialNodes, { label: "Results" }),
+  createEdge("r11", "merge", "llm", initialNodes, { animated: true }),
 ];
 
 /* ─── Exported unified diagram ─── */
