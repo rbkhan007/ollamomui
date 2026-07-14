@@ -60,8 +60,11 @@ export default function PlaygroundPage() {
   const [stopSequences, setStopSequences] = useState("");
   const [selectedPreset, setSelectedPreset] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(true);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [showScrollBottom, setShowScrollBottom] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollBottom = useCallback(() => {
     setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
@@ -90,6 +93,23 @@ export default function PlaygroundPage() {
   }, []);
 
   useEffect(() => { scrollBottom(); }, [messages]);
+
+  const checkScroll = useCallback(() => {
+    const el = messagesRef.current;
+    if (!el) return;
+    const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 60;
+    const atTop = el.scrollTop < 60;
+    setShowScrollTop(!atTop);
+    setShowScrollBottom(!atBottom);
+  }, []);
+
+  const scrollToTop = useCallback(() => {
+    messagesRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  const scrollToBottom2 = useCallback(() => {
+    messagesRef.current?.scrollTo({ top: messagesRef.current.scrollHeight, behavior: "smooth" });
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -306,7 +326,7 @@ export default function PlaygroundPage() {
   return (
     <div className="page-container" style={{ display: "flex", flexDirection: "column", height: "calc(100dvh - 140px)", minHeight: 0 }}>
       {/* Header bar */}
-      <div className="stagger-1" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 8 }}>
+      <div className="stagger-1" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 8, position: "sticky", top: 0, zIndex: 10, background: "var(--bg)", paddingBottom: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div className="page-header-icon" style={{ background: "rgba(13,148,136,0.1)" }}>
             <PageIcon type="chat" color="var(--accent-2)" />
@@ -474,11 +494,26 @@ export default function PlaygroundPage() {
       )}
 
       {/* Messages */}
-      <div id="playground-messages" className="stagger-2" style={{
-        flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 12,
-        padding: 16, background: "var(--surface)", borderRadius: 12, border: "1px solid var(--border)",
-        marginBottom: 12,
-      }}>
+      <div id="playground-messages" className="stagger-2" ref={messagesRef}
+        onScroll={checkScroll}
+        style={{
+          flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 12,
+          padding: 16, background: "var(--surface)", borderRadius: 12, border: "1px solid var(--border)",
+          marginBottom: 12, position: "relative",
+        }}>
+        {showScrollTop && (
+          <button onClick={scrollToTop} title="Scroll to top"
+            style={{
+              position: "sticky", top: 8, zIndex: 5, alignSelf: "center",
+              width: 36, height: 36, borderRadius: "50%",
+              background: "var(--surface-2)", border: "1px solid var(--border)",
+              color: "var(--text-muted)", cursor: "pointer", display: "flex",
+              alignItems: "center", justifyContent: "center", fontSize: 18,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            }}>
+            ↑
+          </button>
+        )}
         {messages.length === 0 && (
           <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
             <MessageSquare size={48} strokeWidth={1.5} style={{ marginBottom: 16, opacity: 0.4 }} />
@@ -525,11 +560,24 @@ export default function PlaygroundPage() {
             </div>
           </div>
         ))}
+        {showScrollBottom && (
+          <button onClick={scrollToBottom2} title="Scroll to bottom"
+            style={{
+              position: "sticky", bottom: 8, zIndex: 5, alignSelf: "center",
+              width: 36, height: 36, borderRadius: "50%",
+              background: "var(--surface-2)", border: "1px solid var(--border)",
+              color: "var(--text-muted)", cursor: "pointer", display: "flex",
+              alignItems: "center", justifyContent: "center", fontSize: 18,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            }}>
+            ↓
+          </button>
+        )}
         <div ref={bottomRef} />
       </div>
 
       {/* Input */}
-      <div className="stagger-3" style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <div className="stagger-3" style={{ display: "flex", gap: 8, flexWrap: "wrap", position: "sticky", bottom: 0, zIndex: 10, background: "var(--bg)", paddingTop: 8 }}>
         <textarea
           aria-label="Message"
           value={input}
