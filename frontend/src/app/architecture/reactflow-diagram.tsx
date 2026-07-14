@@ -431,3 +431,85 @@ export function AuthFlow() {
     </div>
   );
 }
+
+/* ─── Waterfall SDLC ─── */
+
+const sdlcNodes: Node[] = [
+  { id: "req", type: "gateway", position: { x: 50, y: 60 }, data: { label: "1. Requirements", sub: "Gather specs & define scope" } },
+  { id: "design", type: "gateway", position: { x: 50, y: 180 }, data: { label: "2. Design", sub: "System architecture & UI mockups" } },
+  { id: "impl", type: "gateway", position: { x: 50, y: 300 }, data: { label: "3. Implementation", sub: "Code the backend, frontend, clients" } },
+  { id: "test", type: "middleware", position: { x: 50, y: 420 }, data: { label: "4. Testing", sub: "Unit, integration, E2E, security" } },
+  { id: "deploy", type: "gateway", position: { x: 50, y: 540 }, data: { label: "5. Deployment", sub: "Release to Vercel, Render, stores" } },
+  { id: "maintain", type: "client", position: { x: 50, y: 660 }, data: { label: "6. Maintenance", sub: "Bug fixes, updates, monitoring" } },
+
+  /* Right column — deliverables */
+  { id: "req-out", type: "storage", position: { x: 320, y: 60 }, data: { label: "PRD & User Stories", sub: "Functional specification" } },
+  { id: "design-out", type: "storage", position: { x: 320, y: 180 }, data: { label: "Figma Mockups & ERD", sub: "UI/UX + database schema" } },
+  { id: "impl-out", type: "storage", position: { x: 320, y: 300 }, data: { label: "Source Code & Assets", sub: "FastAPI, Next.js, QML, RN" } },
+  { id: "test-out", type: "storage", position: { x: 320, y: 420 }, data: { label: "Test Reports & QA", sub: "Coverage, benchmarks" } },
+  { id: "deploy-out", type: "storage", position: { x: 320, y: 540 }, data: { label: "Live Site & Binaries", sub: "vercel.app + EXE + APK" } },
+  { id: "maintain-out", type: "storage", position: { x: 320, y: 660 }, data: { label: "CHANGELOG & Issues", sub: "GitHub releases & roadmap" } },
+
+  /* Feedback arcs */
+  { id: "feedback", type: "middleware", position: { x: 550, y: 360 }, data: { label: "Feedback Loops", sub: "Issues → earlier phases" } },
+];
+
+const sdlcEdges: Edge[] = [
+  /* Sequential waterfall */
+  createEdge("s1", "req", "design", sdlcNodes, { animated: true }),
+  createEdge("s2", "design", "impl", sdlcNodes, { animated: true }),
+  createEdge("s3", "impl", "test", sdlcNodes, { animated: true }),
+  createEdge("s4", "test", "deploy", sdlcNodes, { animated: true }),
+  createEdge("s5", "deploy", "maintain", sdlcNodes, { animated: true }),
+
+  /* To deliverables */
+  createEdge("s6", "req", "req-out", sdlcNodes),
+  createEdge("s7", "design", "design-out", sdlcNodes),
+  createEdge("s8", "impl", "impl-out", sdlcNodes),
+  createEdge("s9", "test", "test-out", sdlcNodes),
+  createEdge("s10", "deploy", "deploy-out", sdlcNodes),
+  createEdge("s11", "maintain", "maintain-out", sdlcNodes),
+
+  /* Feedback arcs back */
+  createEdge("s12", "maintain", "req", sdlcNodes, { dashed: true, label: "New requirements" }),
+  createEdge("s13", "test", "design", sdlcNodes, { dashed: true, label: "Design fixes" }),
+  createEdge("s14", "deploy", "impl", sdlcNodes, { dashed: true, label: "Hotfix" }),
+];
+
+export function WaterfallSdlcFlow() {
+  const [nodes, setNodes, onNodesChange] = useNodesState(sdlcNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(sdlcEdges);
+
+  return (
+    <div style={{
+      background: "var(--surface)", borderRadius: 16, border: "1px solid var(--glass-border)",
+      overflow: "hidden", height: 780,
+    }}>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        connectionLineComponent={ConnectionLine}
+        fitView
+        fitViewOptions={{ padding: 0.12 }}
+        attributionPosition="bottom-left"
+        proOptions={{ hideAttribution: true }}
+      >
+        <Background color="var(--text-muted)" gap={24} size={1} />
+        <Controls style={{ background: "var(--surface)", borderRadius: 8, border: "1px solid var(--glass-border)" }} />
+        <Panel position="top-left" style={{
+          background: "color-mix(in srgb, var(--surface) 85%, transparent)",
+          padding: "8px 14px", borderRadius: 8, margin: 8,
+          backdropFilter: "blur(4px)",
+        }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text)" }}>
+            🌊 Waterfall SDLC
+          </span>
+        </Panel>
+      </ReactFlow>
+    </div>
+  );
+}

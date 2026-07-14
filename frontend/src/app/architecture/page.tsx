@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/config";
-import { ArchitectureFlow, DeploymentFlow, AuthFlow } from "./reactflow-diagram";
+import { ArchitectureFlow, DeploymentFlow, AuthFlow, WaterfallSdlcFlow } from "./reactflow-diagram";
 
 export const metadata: Metadata = {
   title: "Architecture — Request Lifecycle & RAG Pipeline",
@@ -41,12 +41,20 @@ export default function ArchitecturePage() {
         <DeploymentFlow />
       </section>
 
-      <section>
+      <section style={{ marginBottom: 48 }}>
         <h2 style={{ fontSize: "var(--text-h2)", fontWeight: 700, marginBottom: 8, color: "var(--text)" }}>Auth &amp; Security Flow</h2>
         <p style={{ color: "var(--text-muted)", fontSize: "var(--text-sm)", marginBottom: 24, maxWidth: "var(--text-max)", lineHeight: "var(--leading-small)" }}>
           How every request is rate-limited, authenticated via session cookie or API key, authorized by role, and logged to the audit trail.
         </p>
         <AuthFlow />
+      </section>
+
+      <section>
+        <h2 style={{ fontSize: "var(--text-h2)", fontWeight: 700, marginBottom: 8, color: "var(--text)" }}>Waterfall SDLC</h2>
+        <p style={{ color: "var(--text-muted)", fontSize: "var(--text-sm)", marginBottom: 24, maxWidth: "var(--text-max)", lineHeight: "var(--leading-small)" }}>
+          The sequential software development lifecycle that guided OllamoMUI from requirements through maintenance — with feedback arcs linking later phases back to earlier ones.
+        </p>
+        <WaterfallSdlcFlow />
       </section>
     </main>
   );
