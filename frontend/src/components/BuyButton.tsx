@@ -28,8 +28,8 @@ export default function BuyButton({ plan, label }: BuyButtonProps) {
         throw new Error(data.detail || "Could not start checkout");
       }
       window.location.href = data.checkout_url;
-    } catch (e: any) {
-      setError(e?.message || "Checkout failed");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Checkout failed");
       setLoading(false);
     }
   }
@@ -57,7 +57,7 @@ export default function BuyButton({ plan, label }: BuyButtonProps) {
       >
         {loading ? "Redirecting…" : label}
       </button>
-      {error && <p style={{ color: "var(--accent-2)", fontSize: "var(--text-sm)", lineHeight: "var(--leading-small)", marginTop: 8 }}>{error}</p>}
+      {error && <p role="alert" style={{ color: "var(--accent-2)", fontSize: "var(--text-sm)", lineHeight: "var(--leading-small)", marginTop: 8 }}>{error}</p>}
     </>
   );
 }

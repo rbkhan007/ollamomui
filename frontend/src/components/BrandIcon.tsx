@@ -82,7 +82,7 @@ export function BrandIcon({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "rgba(108,92,231,0.12)",
+          background: "rgba(13,148,136,0.12)",
           color: "var(--text, #1a1a2e)",
           fontSize: size * 0.4,
           fontWeight: 700,
@@ -134,7 +134,7 @@ export function ProviderIcon({
   size?: number;
   showName?: boolean;
 }) {
-  const color = PROVIDER_COLORS[providerKey(name)] || "#6c5ce7";
+  const color = PROVIDER_COLORS[providerKey(name)] || "#0d9488";
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 8, color }}>
       <BrandIcon name={name} size={size} color={color} />

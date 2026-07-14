@@ -64,14 +64,14 @@ export default function Download() {
             <div style={{
               width: 52, height: 52, borderRadius: 16, flexShrink: 0,
               display: "flex", alignItems: "center", justifyContent: "center",
-              background: item.btnStyle === "primary" ? "rgba(108,92,231,0.1)" : "rgba(128,128,128,0.06)",
-              color: item.btnStyle === "primary" ? "var(--accent)" : "var(--text-sm-color)",
+              background: item.btnStyle === "primary" ? "rgba(13,148,136,0.1)" : "var(--surface-2)",
+              color: item.btnStyle === "primary" ? "var(--accent)" : "var(--text-muted)",
             }}>
               {item.svg}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <h2 style={{ fontSize: "var(--text-h3)", fontWeight: 700, marginBottom: 4 }}>{item.title}</h2>
-              <p style={{ color: "var(--text-sm-color)", fontSize: "var(--text-sm)", margin: 0 }}>{item.desc}</p>
+              <p style={{ color: "var(--text-muted)", fontSize: "var(--text-sm)", margin: 0 }}>{item.desc}</p>
             </div>
             <a href={item.href} style={{
               flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 6,
@@ -90,7 +90,7 @@ export default function Download() {
       {/* Deploy Buttons */}
       <section style={{ marginTop: 64 }}>
         <h2 style={{ fontSize: "var(--text-h2)", fontWeight: 700, textAlign: "center", marginBottom: 8 }}>Deploy Your Own Instance</h2>
-        <p style={{ textAlign: "center", color: "var(--text-sm-color)", fontSize: "var(--text-sm)", marginBottom: 20 }}>
+        <p style={{ textAlign: "center", color: "var(--text-muted)", fontSize: "var(--text-sm)", marginBottom: 20 }}>
           One-click deployment to your preferred cloud provider.
         </p>
         <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>

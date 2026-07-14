@@ -50,7 +50,7 @@ export default function About() {
         <h1 style={{ fontSize: "var(--text-h1)", fontWeight: 700, marginBottom: 16, lineHeight: "var(--leading-heading)" }}>
           The story behind OllamoMUI
         </h1>
-        <p style={{ color: "var(--text-sm-color)", fontSize: "var(--text-body)", lineHeight: "var(--leading-body)", maxWidth: 640, margin: "0 auto" }}>
+        <p style={{ color: "var(--text-muted)", fontSize: "var(--text-body)", lineHeight: "var(--leading-body)", maxWidth: 640, margin: "0 auto" }}>
           OllamoMUI started as a simple idea: <b>why pay $20/mo for ChatGPT when free models are just as good?</b>
           <br /><br />
           We built a lightweight API gateway that emulates Ollama, OpenAI, and Anthropic formats — routing every prompt
@@ -76,7 +76,7 @@ export default function About() {
               background: "var(--surface)", border: "1px solid var(--glass-border)",
             }}>
               <div style={{ fontSize: "2rem", fontWeight: 700, color: "var(--accent)" }}>{s.value}</div>
-              <div style={{ fontSize: "var(--text-sm)", color: "var(--text-sm-color)" }}>{s.label}</div>
+              <div style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)" }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -101,7 +101,7 @@ export default function About() {
               <div style={{ fontWeight: 700, fontSize: "var(--text-sm)", color: "var(--accent)", marginBottom: 4 }}>
                 {t.year}
               </div>
-              <div style={{ color: "var(--text-sm-color)", fontSize: "var(--text-sm)", lineHeight: "var(--leading-small)" }}>
+              <div style={{ color: "var(--text-muted)", fontSize: "var(--text-sm)", lineHeight: "var(--leading-small)" }}>
                 {t.event}
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function About() {
               }}>{section.title}</h3>
               <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                 {section.items.map((item) => (
-                  <li key={item} style={{ padding: "3px 0", fontSize: "var(--text-sm)", color: "var(--text-sm-color)" }}>
+                  <li key={item} style={{ padding: "3px 0", fontSize: "var(--text-sm)", color: "var(--text-muted)" }}>
                     ✓ {item}
                   </li>
                 ))}
@@ -147,7 +147,7 @@ export default function About() {
           padding: "32px 28px",
         }}>
           <h2 style={{ fontSize: "var(--text-h2)", fontWeight: 700, marginBottom: 12 }}>🔒 Security Philosophy</h2>
-          <p style={{ color: "var(--text-sm-color)", fontSize: "var(--text-sm)", lineHeight: 1.6 }}>
+          <p style={{ color: "var(--text-muted)", fontSize: "var(--text-sm)", lineHeight: 1.6 }}>
             When I built OllamoMUI, I started with a simple API wrapper. As the project grew, I realised that
             security couldn&apos;t be an afterthought. I implemented <strong style={{ color: "var(--text)" }}>PBKDF2-HMAC-SHA256</strong> password
             hashing with per-user salts, <strong style={{ color: "var(--text)" }}>Role-Based Access Control</strong> with fine-grained permissions,
@@ -176,7 +176,7 @@ export default function About() {
             <span key={tech} className="tech-tag" style={{
               padding: "6px 14px", borderRadius: 24, fontSize: "var(--text-sm)", fontWeight: 600,
               background: "var(--surface)", border: "1px solid var(--glass-border)",
-              color: "var(--text-sm-color)",
+              color: "var(--text-muted)",
             }}>
               {tech}
             </span>
@@ -191,7 +191,7 @@ export default function About() {
           padding: "40px 32px",
         }}>
           <h2 style={{ fontSize: "var(--text-h2)", fontWeight: 700, marginBottom: 12 }}>Hire Me</h2>
-          <p style={{ color: "var(--text-sm-color)", fontSize: "var(--text-sm)", lineHeight: 1.6, marginBottom: 20, maxWidth: 500, marginLeft: "auto", marginRight: "auto" }}>
+          <p style={{ color: "var(--text-muted)", fontSize: "var(--text-sm)", lineHeight: 1.6, marginBottom: 20, maxWidth: 500, marginLeft: "auto", marginRight: "auto" }}>
             I build full-stack applications, cross-platform desktop/mobile apps, AI/LLM integrations, and
             developer tools. If you have a project, an idea, or a problem to solve — let&apos;s talk.
           </p>

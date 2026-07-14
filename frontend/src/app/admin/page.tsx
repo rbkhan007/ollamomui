@@ -51,36 +51,38 @@ export default function AdminLicense() {
         (from logging in as the admin user), enter the customer&apos;s email, and generate a key.
       </p>
 
-      <label style={labelStyle}>Admin token (Bearer)</label>
-      <input style={inputStyle} type="password" placeholder="paste JWT from admin login"
-        value={token} onChange={(e) => setToken(e.target.value)} />
+      <div className="card" style={{ padding: 24 }}>
+        <label style={labelStyle}>Admin token (Bearer)</label>
+        <input style={inputStyle} type="password" placeholder="paste JWT from admin login"
+          value={token} onChange={(e) => setToken(e.target.value)} />
 
-      <label style={labelStyle}>Customer email</label>
-      <input style={inputStyle} type="email" placeholder="customer@example.com"
-        value={email} onChange={(e) => setEmail(e.target.value)} />
+        <label style={labelStyle}>Customer email</label>
+        <input style={inputStyle} type="email" placeholder="customer@example.com"
+          value={email} onChange={(e) => setEmail(e.target.value)} />
 
-      <label style={labelStyle}>Plan</label>
-      <select style={inputStyle} value={plan} onChange={(e) => setPlan(e.target.value)}>
-        {PLANS.map((p) => (
-          <option key={p} value={p}>{p}</option>
-        ))}
-      </select>
+        <label style={labelStyle}>Plan</label>
+        <select style={inputStyle} value={plan} onChange={(e) => setPlan(e.target.value)}>
+          {PLANS.map((p) => (
+            <option key={p} value={p}>{p}</option>
+          ))}
+        </select>
 
-      <label style={labelStyle}>Valid for (days)</label>
-      <input style={inputStyle} type="number" min={1} value={days}
-        onChange={(e) => setDays(Number(e.target.value) || 30)} />
+        <label style={labelStyle}>Valid for (days)</label>
+        <input style={inputStyle} type="number" min={1} value={days}
+          onChange={(e) => setDays(Number(e.target.value) || 30)} />
 
-      <button onClick={generate} disabled={busy}
-        style={{ ...buttonStyle, opacity: busy ? 0.6 : 1, marginTop: 8 }}>
-        {busy ? "Generating…" : "Generate license"}
-      </button>
+        <button className="btn btn-primary" onClick={generate} disabled={busy}
+          style={{ marginTop: 12, width: "100%", opacity: busy ? 0.6 : 1 }}>
+          {busy ? "Generating…" : "Generate license"}
+        </button>
+      </div>
 
       {result && (
-        <div style={{ marginTop: 24, padding: 16, background: "var(--surface)", borderRadius: 12, border: "1px solid var(--glass-border)" }}>
+        <div className="card" style={{ marginTop: 24, padding: 16 }}>
           <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 6 }}>License key</div>
           <code style={{ fontSize: 14, wordBreak: "break-all" }}>{result}</code>
-          <button onClick={() => navigator.clipboard.writeText(result)}
-            style={{ ...buttonStyle, marginTop: 12, background: "var(--accent-2)" }}>
+          <button className="btn btn-primary" onClick={() => navigator.clipboard.writeText(result)}
+            style={{ marginTop: 12, background: "var(--accent-2)" }}>
             Copy key
           </button>
         </div>

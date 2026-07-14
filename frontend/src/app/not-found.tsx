@@ -51,7 +51,7 @@ export default function NotFound() {
 
       <p style={{
         fontSize: "var(--text-sm)",
-        color: "var(--text-sm-color)",
+        color: "var(--text-muted)",
         lineHeight: "var(--leading-small)",
         maxWidth: "var(--text-max)",
         marginBottom: 32,

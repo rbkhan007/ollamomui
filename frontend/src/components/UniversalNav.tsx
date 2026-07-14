@@ -55,12 +55,20 @@ export default function UniversalNav() {
     }
   }, []);
 
+  const handleEscape = useCallback((e: KeyboardEvent) => {
+    if (e.key === "Escape") setDdOpen(false);
+  }, []);
+
   useEffect(() => {
     if (ddOpen) {
       document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleEscape);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+        document.removeEventListener("keydown", handleEscape);
+      };
     }
-  }, [ddOpen, handleClickOutside]);
+  }, [ddOpen, handleClickOutside, handleEscape]);
 
   const isActive = (href: string) =>
     pathname === href || (href !== "/" && pathname.startsWith(href));

@@ -56,8 +56,8 @@ export default function RagPage() {
       toast("File indexed successfully!");
       if (fileRef.current) fileRef.current.value = "";
       load();
-    } catch (e: any) {
-      toast("Error: " + e.message, true);
+    } catch (e: unknown) {
+      toast("Error: " + (e instanceof Error ? e.message : "Unknown error"), true);
     } finally {
       setUploading(false);
     }
@@ -74,8 +74,8 @@ export default function RagPage() {
       setTextInput("");
       setTextName("");
       load();
-    } catch (e: any) {
-      toast("Error: " + e.message, true);
+    } catch (e: unknown) {
+      toast("Error: " + (e instanceof Error ? e.message : "Unknown error"), true);
     }
   }
 
@@ -88,8 +88,8 @@ export default function RagPage() {
       });
       setSearchResults(results);
       if (results.length === 0) toast("No results found");
-    } catch (e: any) {
-      toast("Error: " + e.message, true);
+    } catch (e: unknown) {
+      toast("Error: " + (e instanceof Error ? e.message : "Unknown error"), true);
     }
   }
 
@@ -98,8 +98,8 @@ export default function RagPage() {
       await apiJson(`/api/rag/documents/${id}`, { method: "DELETE" });
       toast("Document deleted");
       load();
-    } catch (e: any) {
-      toast("Error: " + e.message, true);
+    } catch (e: unknown) {
+      toast("Error: " + (e instanceof Error ? e.message : "Unknown error"), true);
     }
   }
 
@@ -109,8 +109,8 @@ export default function RagPage() {
       await apiJson("/api/rag/clear", { method: "POST", body: JSON.stringify({}) });
       toast("Knowledge base cleared");
       load();
-    } catch (e: any) {
-      toast("Error: " + e.message, true);
+    } catch (e: unknown) {
+      toast("Error: " + (e instanceof Error ? e.message : "Unknown error"), true);
     }
   }
 
@@ -124,12 +124,12 @@ export default function RagPage() {
           <h1>Knowledge Base (RAG)</h1>
           <p>Upload documents, paste text, and search your indexed content</p>
           {!databaseConnected && (
-            <div style={{ marginTop: 8, padding: "6px 12px", background: "rgba(225,112,85,0.1)", borderRadius: 8, fontSize: 12, color: "var(--text-sm-color)" }}>
+            <div style={{ marginTop: 8, padding: "6px 12px", background: "rgba(225,112,85,0.1)", borderRadius: 8, fontSize: 12, color: "var(--red)" }}>
               PostgreSQL not connected — RAG features are unavailable
             </div>
           )}
           {databaseConnected && schema && !schema.synced && (
-            <div style={{ marginTop: 8, padding: "6px 12px", background: "rgba(253,203,110,0.1)", borderRadius: 8, fontSize: 12, color: "var(--text-sm-color)" }}>
+            <div style={{ marginTop: 8, padding: "6px 12px", background: "rgba(253,203,110,0.1)", borderRadius: 8, fontSize: 12, color: "var(--accent-4)" }}>
               Schema out of date (v{schema.db_version} vs v{schema.expected_version}) — run migration
             </div>
           )}
@@ -215,7 +215,7 @@ export default function RagPage() {
               <div key={i} style={{ padding: 12, background: "var(--surface-2)", borderRadius: 8 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                   <span style={{ fontSize: 14, fontWeight: 600, color: "var(--accent)" }}>{r.source}</span>
-                  <span style={{ fontSize: 12, color: "var(--text-sm-color)" }}>score: {(r.score * 100).toFixed(1)}%</span>
+                  <span style={{ fontSize: 12, color: "var(--text-muted)" }}>score: {(r.score * 100).toFixed(1)}%</span>
                 </div>
                 <div style={{ fontSize: 14, color: "var(--text)", whiteSpace: "pre-wrap", lineHeight: 1.5 }}>{r.content}</div>
               </div>

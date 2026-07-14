@@ -1,5 +1,6 @@
 import { SITE_URL, REPO_URL } from "@/lib/config";
 import type { Metadata } from "next";
+import Link from "next/link";
 import BuyButton from "@/components/BuyButton";
 
 // Replace with your own number in international format (no + or spaces).
@@ -33,7 +34,7 @@ export default function Pricing() {
       <h1 style={{ fontSize: "var(--text-h1)", fontWeight: 700, textAlign: "center", marginBottom: 8, color: "var(--text)", lineHeight: "var(--leading-heading)" }}>
         Choose your plan
       </h1>
-      <p style={{ textAlign: "center", color: "var(--text-sm-color)", marginBottom: 40 }}>
+      <p style={{ textAlign: "center", color: "var(--text-muted)", marginBottom: 40 }}>
         Start free, upgrade when you need more.
       </p>
 
@@ -49,7 +50,7 @@ export default function Pricing() {
             <li style={{ padding: "4px 0" }}>✅ RAG (limited)</li>
             <li style={{ padding: "4px 0" }}>⏳ 10 requests/day</li>
           </ul>
-          <a href="/playground" style={{ display: "block", textAlign: "center", background: "var(--gradient-1)", color: "#fff", padding: "12px 24px", borderRadius: 8, textDecoration: "none", fontWeight: 600 }}>Try now</a>
+          <Link href="/playground" style={{ display: "block", textAlign: "center", background: "var(--gradient-1)", color: "#fff", padding: "12px 24px", borderRadius: 8, textDecoration: "none", fontWeight: 600 }}>Try now</Link>
         </div>
 
         <div className="spidey-panel" style={{
@@ -62,7 +63,7 @@ export default function Pricing() {
             letterSpacing: "0.05em",
           }}>POPULAR</div>
           <h2 style={{ fontSize: "var(--text-h2)", fontWeight: 700, marginBottom: 4 }}>Web Pro</h2>
-          <p style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 12 }}>$9.99<small style={{ fontSize: "var(--text-sm)", fontWeight: 400, color: "var(--text-sm-color)" }}>/mo</small></p>
+          <p style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 12 }}>$9.99<small style={{ fontSize: "var(--text-sm)", fontWeight: 400, color: "var(--text-muted)" }}>/mo</small></p>
           <ul style={{ listStyle: "none", padding: 0, marginBottom: 20 }}>
             <li style={{ padding: "4px 0" }}>✅ Unlimited RAG storage</li>
             <li style={{ padding: "4px 0" }}>✅ Persistent memory sync</li>
@@ -76,7 +77,7 @@ export default function Pricing() {
           background: "var(--surface)", padding: 24, borderRadius: 16, border: "1px solid var(--glass-border)",
         }}>
           <h2 style={{ fontSize: "var(--text-h2)", fontWeight: 700, marginBottom: 4 }}>Desktop Pro</h2>
-          <p style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 12 }}>$4.99<small style={{ fontSize: "var(--text-sm)", fontWeight: 400, color: "var(--text-sm-color)" }}>/mo</small></p>
+          <p style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 12 }}>$4.99<small style={{ fontSize: "var(--text-sm)", fontWeight: 400, color: "var(--text-muted)" }}>/mo</small></p>
           <ul style={{ listStyle: "none", padding: 0, marginBottom: 20 }}>
             <li style={{ padding: "4px 0" }}>✅ Pre-built EXE</li>
             <li style={{ padding: "4px 0" }}>✅ Auto-updates</li>
@@ -90,7 +91,7 @@ export default function Pricing() {
           background: "var(--surface)", padding: 24, borderRadius: 16, border: "1px solid var(--glass-border)",
         }}>
           <h2 style={{ fontSize: "var(--text-h2)", fontWeight: 700, marginBottom: 4 }}>Mobile Ultimate</h2>
-          <p style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 12 }}>$2.99<small style={{ fontSize: "var(--text-sm)", fontWeight: 400, color: "var(--text-sm-color)" }}>/mo</small></p>
+          <p style={{ fontSize: "2rem", fontWeight: 700, marginBottom: 12 }}>$2.99<small style={{ fontSize: "var(--text-sm)", fontWeight: 400, color: "var(--text-muted)" }}>/mo</small></p>
           <ul style={{ listStyle: "none", padding: 0, marginBottom: 20 }}>
             <li style={{ padding: "4px 0" }}>✅ Play Store app</li>
             <li style={{ padding: "4px 0" }}>✅ Sync with desktop</li>
@@ -103,7 +104,7 @@ export default function Pricing() {
 
       <div className="spidey-panel" style={{ background: "var(--surface)", padding: 24, borderRadius: 16, border: "1px solid var(--glass-border)", marginTop: 32, textAlign: "center" }}>
         <h2 style={{ fontSize: "var(--text-h2)", fontWeight: 700, marginBottom: 8 }}>Prefer to pay directly?</h2>
-        <p style={{ color: "var(--text-sm-color)", marginBottom: 16 }}>
+        <p style={{ color: "var(--text-muted)", marginBottom: 16 }}>
           No automated checkout yet — message me and I&apos;ll send payment details (Bkash / Nagad / bank transfer) and your license key.
         </p>
         <a
@@ -116,7 +117,7 @@ export default function Pricing() {
         </a>
       </div>
 
-      <p style={{ textAlign: "center", marginTop: 40, color: "var(--text-sm-color)", fontSize: "var(--text-sm)" }}>
+      <p style={{ textAlign: "center", marginTop: 40, color: "var(--text-muted)", fontSize: "var(--text-sm)" }}>
         All plans include the same 26 free models. Upgrade for convenience and extra features.
         <br />
         Questions? <a href={REPO_URL} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent-2)" }}>Open an issue</a> on GitHub,

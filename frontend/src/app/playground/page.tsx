@@ -98,7 +98,7 @@ export default function PlaygroundPage() {
     if (!blocks.length) return;
     import("mermaid").then(mermaid => {
       const textColor = getComputedStyle(document.documentElement).getPropertyValue("--text").trim() || "#eef0ff";
-      mermaid.default.initialize({ theme: "base", themeVariables: { background: "transparent", primaryColor: "#6c5ce7", secondaryColor: "#00cec9", tertiaryColor: "#fd79a8", primaryTextColor: textColor, lineColor: "#6c5ce7" } });
+      mermaid.default.initialize({ theme: "base", themeVariables: { background: "transparent", primaryColor: "var(--accent)", secondaryColor: "var(--accent-2)", tertiaryColor: "var(--accent-3)", primaryTextColor: textColor, lineColor: "var(--accent)" } });
       blocks.forEach(el => {
         const code = el.getAttribute("data-code");
         const id = el.id;
@@ -222,8 +222,9 @@ export default function PlaygroundPage() {
           return copy;
         });
       }
-    } catch (e: any) {
-      setMessages(prev => [...prev, { role: "error", content: e.message }]);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Unknown error";
+      setMessages(prev => [...prev, { role: "error", content: msg }]);
       toast("Network error", true);
     } finally {
       setLoading(false);
@@ -255,7 +256,7 @@ export default function PlaygroundPage() {
         if (lang === "image" || lang === "img") {
           const src = code.trim();
           if (!isSafeImageUrl(src)) {
-            return <p key={i} style={{ color: "var(--text-sm-color)", fontSize: 12, margin: "8px 0" }}>Blocked unsafe image URL</p>;
+            return <p key={i} style={{ color: "var(--text-muted)", fontSize: 12, margin: "8px 0" }}>Blocked unsafe image URL</p>;
           }
           return (
             <div key={i} style={{ margin: "8px 0", textAlign: "center" }}>
@@ -276,7 +277,7 @@ export default function PlaygroundPage() {
         if (imgMatch) {
           const src = imgMatch[2];
           if (!isSafeImageUrl(src)) {
-            return <p key={`${i}-${j}`} style={{ color: "var(--text-sm-color)", fontSize: 12, margin: "2px 0" }}>Blocked unsafe image URL</p>;
+              return <p key={`${i}-${j}`} style={{ color: "var(--text-muted)", fontSize: 12, margin: "2px 0" }}>Blocked unsafe image URL</p>;
           }
           return (
             <div key={`${i}-${j}`} style={{ margin: "8px 0", textAlign: "center" }}>
@@ -300,7 +301,7 @@ export default function PlaygroundPage() {
       {/* Header bar */}
       <div className="stagger-1" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div className="page-header-icon" style={{ background: "rgba(0,206,201,0.1)" }}>
+          <div className="page-header-icon" style={{ background: "rgba(13,148,136,0.1)" }}>
             <PageIcon type="chat" color="var(--accent-2)" />
           </div>
           <h1 style={{ fontSize: "var(--text-h1)", fontWeight: 700 }}>AI Playground</h1>

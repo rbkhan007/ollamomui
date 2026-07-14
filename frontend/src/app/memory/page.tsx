@@ -52,8 +52,8 @@ export default function MemoryPage() {
       setFactText("");
       setFactSource("");
       load();
-    } catch (e: any) {
-      toast("Error: " + e.message, true);
+    } catch (e: unknown) {
+      toast("Error: " + (e instanceof Error ? e.message : "Unknown error"), true);
     }
   }
 
@@ -62,8 +62,8 @@ export default function MemoryPage() {
       await apiJson(`/api/memory/facts/${id}`, { method: "DELETE" });
       toast("Fact deleted");
       load();
-    } catch (e: any) {
-      toast("Error: " + e.message, true);
+    } catch (e: unknown) {
+      toast("Error: " + (e instanceof Error ? e.message : "Unknown error"), true);
     }
   }
 
@@ -76,8 +76,8 @@ export default function MemoryPage() {
       });
       setSearchResults(results);
       if (results.length === 0) toast("No matching messages found");
-    } catch (e: any) {
-      toast("Error: " + e.message, true);
+    } catch (e: unknown) {
+      toast("Error: " + (e instanceof Error ? e.message : "Unknown error"), true);
     }
   }
 
@@ -89,8 +89,8 @@ export default function MemoryPage() {
       await apiJson("/api/memory/clear", { method: "POST", body: JSON.stringify(body) });
       toast("Memory cleared");
       load();
-    } catch (e: any) {
-      toast("Error: " + e.message, true);
+    } catch (e: unknown) {
+      toast("Error: " + (e instanceof Error ? e.message : "Unknown error"), true);
     }
   }
 
@@ -109,7 +109,7 @@ export default function MemoryPage() {
   return (
     <div className="page-container">
       <div className="page-header">
-        <div className="page-header-icon" style={{ background: "rgba(0,206,201,0.1)" }}>
+        <div className="page-header-icon" style={{ background: "rgba(13,148,136,0.1)" }}>
           <PageIcon type="brain" color="var(--accent-2)" />
         </div>
         <div>

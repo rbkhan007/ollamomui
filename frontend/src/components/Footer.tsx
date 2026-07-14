@@ -66,7 +66,7 @@ export default function Footer() {
           alignItems: "center",
           gap: 4,
           fontSize: "var(--text-sm)",
-          color: "var(--text-sm-color)",
+          color: "var(--text-muted)",
           lineHeight: "var(--leading-small)",
           textAlign: "center",
           padding: "0 16px",

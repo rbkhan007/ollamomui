@@ -23,7 +23,7 @@ export function RagPipelineDiagram() {
           <marker id="rag-teal" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="9" refY="5" orient="auto">
             <path d="M0,0 L10,5 L0,10 Z" fill="var(--text-muted)" />
           </marker>
-          <linearGradient id="rag-merge" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#6c5ce7" stopOpacity="0.06" /><stop offset="100%" stopColor="#00cec9" stopOpacity="0.10" /></linearGradient>
+          <linearGradient id="rag-merge" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="var(--accent)" stopOpacity="0.06" /><stop offset="100%" stopColor="var(--accent-2)" stopOpacity="0.10" /></linearGradient>
         </defs>
 
         {/* Dot grid background */}

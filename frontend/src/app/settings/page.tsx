@@ -257,12 +257,12 @@ export default function SettingsPage() {
         <div style={{ marginTop: 12, fontSize: "var(--text-sm)" }}>
           {connected === null && <span style={{ color: "var(--text-muted)" }}>Checking…</span>}
           {connected === true && (
-            <span style={{ color: "var(--green, #00b894)" }}>
+            <span style={{ color: "var(--green)" }}>
               ● Connected{active ? ` · active provider: ${active}` : ""}
             </span>
           )}
           {connected === false && (
-            <span style={{ color: "var(--red, #e17055)" }}>
+            <span style={{ color: "var(--red)" }}>
               ● Not reachable — check the backend URL and that the server is running.
             </span>
           )}
@@ -295,12 +295,12 @@ export default function SettingsPage() {
         <div style={{ marginTop: 12, fontSize: "var(--text-sm)" }}>
           {dbStatus === null && <span style={{ color: "var(--text-muted)" }}>No status yet — save a URL or click Test.</span>}
           {dbStatus?.connected && (
-            <span style={{ color: "var(--green, #00b894)" }}>
+            <span style={{ color: "var(--green)" }}>
               ● Connected{dbStatus.database_url_set ? " (custom database URL)" : " (default database URL)"}
             </span>
           )}
           {dbStatus && !dbStatus.connected && (
-            <span style={{ color: "var(--red, #e17055)" }}>
+            <span style={{ color: "var(--red)" }}>
               ● {dbStatus.message || "Disconnected — check the URL and that the database is reachable."}
             </span>
           )}
@@ -368,14 +368,14 @@ export default function SettingsPage() {
             const isActive = p.name === active;
             const rowBusy = busy === p.name;
             return (
-              <div key={p.name} style={{ ...subPanel, borderColor: isActive ? "rgba(108,92,231,0.4)" : "var(--glass-border)" }}>
+              <div key={p.name} style={{ ...subPanel, borderColor: isActive ? "rgba(13,148,136,0.4)" : "var(--glass-border)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
                   <ProviderIcon name={p.name} size={22} />
                   <div style={{ fontWeight: 700 }}>{p.name}</div>
                   <span style={badge}>{p.type}</span>
-                  {isActive && <span style={{ ...badge, background: "rgba(108,92,231,0.15)", color: "var(--accent)" }}>active</span>}
+                  {isActive && <span style={{ ...badge, background: "rgba(13,148,136,0.15)", color: "var(--accent)" }}>active</span>}
                   {p.api_key_set ? (
-                    <span style={{ ...badge, background: "rgba(0,184,148,0.15)", color: "var(--green, #00b894)" }}>
+                    <span style={{ ...badge, background: "rgba(0,184,148,0.15)", color: "var(--green)" }}>
                       key {p.api_key_masked}
                     </span>
                   ) : (
@@ -431,7 +431,7 @@ export default function SettingsPage() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label style={{ display: "block" }}>
-      <span style={{ display: "block", fontSize: 12, color: "var(--text-sm-color)", marginBottom: 6, fontWeight: 600 }}>{label}</span>
+      <span style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>{label}</span>
       {children}
     </label>
   );
@@ -483,7 +483,7 @@ const ghostBtn: React.CSSProperties = {
 };
 const dangerBtn: React.CSSProperties = {
   background: "transparent",
-  color: "var(--red, #e17055)",
+  color: "var(--red)",
   border: "1px solid rgba(225,112,85,0.4)",
   padding: "12px 24px",
   borderRadius: 12,
@@ -495,8 +495,8 @@ const badge: React.CSSProperties = {
   fontSize: 12,
   padding: "3px 8px",
   borderRadius: 8,
-  background: "rgba(128,128,128,0.12)",
-  color: "var(--text-sm-color)",
+  background: "var(--surface-2)",
+  color: "var(--text-muted)",
   fontWeight: 600,
 };
 const grid2: React.CSSProperties = {

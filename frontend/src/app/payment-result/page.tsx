@@ -27,7 +27,7 @@ function PaymentResultInner() {
             background: "var(--surface)", border: "1px solid var(--glass-border)",
             borderRadius: 12, padding: 20, marginBottom: 20, textAlign: "left",
           }}>
-            <p style={{ fontSize: "var(--text-sm)", color: "var(--text-sm-color)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+            <p style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.05em" }}>
               Your License Key
             </p>
             <pre style={{
@@ -37,7 +37,7 @@ function PaymentResultInner() {
             }}>{key}</pre>
           </div>
 
-          <p style={{ fontSize: "var(--text-sm)", color: "var(--text-sm-color)", marginBottom: 24, lineHeight: "var(--leading-small)" }}>
+          <p style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: 24, lineHeight: "var(--leading-small)" }}>
             Copy this key and paste it into the activation screen of the EXE or mobile app.
             We&apos;ve also emailed it to you.
           </p>

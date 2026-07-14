@@ -11,7 +11,7 @@ const pillars = [
   {
     title: "Data Sovereignty & Privacy",
     icon: "lock",
-    color: "#6c5ce7",
+    color: "#0d9488",
     summary:
       "OllamoMUI is built on the principle of data sovereignty. All your credentials, conversations, and documents remain on your local machine. The desktop version bundles its own PostgreSQL cluster, so you don't need to trust a cloud provider with your sensitive data.",
     items: [
@@ -23,7 +23,7 @@ const pillars = [
   {
     title: "Authentication & Access Control",
     icon: "shield",
-    color: "#00cec9",
+    color: "#d97706",
     summary:
       "OllamoMUI implements enterprise-grade identity management. Passwords are hashed using PBKDF2-HMAC-SHA256 with a per-user salt. Role-Based Access Control (RBAC) ensures that only authorised users can perform administrative actions, and session tokens are securely stored in HTTP-only cookies.",
     items: [
@@ -35,7 +35,7 @@ const pillars = [
   {
     title: "Network & Infrastructure Defense",
     icon: "globe",
-    color: "#fd79a8",
+    color: "#e11d48",
     summary:
       "The API gateway is protected against Server-Side Request Forgery (SSRF) by blocking private and loopback IP addresses. Rate limiting prevents abuse, and IP filtering allows administrators to restrict access to trusted networks. When SSL is enabled, all traffic is automatically redirected to HTTPS.",
     items: [
@@ -48,7 +48,7 @@ const pillars = [
   {
     title: "Operational Integrity & Safety",
     icon: "gear",
-    color: "#fdcb6e",
+    color: "#7c2d12",
     summary:
       "Every sensitive operation is audited with user ID, IP address, and timestamp. File uploads are sanitised and limited to 10MB, and errors are masked to prevent information leakage. A built-in memory monitor automatically cleans up resources when RAM usage exceeds 35%, ensuring stability under load.",
     items: [
@@ -96,7 +96,7 @@ export function SecurityShowcase() {
               <div key={item.feature} style={{
                 display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12,
                 padding: "10px 4px", borderRadius: 8,
-                background: "rgba(108,92,231,0.03)",
+                background: "rgba(13,148,136,0.03)",
               }}>
                 <div style={{ fontWeight: 600, fontSize: "var(--text-sm)" }}>{item.feature}</div>
                 <div style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", lineHeight: 1.4 }}>{item.implementation}</div>

@@ -94,7 +94,7 @@ export default function ResumePage() {
                 {group.items.map((item) => (
                   <span key={item} style={{
                     fontSize: 12, padding: "3px 10px", borderRadius: 8,
-                    background: "rgba(108,92,231,0.08)", color: "var(--text-muted)", fontWeight: 500,
+                    background: "rgba(13,148,136,0.08)", color: "var(--text-muted)", fontWeight: 500,
                   }}>
                     {item}
                   </span>
@@ -134,7 +134,7 @@ export default function ResumePage() {
             {["FastAPI", "Next.js", "TypeScript", "React Native", "PySide6", "PostgreSQL", "pgvector", "Docker"].map((tech) => (
               <span key={tech} style={{
                 fontSize: 12, padding: "3px 10px", borderRadius: 8,
-                background: "rgba(0,206,201,0.08)", color: "var(--accent-2)", fontWeight: 500,
+                background: "rgba(13,148,136,0.08)", color: "var(--accent-2)", fontWeight: 500,
               }}>
                 {tech}
               </span>

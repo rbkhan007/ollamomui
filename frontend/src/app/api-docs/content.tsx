@@ -102,8 +102,8 @@ const endpoints = [
 
 function MethodBadge({ method }: { method: string }) {
   const colors: Record<string, { bg: string; text: string }> = {
-    GET: { bg: "rgba(0,206,201,0.12)", text: "#00cec9" },
-    POST: { bg: "rgba(108,92,231,0.12)", text: "#6c5ce7" },
+    GET: { bg: "rgba(13,148,136,0.12)", text: "var(--accent)" },
+    POST: { bg: "rgba(217,119,6,0.12)", text: "var(--accent-2)" },
     PUT: { bg: "rgba(253,121,168,0.12)", text: "#fd79a8" },
     DELETE: { bg: "rgba(255,107,107,0.12)", text: "#ff6b6b" },
   };

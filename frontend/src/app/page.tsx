@@ -107,7 +107,7 @@ export default function Home() {
         <div style={{
           display: "inline-flex", alignItems: "center", gap: 8,
           padding: "8px 24px", borderRadius: 50,
-          background: "rgba(108,92,231,0.08)", border: "1px solid rgba(108,92,231,0.15)",
+          background: "rgba(13,148,136,0.08)", border: "1px solid rgba(13,148,136,0.15)",
           fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: 24, fontWeight: 500,
         }}>
           <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--green)", boxShadow: "0 0 10px var(--green)" }} />
@@ -119,7 +119,7 @@ export default function Home() {
           fontSize: "var(--text-h1)", margin: "0 auto 24px", maxWidth: "var(--text-max)",
         }}>
           <span style={{
-            background: "linear-gradient(135deg, var(--text) 0%, #6c5ce7 45%, #00cec9 75%, var(--text) 100%)",
+            background: "linear-gradient(135deg, var(--text) 0%, var(--accent) 45%, var(--accent-2) 75%, var(--text) 100%)",
             backgroundSize: "200% auto", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
             animation: "shimmer 4s linear infinite",
           }}>
@@ -145,7 +145,7 @@ export default function Home() {
             padding: "12px 24px", borderRadius: 12, fontSize: 15, fontWeight: 700,
             background: "var(--gradient-1)", color: "white", textDecoration: "none",
             display: "inline-flex", alignItems: "center", gap: 8, minHeight: "var(--click-target)",
-            boxShadow: "0 6px 24px rgba(108,92,231,0.35)",
+            boxShadow: "0 6px 24px rgba(13,148,136,0.35)",
           }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.5v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5A11.5 11.5 0 0 0 23.5 12C23.5 5.7 18.3.5 12 .5z" /></svg>
             Star on GitHub
@@ -161,8 +161,8 @@ export default function Home() {
           </a>
           <a href={FREETIER_URL} target="_blank" rel="noopener noreferrer" style={{
             padding: "12px 24px", borderRadius: 12, fontSize: 15, fontWeight: 700,
-            background: "rgba(0,206,201,0.12)", color: "var(--accent-2)", textDecoration: "none",
-            border: "1px solid rgba(0,206,201,0.3)", minHeight: "var(--click-target)",
+            background: "rgba(13,148,136,0.12)", color: "var(--accent-2)", textDecoration: "none",
+            border: "1px solid rgba(13,148,136,0.3)", minHeight: "var(--click-target)",
             display: "inline-flex", alignItems: "center", gap: 8,
           }}>
             🌐 Try Free Tier
@@ -261,8 +261,8 @@ export default function Home() {
             return (
               <div key={c.name} className={isUs ? "spidey-panel compare-row" : "compare-row"} style={{
                 padding: "16px 24px", borderRadius: 16,
-                background: isUs ? "linear-gradient(135deg, rgba(108,92,231,0.12), rgba(0,206,201,0.10))" : "var(--surface)",
-                border: isUs ? "1px solid rgba(108,92,231,0.35)" : "1px solid var(--glass-border)",
+                background: isUs ? "linear-gradient(135deg, rgba(13,148,136,0.12), rgba(13,148,136,0.10))" : "var(--surface)",
+                border: isUs ? "1px solid rgba(13,148,136,0.35)" : "1px solid var(--glass-border)",
               }}>
                 <div style={{ fontWeight: 700, fontSize: 15 }}>{c.name}</div>
                 <div>
@@ -279,7 +279,7 @@ export default function Home() {
       <section style={{ padding: "0 24px var(--space-3xl)", maxWidth: 900, margin: "0 auto" }}>
         <div style={{
           padding: "48px 32px", borderRadius: 16, textAlign: "center",
-          background: "linear-gradient(135deg, rgba(108,92,231,0.12), rgba(0,206,201,0.12))",
+          background: "linear-gradient(135deg, rgba(13,148,136,0.12), rgba(13,148,136,0.12))",
           border: "1px solid var(--glass-border)",
         }}>
           <div style={{ fontSize: 32, marginBottom: 8 }}>🌐</div>
@@ -294,7 +294,7 @@ export default function Home() {
             padding: "12px 24px", borderRadius: 12, fontSize: 15, fontWeight: 700,
             background: "var(--gradient-1)", color: "white", textDecoration: "none",
             display: "inline-flex", alignItems: "center", gap: 8, minHeight: "var(--click-target)",
-            boxShadow: "0 6px 24px rgba(108,92,231,0.35)",
+            boxShadow: "0 6px 24px rgba(13,148,136,0.35)",
           }}>
             Open Free Tier &rarr;
           </a>

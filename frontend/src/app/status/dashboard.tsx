@@ -27,8 +27,8 @@ function StatusIcon({ status }: { status: "loading" | "ok" | "error" }) {
     <span style={{
       display: "inline-flex", alignItems: "center", justifyContent: "center",
       width: 22, height: 22, borderRadius: "50%",
-      background: status === "ok" ? "rgba(0,206,201,0.15)" : "rgba(255,107,107,0.15)",
-      color: status === "ok" ? "#00cec9" : "#ff6b6b",
+      background: status === "ok" ? "rgba(13,148,136,0.15)" : "rgba(248,113,113,0.15)",
+      color: status === "ok" ? "var(--accent)" : "var(--red)",
       fontSize: 12, fontWeight: 700,
     }}>
       {status === "ok" ? "✓" : "✗"}
