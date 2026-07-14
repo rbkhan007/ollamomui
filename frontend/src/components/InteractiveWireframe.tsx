@@ -217,7 +217,7 @@ export default React.memo(function InteractiveWireframe() {
 
             {/* Interactive SVG Canvas */}
             <div className="w-full relative bg-[#090914] rounded-2xl border border-slate-900/80 p-2 overflow-hidden shadow-inner">
-              <svg viewBox="0 0 800 500" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto max-h-[500px] select-none block">
+              <svg viewBox="0 0 800 500" className="w-full h-auto max-h-[500px] select-none block">
                 <defs>
                   <linearGradient id="gradientActiveAgent" x1="184" y1="250" x2="400" y2="250" gradientUnits="userSpaceOnUse">
                     <stop offset="0%" stopColor="#F59E0B" />
@@ -227,25 +227,11 @@ export default React.memo(function InteractiveWireframe() {
                     <stop offset="0%" stopColor="#10B981" />
                     <stop offset="100%" stopColor="#8b5cf6" />
                   </linearGradient>
-                  <radialGradient id="hubBlurGrad">
-                    <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.18" />
-                    <stop offset="60%" stopColor="#ec4899" stopOpacity="0.04" />
-                    <stop offset="100%" stopColor="#090914" stopOpacity="0" />
-                  </radialGradient>
-                  <filter id="softGlow">
-                    <feGaussianBlur stdDeviation="16" result="blur" />
-                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-                  </filter>
-                  <filter id="glow">
-                    <feGaussianBlur stdDeviation="6" result="blur" />
-                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-                  </filter>
                 </defs>
 
                 {/* Ambient visual effects */}
-                <circle cx="400" cy="250" r="160" fill="url(#hubBlurGrad)" filter="url(#softGlow)" />
-                <circle cx="100" cy="100" r="80" fill="#f59e0b" opacity="0.03" filter="url(#softGlow)" className="orb" />
-                <circle cx="700" cy="400" r="120" fill="#8b5cf6" opacity="0.03" filter="url(#softGlow)" className="orb" style={{ animationDelay: "-3s" }} />
+                {/* Removed complex filters and animations for simpler visual */}
+                <circle cx="400" cy="250" r="160" fill="#090914" />
 
                 {/* Constellation lines backplane */}
                 <g id="constellation-network-mesh">
@@ -274,45 +260,23 @@ export default React.memo(function InteractiveWireframe() {
                 </g>
 
                 {/* Active highlight overlay */}
-                {(() => {
-                  const agIdx = agents.findIndex((a) => a.id === selectedAgent);
-                  const prIdx = providers.findIndex((p) => p.id === selectedProvider);
-                  if (agIdx === -1 || prIdx === -1) return null;
-                  const startY = 72 + agIdx * 46;
-                  const endY = 56 + prIdx * 44;
-                  const p1 = `M 184 ${startY} C 292 ${startY}, 292 250, 400 250`;
-                  const p2 = `M 400 250 C 508 250, 508 ${endY}, 616 ${endY}`;
-                  return (
-                    <g className="z-20">
-                      <path d={p1} stroke="url(#gradientActiveAgent)" strokeWidth="6" opacity="0.3" fill="none" filter="url(#glow)" />
-                      <path d={p1} stroke="url(#gradientActiveAgent)" strokeWidth="2.5" opacity="0.95" fill="none" />
-                      <path d={p1} stroke="#F59E0B" className="data-line" filter="url(#glow)" />
-                      <path d={p2} stroke="url(#gradientActiveProvider)" strokeWidth="6" opacity="0.3" fill="none" filter="url(#glow)" />
-                      <path d={p2} stroke="url(#gradientActiveProvider)" strokeWidth="2.5" opacity="0.95" fill="none" />
-                      <path d={p2} stroke={activeProviderObj.color} className="data-line" filter="url(#glow)" />
-                      <circle r="4.5" fill="#f59e0b" style={{ filter: "drop-shadow(0 0 3px rgba(255,255,255,0.8))" }}>
-                        <animateMotion dur="2s" repeatCount="indefinite" path={p1} />
-                      </circle>
-                      <circle r="4.5" fill={activeProviderObj.color} style={{ filter: "drop-shadow(0 0 3px rgba(255,255,255,0.8))" }}>
-                        <animateMotion dur="2s" repeatCount="indefinite" path={p2} />
-                      </circle>
-                    </g>
-                  );
-                })()}
+                {/* Simplified to single colored path without animation */}
+                <path stroke={activeAgentObj.color} strokeWidth="4" opacity="0.4" fill="none" />
+                <path stroke="url(#gradientActiveAgent)" strokeWidth="2" opacity="0.8" fill="none" />
+                <path stroke={activeProviderObj.color} strokeWidth="4" opacity="0.4" fill="none" />
+                <path stroke="url(#gradientActiveProvider)" strokeWidth="2" opacity="0.8" fill="none" />
 
                 {/* Central Hub */}
-                <g transform="translate(400, 250)" className="z-30">
+                <div className="z-30">
+                  <rect x="380" y="230" width="40" height="40" fill="#090914" />
+                  <rect x="380" y="230" width="20" height="20" fill="none" stroke="#10B981" strokeWidth="1.5" opacity="0.6" />
                   <circle r="30" fill="#090914" />
-                  <circle r="20" fill="none" stroke="#10B981" strokeWidth="1.5" opacity="0.6" className="node-pulse" />
-                  <circle r="14" fill="#090914" stroke="#F59E0B" strokeWidth="2.5" filter="url(#glow)" />
-                  <circle r="6" fill="#10B981" />
                   <text x="0" y="-38" fill="#F59E0B" fontSize="10" fontWeight="bold" textAnchor="middle" letterSpacing="1">OLLAMOMUI</text>
                   <text x="0" y="44" fill="#94a3b8" fontSize="9" fontWeight="500" textAnchor="middle" letterSpacing="0.5">NEURAL PROXY HUB</text>
-                </g>
+                </div>
 
                 {/* Column Titles */}
-                <text x="110" y="34" fill="#94a3b8" fontSize="11" fontWeight="600" textAnchor="middle" letterSpacing="2">CLI AGENTS</text>
-                <text x="690" y="34" fill="#94a3b8" fontSize="11" fontWeight="600" textAnchor="middle" letterSpacing="2">CLOUD PROVIDERS</text>
+                {/* Removed text labels */}
 
                 {/* Left Side: CLI Agents */}
                 {agents.map((agent, index) => {
@@ -353,12 +317,9 @@ export default React.memo(function InteractiveWireframe() {
                   const x = 616, w = 152, h = 32, o = 6;
                   return (
                     <g key={`provider-${provider.id}`} className="cursor-pointer" onClick={() => setSelectedProvider(provider.id)}>
-                      {isSelected && (
-                        <circle cx="690" cy={yPos} r="6" fill="none" stroke={provider.color} strokeWidth="1" opacity="0.5">
-                          <animate attributeName="r" values="6;22" dur="2.4s" begin="0s" repeatCount="indefinite" />
-                          <animate attributeName="opacity" values="0.5;0" dur="2.4s" begin="0s" repeatCount="indefinite" />
-                        </circle>
-                      )}
+{isSelected && (
+                         <circle cx="690" cy={yPos} r="6" fill="none" stroke={provider.color} strokeWidth="1" opacity="0.5" />
+                       )}
                       <path
                         d={`M ${x} ${yPos - h / 2} H ${x + w} V ${yPos + h / 2} H ${x} Z M ${x + o} ${yPos - h / 2 - o} H ${x + w + o} V ${yPos + h / 2 - o} H ${x + o} Z M ${x} ${yPos - h / 2} L ${x + o} ${yPos - h / 2 - o} M ${x + w} ${yPos - h / 2} L ${x + w + o} ${yPos - h / 2 - o} M ${x + w} ${yPos + h / 2} L ${x + w + o} ${yPos + h / 2 - o} M ${x} ${yPos + h / 2} L ${x + o} ${yPos + h / 2 - o}`}
                         fill={isSelected ? "rgba(139, 92, 246, 0.08)" : "rgba(13, 13, 26, 0.4)"}
