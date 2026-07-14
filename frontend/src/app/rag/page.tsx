@@ -118,7 +118,7 @@ export default function RagPage() {
     <div className="page-container">
       <div className="page-header">
         <div className="page-header-icon" style={{ background: "rgba(253,121,168,0.1)" }}>
-          <PageIcon type="book" color="#fd79a8" />
+          <PageIcon type="book" color="var(--accent-3)" />
         </div>
         <div>
           <h1>Knowledge Base (RAG)</h1>

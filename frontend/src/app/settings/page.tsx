@@ -230,7 +230,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <main style={{ maxWidth: 760, margin: "0 auto", padding: "40px 24px" }}>
+    <main style={{ maxWidth: 760, margin: "0 auto", padding: "clamp(24px, 5vw, 48px) clamp(16px, 4vw, 24px)" }}>
       <h1 style={{ fontSize: "2rem", fontWeight: 800, marginBottom: 6 }}>Settings</h1>
       <p style={{ color: "var(--text-muted)", marginBottom: 28 }}>
         Connect to your gateway and add an API key for any model provider. Keys are stored

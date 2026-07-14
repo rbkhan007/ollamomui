@@ -3,12 +3,12 @@
 import { REPO_URL } from "@/lib/config";
 
 const SOCIAL_LINKS = [
-  { label: "Email", href: "mailto:rbkhan00009@gmail.com", icon: "email" },
-  { label: "Freelancer", href: "https://www.freelancer.com/u/Rakibul0007", icon: "freelancer" },
-  { label: "GitHub", href: REPO_URL, icon: "github" },
-  { label: "Facebook", href: "https://www.facebook.com/rakibul.hassan.269825", icon: "facebook" },
-  { label: "WhatsApp", href: "https://wa.me/8801774471120", icon: "whatsapp" },
-  { label: "Portfolio", href: "https://rhasan-dev-bd-com.vercel.app", icon: "portfolio" },
+  { label: "Email", href: "mailto:rbkhan00009@gmail.com" },
+  { label: "Freelancer", href: "https://www.freelancer.com/u/Rakibul0007" },
+  { label: "GitHub", href: REPO_URL },
+  { label: "Facebook", href: "https://www.facebook.com/rakibul.hassan.269825" },
+  { label: "WhatsApp", href: "https://wa.me/8801774471120" },
+  { label: "Portfolio", href: "https://rhasan-dev-bd-com.vercel.app" },
 ];
 
 export default function Footer() {
@@ -53,14 +53,6 @@ export default function Footer() {
                 gap: 6,
                 transition: "all 0.2s",
                 whiteSpace: "nowrap",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = "var(--accent)";
-                e.currentTarget.style.borderColor = "rgba(108,92,231,0.3)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = "var(--text-muted)";
-                e.currentTarget.style.borderColor = "var(--glass-border)";
               }}
             >
               {link.label}

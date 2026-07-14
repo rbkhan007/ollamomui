@@ -44,7 +44,7 @@ export default function AdminLicense() {
   }
 
   return (
-    <main style={{ maxWidth: 640, margin: "0 auto", padding: "40px 24px" }}>
+    <main style={{ maxWidth: 640, margin: "0 auto", padding: "clamp(24px, 5vw, 48px) clamp(16px, 4vw, 24px)" }}>
       <h1 style={{ fontSize: "2rem", fontWeight: 800, marginBottom: 8 }}>Manual License Issuer</h1>
       <p style={{ color: "var(--text-muted)", marginBottom: 24 }}>
         Direct sales (WhatsApp / Bkash / bank). Paste your <b>admin</b> Bearer token

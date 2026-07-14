@@ -18,6 +18,7 @@
   --glass: rgba(255,255,255,0.92);
   --glass-border: rgba(0,0,0,0.08);
   --glass-hover: rgba(255,255,255,1);
+  --accent-border: rgba(108,92,231,0.3);
   --shadow: 0 4px 24px rgba(0,0,0,0.06);
   --shadow-glow: 0 0 40px rgba(108,92,231,0.06);
   --nav-bg: rgba(248,249,252,0.92);
@@ -59,6 +60,7 @@
   --glass: rgba(255,255,255,0.03);
   --glass-border: rgba(255,255,255,0.08);
   --glass-hover: rgba(255,255,255,0.06);
+  --accent-border: rgba(108,92,231,0.4);
   --shadow: 0 8px 32px rgba(0,0,0,0.4);
   --shadow-glow: 0 0 60px rgba(108,92,231,0.15);
   --nav-bg: rgba(6,6,14,0.85);
@@ -669,7 +671,7 @@ input[type="file"]::file-selector-button:hover { background: var(--glass-hover);
 /* Footer social links */
 .footer-link:hover {
   color: var(--accent) !important;
-  border-color: rgba(108,92,231,0.3) !important;
+  border-color: var(--accent-border) !important;
 }
 
 /* Two-column form/grid helper that collapses on small screens */

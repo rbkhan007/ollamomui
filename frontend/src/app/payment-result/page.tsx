@@ -24,7 +24,7 @@ function PaymentResultInner() {
           </p>
 
           <div style={{
-            background: "#0a0a0f", border: "1px solid var(--glass-border)",
+            background: "var(--surface)", border: "1px solid var(--glass-border)",
             borderRadius: 12, padding: 20, marginBottom: 20, textAlign: "left",
           }}>
             <p style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.05em" }}>
@@ -32,7 +32,7 @@ function PaymentResultInner() {
             </p>
             <pre style={{
               fontFamily: "var(--font-mono, monospace)", fontSize: 14,
-              color: "#00cec9", wordBreak: "break-all", whiteSpace: "pre-wrap",
+              color: "var(--accent-2)", wordBreak: "break-all", whiteSpace: "pre-wrap",
               margin: 0, lineHeight: 1.5,
             }}>{key}</pre>
           </div>
