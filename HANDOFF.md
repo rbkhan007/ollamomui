@@ -1,13 +1,41 @@
 # 🚀 OllamoMUI – Final Project Handoff & Status Report
 
 **As of:** 2026-07-14
-**Commit:** `309b802` (upgrade to @xyflow/react v12, animated all edges, xy theme)
+**Commit:** `91d063e` (fix: add /api/memory health endpoint, remove auth from db status, fix frontend status check)
 **Branch:** `main` (public)
 
 > **Accuracy note:** This handoff was audited against the actual repository on 2026-07-14.
 > Claims are split into **✅ Code verified**, **⚠️ Exists but not executed by us**, and
 > **❌ Removed / corrected** (previously asserted but false). Build/run verification of the
 > desktop EXE and live payment flow still requires a Windows machine and Render key setup.
+
+---
+
+## 🔄 Session 3 — 2026-07-14: Status Dashboard Fixes & Playground UX
+
+### Changes Made
+- **Added `GET /api/memory` health endpoint** on backend — returns memory stats without requiring a non-existent `session_id=_health` param; resolves 404 on status dashboard.
+- **Removed admin auth from `/api/settings/database/status`** — makes the endpoint public so the status dashboard can check DB connectivity without requiring authentication.
+- **Fixed status dashboard endpoint** — changed Memory check from `/api/memory?session_id=_health` → `/api/memory`.
+- **Playground sticky layout** — header (title, model selector, buttons) and input bar are now `position: sticky` at top/bottom respectively; only the messages area scrolls.
+- **Playground scroll buttons** — ↑ / ↓ circular buttons appear when scrolled away from top/bottom, letting users jump instantly without manual scrolling through long responses.
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `backend/src/ollama_emu/main.py` | Added `GET /api/memory` endpoint; removed `_require_auth` from `GET /api/settings/database/status` |
+| `frontend/src/app/status/dashboard.tsx` | Changed Memory check endpoint from `/api/memory?session_id=_health` → `/api/memory` |
+| `frontend/src/app/playground/page.tsx` | Sticky header + input, scroll detection, ↑/↓ scroll buttons |
+
+### Preload Warnings (Cosmetic)
+Multiple "preloaded but not used" console warnings — these are from Vercel SpeedInsights/Analytics scripts and Next.js Link prefetching. Benign; do not affect functionality.
+
+### Playground "Could not establish connection" Error (Cosmetic)
+This is a Chrome extension error (typically React DevTools or similar), not from our code.
+
+### Status
+- ✅ Frontend: Type-check + build clean; deployed to Vercel
+- ⚠️ Backend: Pushed to GitHub; verify Render auto-deploys or trigger manually
 
 ---
 
@@ -108,7 +136,8 @@ OllamoMUI is a **free‑to‑use, open‑core AI gateway** that:
 | **Memory monitor** | ✅ Code present & started | `backend/.../memory_monitor.py` instantiated at `main.py:2634` with default threshold **35%** (env‑overridable), interval 30s. Triggers `gc.collect()` + registered callbacks. **Not** a GGUF unloader (no GGUF exists). Prior draft's "45%" and "GGUF unload" were inaccurate. |
 | **Test suite** | ⚠️ CI runs it; we did not | `.github/workflows/test.yml` runs `python test_api.py --online` against a Postgres service container (not just `py_compile`). It requires a live DB **and** network access to free providers. **Pass counts are unverified** — do not cite "68 tests pass" without checking a CI run or running it locally. |
 | **Mobile APK** | ⚠️ Code present; build not run this session | `eas build` not executed here. |
-| **Web frontend** | ✅ Re‑deployed this session (2026-07-14) | Architecture diagrams upgraded to @xyflow/react v12, all edges animated. |
+| **Web frontend** | ✅ Re‑deployed (2026-07-14, commit 91d063e) | Sticky playground, scroll buttons, status dashboard fixed. |
+| **Backend (Render)** | ⚠️ Pushed to main; confirm Render auto-deploys or trigger manually | Added `/api/memory` health endpoint, removed auth from `/api/settings/database/status`. |
 | **Docker / Cloudflare / GitHub Actions CI** | ⚠️ Config present | Workflows exist (`test.yml`, `release.yml`); not re‑run this session. |
 
 ---
