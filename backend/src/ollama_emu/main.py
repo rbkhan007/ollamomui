@@ -371,19 +371,14 @@ def _startup():
 
 
 def _cors_origins() -> list:
-    # Secure by default: only allow same-origin (the served SPA) and the
-    # known local/mobile origins. When explicitly bound to a LAN address,
-    # open CORS to all origins and log a warning.
-    if BIND_HOST in ("127.0.0.1", "localhost", "::1", "0:0:0:0:0:0:0:1"):
-        origins = [
-            "http://localhost:11434",
-            "http://127.0.0.1:11434",
-            "http://localhost",
-            "expo://localhost",
-            "capacitor://localhost",
-        ]
-    else:
-        origins = ["*"]
+    # Secure by default: allow known origins only. Never use wildcard.
+    origins = [
+        "http://localhost:11434",
+        "http://127.0.0.1:11434",
+        "http://localhost",
+        "expo://localhost",
+        "capacitor://localhost",
+    ]
 
     # Always allow the hosted web frontend (Vercel) and any explicitly
     # configured extra origins via CORS_ORIGINS (comma-separated).
@@ -395,12 +390,13 @@ def _cors_origins() -> list:
         "https://ollamomui.vercel.app",
         "https://www.ollamomui.vercel.app",
     ]
+    frontend_url = os.getenv("FRONTEND_URL", "").strip()
+    if frontend_url:
+        web_origins.append(frontend_url.rstrip("/"))
     extra = os.getenv("CORS_ORIGINS", "").strip()
     if extra:
         web_origins.extend([o.strip() for o in extra.split(",") if o.strip()])
 
-    if "*" in origins:
-        return origins
     return origins + web_origins
 
 

@@ -7,7 +7,8 @@ function getBase(): string {
       if (stored) return stored.replace(/\/+$/, "");
     } catch { /* localStorage unavailable */ }
   }
-  return ENV_BASE;
+  // Fall back to relative path (for Vercel API rewrites)
+  return ENV_BASE || "";
 }
 
 const MAX_RETRIES = 3;

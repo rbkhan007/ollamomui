@@ -120,22 +120,21 @@ export default function PlaygroundPage() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const parent = document.getElementById("playground-messages");
-    if (!parent) return;
-    const blocks = parent.querySelectorAll<HTMLElement>(".mermaid-svg");
+    const blocks = document.querySelectorAll<HTMLElement>(".mermaid-svg");
     if (!blocks.length) return;
     import("mermaid").then(mermaid => {
       const textColor = getComputedStyle(document.documentElement).getPropertyValue("--text").trim() || "#eef0ff";
       mermaid.default.initialize({ theme: "base", themeVariables: { background: "transparent", primaryColor: "var(--accent)", secondaryColor: "var(--accent-2)", tertiaryColor: "var(--accent-3)", primaryTextColor: textColor, lineColor: "var(--accent)" } });
       blocks.forEach(el => {
         const code = el.getAttribute("data-code");
-        const id = el.id;
+        const id = el.id || `mermaid-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        if (!el.id) el.id = id;
         if (code && !el.querySelector("svg")) {
           mermaid.default.render(id, code).then(({ svg }) => { el.innerHTML = sanitizeSvg(svg); }).catch(() => {});
         }
       });
     }).catch(() => {});
-  }, [messages]);
+  }, [messages, artifacts]);
 
   useEffect(() => {
     const prev = document.body.style.overflow;
