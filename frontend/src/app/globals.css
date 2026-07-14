@@ -1128,3 +1128,33 @@ html[data-theme] * {
   from { stroke-dashoffset: 24; }
   to   { stroke-dashoffset: 0; }
 }
+
+/* ===========================
+   GLOBAL THEME SAFETY OVERRIDES
+   Guarantees every visible element respects light/dark theme.
+   (Inline component styles still win over these element selectors.)
+   =========================== */
+body, html {
+  background-color: var(--bg);
+  color: var(--text);
+}
+input, textarea, select, button {
+  background-color: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+pre, code {
+  background-color: var(--surface-2);
+  color: var(--text);
+}
+a {
+  color: var(--accent);
+}
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text);
+}
+
+/* React Flow surfaces must follow theme, not the library default white */
+.react-flow__renderer, .react-flow__pane {
+  background: transparent;
+}

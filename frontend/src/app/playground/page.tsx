@@ -518,11 +518,13 @@ export default function PlaygroundPage() {
             {/* Rhasan@dev banner with gradient frame */}
             <div style={{ lineHeight: 1.7, padding: "8px 0" }}>
               <div style={{
+                display: "inline-block",
+                fontSize: "var(--text-sm)",
+                fontWeight: 700,
                 background: "var(--gradient-h1)", backgroundClip: "text",
                 WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-                fontWeight: 700,
               }}>
-                #&amp;# Rhasan@dev ──────────────────────────────
+                # Rhasan@dev ──────────────────────────────
               </div>
               <div style={{ color: "var(--text-muted)" }}>│  Welcome to OllamoMUI Playground v1.0.0</div>
               <div style={{ color: "var(--text-muted)" }}>│  I can write code, draw Mermaid diagrams,</div>
