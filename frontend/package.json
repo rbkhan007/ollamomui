@@ -10,13 +10,16 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@lobehub/fluent-emoji": "^4.1.0",
     "@lobehub/icons": "^5.10.1",
+    "@lobehub/ui": "^5.20.2",
     "@reactflow/background": "^11.3.14",
     "@reactflow/controls": "^11.2.14",
     "@reactflow/core": "^11.11.4",
     "@reactflow/minimap": "^11.7.14",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
+    "antd": "^6.5.1",
     "lucide-react": "^1.24.0",
     "mermaid": "^11.16.0",
     "next": "^15.3.1",

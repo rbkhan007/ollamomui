@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
 import InteractiveWireframe from "@/components/InteractiveWireframe";
+import FeatureMatchSection from "@/components/FeatureMatchSection";
 
 import {
   REPO_URL,
@@ -240,6 +241,8 @@ export default function Home() {
            })}
         </div>
       </section>
+
+      <FeatureMatchSection />
 
       {/* How it works */}
       <section className="lazy-section" style={{ padding: "24px 24px var(--space-3xl)", maxWidth: 1000, margin: "0 auto" }}>
