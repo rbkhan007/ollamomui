@@ -66,7 +66,7 @@ export default function FeatureMatchSection() {
         textAlign: "center", fontSize: "var(--text-h2)", fontWeight: 700,
         letterSpacing: "-0.02em", marginBottom: 8,
       }}>
-        Features \u2192 Benefits
+        Features → Benefits
       </h2>
       <p style={{
         textAlign: "center", color: "var(--text-muted)", marginBottom: 48,
