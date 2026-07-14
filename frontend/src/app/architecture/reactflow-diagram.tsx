@@ -1,26 +1,42 @@
 "use client";
 
-import React, { memo } from "react";
-import ReactFlow, {
+import React, { memo, CSSProperties } from "react";
+import * as RF from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+
+import type {
   Node,
   Edge,
+  NodeProps,
+  EdgeProps,
+  ReactFlowProps,
+} from "@xyflow/react";
+
+const ReactFlow = RF.ReactFlow as unknown as React.FC<ReactFlowProps>;
+const {
   Background,
   Controls,
   MiniMap,
   useNodesState,
   useEdgesState,
   MarkerType,
-  NodeProps,
-  ConnectionLineComponent,
-  EdgeProps,
   BaseEdge,
   getBezierPath,
   Panel,
-} from "reactflow";
-import "reactflow/dist/style.css";
+} = RF;
 
 /* ─── Custom Connection Line (while dragging) ─── */
-const ConnectionLine: ConnectionLineComponent = ({ fromX, fromY, toX, toY }) => {
+function ConnectionLine({
+  fromX,
+  fromY,
+  toX,
+  toY,
+}: {
+  fromX: number;
+  fromY: number;
+  toX: number;
+  toY: number;
+}) {
   const path = `M${fromX},${fromY} C ${fromX} ${(fromY + toY) / 2} ${toX} ${(fromY + toY) / 2} ${toX},${toY}`;
   return (
     <g>
@@ -28,7 +44,7 @@ const ConnectionLine: ConnectionLineComponent = ({ fromX, fromY, toX, toY }) => 
       <circle cx={toX} cy={toY} fill="var(--accent)" r={4} stroke="#fff" strokeWidth={1.5} />
     </g>
   );
-};
+}
 
 /* ─── Custom Edge Component ─── */
 const CustomEdge = memo(function CustomEdge({
@@ -55,13 +71,18 @@ const CustomEdge = memo(function CustomEdge({
 
   return (
     <g>
-      <BaseEdge id={id} path={edgePath} style={style} markerEnd={markerEnd} />
+      <BaseEdge
+        id={id}
+        path={edgePath}
+        style={{ ...style, strokeWidth: 2, ...(animated ? { strokeDasharray: "6 3" } : {}) }}
+        markerEnd={markerEnd}
+      />
       {animated && (
         <path
           fill="none"
-          stroke={(style as React.CSSProperties)?.stroke || "var(--accent)"}
+          stroke={(style as CSSProperties)?.stroke || "var(--accent)"}
           strokeWidth={2}
-          strokeDasharray="4 4"
+          strokeDasharray="6 3"
           className="animated"
           d={edgePath}
           style={{ animation: "react-flow-edge-dash 1s linear infinite" }}
@@ -171,11 +192,15 @@ function createEdge(
     source,
     target,
     type: "custom",
-    animated: opts?.animated,
-    style: { stroke: c, ...(opts?.dashed ? { strokeDasharray: "5 5" } : {}) },
+    animated: opts?.animated !== false,
+    style: {
+      stroke: c,
+      strokeWidth: 2,
+      ...(opts?.dashed ? { strokeDasharray: "6 3" } : {}),
+    },
     markerEnd: { ...arrowClsd, color: c },
     ...(opts?.label ? { label: opts.label } : {}),
-  };
+  } as Edge;
 }
 
 /* ─── Unified nodes combining both systems ─── */
@@ -209,11 +234,11 @@ const initialNodes: Node[] = [
   { id: "llm", type: "gateway", position: { x: 1980, y: 90 }, data: { label: "LLM Provider", sub: "Context Injection" } },
 ];
 
-/* ─── Edges auto-derived from node colors ─── */
+/* ─── Edges auto-derived from node colors, all animated ─── */
 
 const initialEdges: Edge[] = [
   /* ── Request Lifecycle ── */
-  createEdge("l1", "cli", "proxy", initialNodes, { animated: true }),
+  createEdge("l1", "cli", "proxy", initialNodes),
   createEdge("l2", "proxy", "memory", initialNodes, { dashed: true, label: "Auto-save" }),
   createEdge("l3", "proxy", "acl", initialNodes),
   createEdge("l4", "acl", "router", initialNodes, { label: "Allow" }),
@@ -228,7 +253,7 @@ const initialEdges: Edge[] = [
   createEdge("l13", "groq", "stream", initialNodes),
   createEdge("l14", "deepseek", "stream", initialNodes),
   createEdge("l15", "gemini", "stream", initialNodes),
-  createEdge("l16", "stream", "cli", initialNodes, { animated: true, label: "SSE Stream" }),
+  createEdge("l16", "stream", "cli", initialNodes, { label: "SSE Stream" }),
 
   /* ── RAG Ingestion ── */
   createEdge("r1", "upload", "chunk", initialNodes),
@@ -243,7 +268,7 @@ const initialEdges: Edge[] = [
   createEdge("r8", "keyword", "pgtrgm", initialNodes, { dashed: true }),
   createEdge("r9", "pgvector", "merge", initialNodes, { label: "Results" }),
   createEdge("r10", "pgtrgm", "merge", initialNodes, { label: "Results" }),
-  createEdge("r11", "merge", "llm", initialNodes, { animated: true }),
+  createEdge("r11", "merge", "llm", initialNodes),
 ];
 
 /* ─── Exported unified diagram ─── */
@@ -256,15 +281,29 @@ const minimapStyle = {
   borderRadius: 8,
 };
 
+const flowContainerStyle: CSSProperties = {
+  background: "var(--surface)",
+  borderRadius: 16,
+  border: "1px solid var(--glass-border)",
+  overflow: "hidden",
+};
+
+const panelStyle: CSSProperties = {
+  background: "color-mix(in srgb, var(--surface) 85%, transparent)",
+  padding: "8px 14px",
+  borderRadius: 8,
+  margin: 8,
+  backdropFilter: "blur(4px)",
+};
+
+const panelLabelStyle: CSSProperties = { fontSize: 13, fontWeight: 700, color: "var(--text)" };
+
 export function ArchitectureFlow() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   return (
-    <div style={{
-      background: "var(--surface)", borderRadius: 16, border: "1px solid var(--glass-border)",
-      overflow: "hidden", height: 520,
-    }}>
+    <div style={{ ...flowContainerStyle, height: 520 }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -281,21 +320,13 @@ export function ArchitectureFlow() {
         <Background color="var(--text-muted)" gap={24} size={1} />
         <Controls style={{ background: "var(--surface)", borderRadius: 8, border: "1px solid var(--glass-border)" }} />
         <MiniMap style={minimapStyle} />
-        <Panel position="top-left" style={{
-          background: "color-mix(in srgb, var(--surface) 85%, transparent)",
-          padding: "8px 14px", borderRadius: 8, margin: 8,
-          backdropFilter: "blur(4px)",
-        }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text)" }}>
+        <Panel position="top-left" style={panelStyle}>
+          <span style={panelLabelStyle}>
             🔄 Request Lifecycle
           </span>
         </Panel>
-        <Panel position="top-right" style={{
-          background: "color-mix(in srgb, var(--surface) 85%, transparent)",
-          padding: "8px 14px", borderRadius: 8, margin: 8,
-          backdropFilter: "blur(4px)",
-        }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text)" }}>
+        <Panel position="top-right" style={panelStyle}>
+          <span style={panelLabelStyle}>
             📚 Hybrid RAG Pipeline
           </span>
         </Panel>
@@ -335,10 +366,7 @@ export function DeploymentFlow() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(deployEdges);
 
   return (
-    <div style={{
-      background: "var(--surface)", borderRadius: 16, border: "1px solid var(--glass-border)",
-      overflow: "hidden", height: 480,
-    }}>
+    <div style={{ ...flowContainerStyle, height: 480 }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -354,12 +382,8 @@ export function DeploymentFlow() {
       >
         <Background color="var(--text-muted)" gap={24} size={1} />
         <Controls style={{ background: "var(--surface)", borderRadius: 8, border: "1px solid var(--glass-border)" }} />
-        <Panel position="top-left" style={{
-          background: "color-mix(in srgb, var(--surface) 85%, transparent)",
-          padding: "8px 14px", borderRadius: 8, margin: 8,
-          backdropFilter: "blur(4px)",
-        }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text)" }}>
+        <Panel position="top-left" style={panelStyle}>
+          <span style={panelLabelStyle}>
             ☁️ Deployment Architecture
           </span>
         </Panel>
@@ -391,7 +415,7 @@ const authEdges: Edge[] = [
   createEdge("a6", "auth", "apikeys", authNodes, { dashed: true, label: "Key lookup" }),
   createEdge("a7", "auth", "users", authNodes, { dashed: true, label: "Role fetch" }),
   createEdge("a8", "auth", "audit", authNodes, { dashed: true, label: "Log event" }),
-  createEdge("a9", "auth", "allow", authNodes, { animated: true, label: "Authenticated" }),
+  createEdge("a9", "auth", "allow", authNodes, { label: "Authenticated" }),
 ];
 
 export function AuthFlow() {
@@ -399,10 +423,7 @@ export function AuthFlow() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(authEdges);
 
   return (
-    <div style={{
-      background: "var(--surface)", borderRadius: 16, border: "1px solid var(--glass-border)",
-      overflow: "hidden", height: 400,
-    }}>
+    <div style={{ ...flowContainerStyle, height: 400 }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -418,12 +439,8 @@ export function AuthFlow() {
       >
         <Background color="var(--text-muted)" gap={24} size={1} />
         <Controls style={{ background: "var(--surface)", borderRadius: 8, border: "1px solid var(--glass-border)" }} />
-        <Panel position="top-left" style={{
-          background: "color-mix(in srgb, var(--surface) 85%, transparent)",
-          padding: "8px 14px", borderRadius: 8, margin: 8,
-          backdropFilter: "blur(4px)",
-        }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text)" }}>
+        <Panel position="top-left" style={panelStyle}>
+          <span style={panelLabelStyle}>
             🔐 Auth &amp; Security Flow
           </span>
         </Panel>
@@ -456,11 +473,11 @@ const sdlcNodes: Node[] = [
 
 const sdlcEdges: Edge[] = [
   /* Sequential waterfall */
-  createEdge("s1", "req", "design", sdlcNodes, { animated: true }),
-  createEdge("s2", "design", "impl", sdlcNodes, { animated: true }),
-  createEdge("s3", "impl", "test", sdlcNodes, { animated: true }),
-  createEdge("s4", "test", "deploy", sdlcNodes, { animated: true }),
-  createEdge("s5", "deploy", "maintain", sdlcNodes, { animated: true }),
+  createEdge("s1", "req", "design", sdlcNodes),
+  createEdge("s2", "design", "impl", sdlcNodes),
+  createEdge("s3", "impl", "test", sdlcNodes),
+  createEdge("s4", "test", "deploy", sdlcNodes),
+  createEdge("s5", "deploy", "maintain", sdlcNodes),
 
   /* To deliverables */
   createEdge("s6", "req", "req-out", sdlcNodes),
@@ -481,10 +498,7 @@ export function WaterfallSdlcFlow() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(sdlcEdges);
 
   return (
-    <div style={{
-      background: "var(--surface)", borderRadius: 16, border: "1px solid var(--glass-border)",
-      overflow: "hidden", height: 780,
-    }}>
+    <div style={{ ...flowContainerStyle, height: 780 }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -500,12 +514,8 @@ export function WaterfallSdlcFlow() {
       >
         <Background color="var(--text-muted)" gap={24} size={1} />
         <Controls style={{ background: "var(--surface)", borderRadius: 8, border: "1px solid var(--glass-border)" }} />
-        <Panel position="top-left" style={{
-          background: "color-mix(in srgb, var(--surface) 85%, transparent)",
-          padding: "8px 14px", borderRadius: 8, margin: 8,
-          backdropFilter: "blur(4px)",
-        }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text)" }}>
+        <Panel position="top-left" style={panelStyle}>
+          <span style={panelLabelStyle}>
             🌊 Waterfall SDLC
           </span>
         </Panel>
