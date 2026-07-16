@@ -12,8 +12,8 @@
   "dependencies": {
     "@heyputer/puter.js": "^2.5.4",
     "@lobehub/fluent-emoji": "^4.1.0",
-    "@lobehub/icons": "^5.10.1",
-    "@lobehub/ui": "^5.20.2",
+    "@lobehub/icons": "^5.13.0",
+    "@lobehub/ui": "^5.20.3",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "@xyflow/react": "^12.11.2",
@@ -26,7 +26,7 @@
     "react-use-measure": "^2.1.7"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.2",
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22.15.3",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
