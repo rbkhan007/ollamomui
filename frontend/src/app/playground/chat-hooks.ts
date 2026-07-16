@@ -79,6 +79,59 @@ export function useChat({ model, onUserMessage }: UseChatOptions) {
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
+  /* Core streaming call — returns accumulated text. Does not touch visible chat. */
+  const streamOnce = useCallback(
+    async (prompt: string): Promise<string> => {
+      const payload = {
+        model,
+        messages: [{ role: "user", content: prompt }],
+        stream: true,
+      };
+      const controller = new AbortController();
+      abortRef.current = controller;
+      try {
+        const res = await fetch(`${API_BASE}/api/chat`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+        });
+        if (!res.ok || !res.body) throw new Error(`Gateway returned ${res.status}`);
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        let acc = "";
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() ?? "";
+          for (const line of lines) {
+            const clean = line.trim();
+            if (!clean) continue;
+            try {
+              const json = JSON.parse(clean);
+              const piece =
+                json?.message?.content ??
+                json?.choices?.[0]?.delta?.content ??
+                json?.response ??
+                "";
+              if (piece) acc += piece;
+              if (json?.done) break;
+            } catch {
+              /* ignore keep-alive / partial */
+            }
+          }
+        }
+        return acc;
+      } finally {
+        abortRef.current = null;
+      }
+    },
+    [model]
+  );
+
   const send = useCallback(
     async (text: string, systemPrompt?: string) => {
       const trimmed = text.trim();
@@ -186,7 +239,21 @@ export function useChat({ model, onUserMessage }: UseChatOptions) {
         abortRef.current = null;
       }
     },
-    [messages, model, streaming, onUserMessage]
+    [messages, model, streaming, onUserMessage, streamOnce]
+  );
+
+  /* Silent generation for Studio artifacts — streams from the model without touching the chat. */
+  const generate = useCallback(
+    async (prompt: string): Promise<string> => {
+      if (streaming) throw new Error("Busy");
+      setStreaming(true);
+      try {
+        return await streamOnce(prompt);
+      } finally {
+        setStreaming(false);
+      }
+    },
+    [streaming, streamOnce]
   );
 
   const stop = useCallback(() => {
@@ -201,5 +268,5 @@ export function useChat({ model, onUserMessage }: UseChatOptions) {
     setStreaming(false);
   }, []);
 
-  return { messages, streaming, error, send, stop, reset };
+  return { messages, streaming, error, send, generate, stop, reset };
 }

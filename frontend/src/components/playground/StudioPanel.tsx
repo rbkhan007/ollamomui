@@ -1,46 +1,44 @@
 "use client";
 
 import {
-  Play, Presentation, Video, BrainCircuit, FileSpreadsheet, BookOpen,
-  MessageSquareText, BarChart3, Plus, Copy, Download, Trash2, Pencil, Check, X, StickyNote,
+  Presentation, FileText, BrainCircuit, BarChart3, LineChart, Table2,
+  Plus, Copy, Download, Trash2, Pencil, Check, X, StickyNote, Loader2, Sparkles,
 } from "lucide-react";
 import { useState } from "react";
 import { GlassCard, IconButton, IconChip, Pill } from "./playground-ui";
-import { downloadMarkdown, type StudioArtifact, type GenerateKind } from "@/app/playground/studio";
+import {
+  downloadMarkdown, type StudioArtifact, type GenerateKind, STUDIO_TITLES,
+} from "@/app/playground/studio";
 
-export type { GenerateKind };
-
-const STUDIO_ITEMS: { icon: typeof Play; label: string; beta: boolean; gen: GenerateKind | null; color: string }[] = [
-  { icon: Play, label: "Audio Overview", beta: false, gen: null, color: "var(--accent)" },
-  { icon: Presentation, label: "Slide Deck", beta: true, gen: null, color: "var(--accent-2)" },
-  { icon: Video, label: "Video Overview", beta: false, gen: null, color: "var(--accent-3)" },
-  { icon: BrainCircuit, label: "Mind Map", beta: false, gen: "mindmap", color: "var(--accent)" },
-  { icon: FileSpreadsheet, label: "Reports", beta: false, gen: "report", color: "var(--green)" },
-  { icon: BookOpen, label: "Flashcards", beta: false, gen: "flashcards", color: "var(--accent-2)" },
-  { icon: MessageSquareText, label: "Quiz", beta: false, gen: "quiz", color: "var(--accent-3)" },
-  { icon: BarChart3, label: "Infographic", beta: true, gen: null, color: "var(--accent-4)" },
-  { icon: FileSpreadsheet, label: "Data Table", beta: false, gen: null, color: "var(--text-muted)" },
+const STUDIO_ITEMS: { icon: typeof Presentation; label: string; kind: GenerateKind; color: string }[] = [
+  { icon: Presentation, label: "Slide Deck", kind: "slides", color: "var(--accent)" },
+  { icon: FileText, label: "Report", kind: "report", color: "var(--green)" },
+  { icon: BrainCircuit, label: "Mind Map", kind: "mindmap", color: "var(--accent-2)" },
+  { icon: BarChart3, label: "Infographic", kind: "infographic", color: "var(--accent-3)" },
+  { icon: LineChart, label: "Graph", kind: "graph", color: "var(--accent-4)" },
+  { icon: Table2, label: "Data Table", kind: "datatable", color: "var(--text-muted)" },
 ];
 
-const ARTIFACT_ICON: Record<StudioArtifact["kind"], typeof Play> = {
-  mindmap: BrainCircuit,
-  quiz: MessageSquareText,
-  flashcards: BookOpen,
-  report: FileSpreadsheet,
-  infographic: BarChart3,
+const ARTIFACT_ICON: Record<GenerateKind, typeof Presentation> = {
   slides: Presentation,
-  datatable: FileSpreadsheet,
+  report: FileText,
+  mindmap: BrainCircuit,
+  infographic: BarChart3,
+  graph: LineChart,
+  datatable: Table2,
 };
 
 export function StudioPanel({
   artifacts,
   onGenerate,
+  generating,
   onUpdate,
   onDelete,
   onAddNote,
 }: {
   artifacts: StudioArtifact[];
   onGenerate: (kind: GenerateKind) => void;
+  generating: GenerateKind | null;
   onUpdate: (a: StudioArtifact) => void;
   onDelete: (id: string) => void;
   onAddNote: () => void;
@@ -60,34 +58,31 @@ export function StudioPanel({
   return (
     <GlassCard className="w-80 shrink-0 flex flex-col p-4">
       <header className="flex items-center gap-2 mb-4">
-        <IconChip color="var(--accent-3)"><SparklesIcon /></IconChip>
-        <h2 className="font-semibold text-[15px] flex-1" style={{ color: "var(--text)" }}>Studio</h2>
+        <IconChip color="var(--accent-3)"><Sparkles /></IconChip>
+        <h2 className="font-semibold text-[15px] flex-1" style={{ color: "var(--text)" }}>Ollamo Studio</h2>
         <Pill color="var(--text-muted)">{artifacts.length}</Pill>
       </header>
 
       <div className="grid grid-cols-3 gap-2">
-        {STUDIO_ITEMS.map((item) => (
-          <button
-            key={item.label}
-            disabled={!item.gen}
-            onClick={() => item.gen && onGenerate(item.gen)}
-            title={item.gen ? `Generate ${item.label}` : `${item.label} — coming soon`}
-            className="pg-studio-btn relative"
-          >
-            <item.icon className="w-5 h-5" style={{ color: item.color }} />
-            <span>{item.label}</span>
-            {item.beta && (
-              <span className="absolute -top-1.5 -right-1.5 text-[8px] font-bold text-white px-1 rounded bg-blue-500">
-                BETA
-              </span>
-            )}
-            {!item.gen && (
-              <span className="absolute -bottom-1.5 text-[8px] font-semibold px-1 rounded" style={{ color: "var(--text-muted)", background: "var(--bg-2)" }}>
-                SOON
-              </span>
-            )}
-          </button>
-        ))}
+        {STUDIO_ITEMS.map((item) => {
+          const busy = generating === item.kind;
+          return (
+            <button
+              key={item.kind}
+              disabled={!!generating}
+              onClick={() => onGenerate(item.kind)}
+              title={`Generate ${item.label} with a free OpenRouter model`}
+              className="pg-studio-btn relative"
+            >
+              {busy ? (
+                <Loader2 className="w-5 h-5 animate-spin" style={{ color: item.color }} />
+              ) : (
+                <item.icon className="w-5 h-5" style={{ color: item.color }} />
+              )}
+              <span>{item.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       <div className="pg-scroll mt-3 flex-1 overflow-y-auto space-y-2 pr-1">
@@ -152,11 +147,4 @@ export function StudioPanel({
   );
 }
 
-function SparklesIcon() {
-  return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9L12 3z" />
-      <path d="M19 14l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2z" />
-    </svg>
-  );
-}
+export { STUDIO_TITLES };

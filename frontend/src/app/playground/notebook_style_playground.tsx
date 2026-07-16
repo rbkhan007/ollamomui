@@ -3,13 +3,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Sun, Moon, Wifi, WifiOff, Loader2, Trash2, ArrowUp, Send, MessageSquare, Bot, User } from "lucide-react";
 import { SourcesPanel, type Source } from "@/components/playground/SourcesPanel";
-import { StudioPanel, type GenerateKind } from "@/components/playground/StudioPanel";
+import { StudioPanel } from "@/components/playground/StudioPanel";
 import { GlassCard, IconButton, IconChip, Pill } from "@/components/playground/playground-ui";
 import { GradientOrbs } from "@/components/Background";
 import { useChat, useModels, type ChatMessage } from "./chat-hooks";
 import {
-  createNote, generateFlashcards, generateMindMap, generateQuiz, generateReport,
-  type StudioArtifact,
+  createNote, fallbackGenerate, buildArtifact, STUDIO_PROMPTS,
+  type StudioArtifact, type GenerateKind,
 } from "./studio";
 
 /* ------------------------------------------------------------------ */
@@ -184,10 +184,11 @@ export default function PlaygroundWorkspace() {
   ]);
   const [artifacts, setArtifacts] = useState<StudioArtifact[]>([]);
 
-  const { messages, streaming, error, send, stop, reset } = useChat({
+  const { messages, streaming, error, send, generate, stop, reset } = useChat({
     model: selectedModel,
     onUserMessage: () => {},
   });
+  const [generating, setGenerating] = useState<GenerateKind | null>(null);
 
   useEffect(() => { refresh(); }, [refresh]);
 
@@ -197,9 +198,31 @@ export default function PlaygroundWorkspace() {
   const updateSource = (s: Source) => setSources((prev) => prev.map((x) => (x.id === s.id ? s : x)));
   const deleteSource = (id: string) => setSources((prev) => prev.filter((x) => x.id !== id));
 
-  const generate = (kind: GenerateKind) => {
-    const fn = { mindmap: generateMindMap, report: generateReport, flashcards: generateFlashcards, quiz: generateQuiz }[kind];
-    setArtifacts((prev) => [fn(messages), ...prev]);
+  const runGenerate = async (kind: GenerateKind) => {
+    if (generating) return;
+    setGenerating(kind);
+    const ctx = lastUserContext(messages);
+    const placeholder: StudioArtifact = {
+      id: `${kind}-${Date.now()}`,
+      kind,
+      title: "Generating…",
+      markdown: "_Generating with a free OpenRouter model…_",
+      createdAt: Date.now(),
+    };
+    setArtifacts((prev) => [placeholder, ...prev]);
+    try {
+      const prompt = STUDIO_PROMPTS[kind](ctx);
+      const text = await generate(prompt);
+      const artifact = text.trim()
+        ? buildArtifact(kind, text)
+        : fallbackGenerate(kind, messages);
+      setArtifacts((prev) => prev.map((a) => (a.id === placeholder.id ? artifact : a)));
+    } catch {
+      const artifact = fallbackGenerate(kind, messages);
+      setArtifacts((prev) => prev.map((a) => (a.id === placeholder.id ? artifact : a)));
+    } finally {
+      setGenerating(null);
+    }
   };
   const updateArtifact = (a: StudioArtifact) => setArtifacts((prev) => prev.map((x) => (x.id === a.id ? a : x)));
   const deleteArtifact = (id: string) => setArtifacts((prev) => prev.filter((x) => x.id !== id));
@@ -212,8 +235,11 @@ export default function PlaygroundWorkspace() {
         <div className="flex items-center justify-between mb-2 px-1">
           <div className="flex items-center gap-2">
             <IconChip color="var(--accent)"><Bot className="w-4 h-4" /></IconChip>
+            <span className="text-xs font-semibold" style={{ color: "var(--text)" }}>
+              Ollamo Studio
+            </span>
             <span className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>
-              Notebook-style AI workspace
+              · free OpenRouter AI workspace
             </span>
           </div>
           <IconButton onClick={toggle} title="Toggle theme" variant="ghost">
@@ -237,7 +263,8 @@ export default function PlaygroundWorkspace() {
           />
           <StudioPanel
             artifacts={artifacts}
-            onGenerate={generate}
+            onGenerate={runGenerate}
+            generating={generating}
             onUpdate={updateArtifact}
             onDelete={deleteArtifact}
             onAddNote={addNote}
@@ -246,4 +273,11 @@ export default function PlaygroundWorkspace() {
       </div>
     </div>
   );
+}
+
+function lastUserContext(messages: ChatMessage[]): string {
+  const parts = messages.filter((m) => m.role === "user").map((m) => m.content);
+  const last = [...messages].reverse().find((m) => m.role === "assistant" && !m.error && m.content);
+  const ctx = [...parts, last?.content ?? ""].join("\n\n").trim();
+  return ctx || "Create a sample based on general knowledge.";
 }
